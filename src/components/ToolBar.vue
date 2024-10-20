@@ -2,6 +2,7 @@
   <div class="toolbar">
     <button @click="selectTool(ToolType.Brush)" :class="{ active: selectedTool === ToolType.Brush }">Brush</button>
     <button @click="selectTool(ToolType.Eraser)" :class="{ active: selectedTool === ToolType.Eraser }">Eraser</button>
+    <button @click="selectTool(ToolType.Crop)" :class="{ active: selectedTool === ToolType.Crop }">Crop</button>  <!-- 裁剪工具按钮 -->
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
 

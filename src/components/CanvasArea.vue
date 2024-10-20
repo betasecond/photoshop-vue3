@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import {watch, ref, onMounted, reactive, nextTick} from 'vue';
-import {initializeCanvas, loadImage, saveImage, startDrawing, stopDrawing, draw, ToolType} from './canvasDrawing';
+import {initializeCanvas, loadImage, saveImage, startDrawing, stopDrawing, draw, cropCanvas,ToolType} from './canvasDrawing';
 import {useUndoRedoStore} from "../store/undoRedoStore";
+import * as events from "node:events";
 
 const undoRedoStore = useUndoRedoStore();
 const canvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 let isDrawing = false;
 
+// 裁剪
+let isCropping = false;  // 标志是否正在裁剪
+const cropStart = reactive({ x: 0, y: 0 });  // 裁剪起始位置
+const cropEnd = reactive({ x: 0, y: 0 });    // 裁剪结束位置
 
 
 
@@ -38,6 +43,50 @@ onMounted(() => {
   }
 });
 
+
+// 开始裁剪
+const startCrop = (event: MouseEvent) => {
+  if (props.selectedTool === ToolType.Crop) {
+    isCropping = true;
+    const rect = canvas.value!.getBoundingClientRect();
+    cropStart.x = event.clientX - rect.left;
+    cropStart.y = event.clientY - rect.top;
+  }
+};
+
+// 绘制裁剪区域 目前裁剪会清除所有绘制 需要考虑
+const drawCropArea = (event: MouseEvent) => {
+  if (!isCropping || !ctx.value) return;
+  const rect = canvas.value!.getBoundingClientRect();
+  cropEnd.x = event.clientX - rect.left;
+  cropEnd.y = event.clientY - rect.top;
+
+  // 清空之前绘制的裁剪框
+  ctx.value.clearRect(0, 0, canvas.value!.width, canvas.value!.height);
+  undoRedoStore.undoStack.length > 0 && ctx.value.putImageData(undoRedoStore.undoStack[undoRedoStore.undoStack.length - 1].imageData, 0, 0); // 恢复上一次状态
+
+  // 绘制裁剪区域
+  ctx.value.strokeStyle = '#ff0000';
+  ctx.value.lineWidth = 1;
+  ctx.value.strokeRect(cropStart.x, cropStart.y, cropEnd.x - cropStart.x, cropEnd.y - cropStart.y);
+};
+
+// 完成裁剪
+const endCrop = () => {
+  if (!isCropping) return;
+  isCropping = false;
+
+  // 计算裁剪区域的宽高
+  const cropWidth = Math.abs(cropEnd.x - cropStart.x);
+  const cropHeight = Math.abs(cropEnd.y - cropStart.y);
+
+  // 确定左上角坐标
+  const x = Math.min(cropStart.x, cropEnd.x);
+  const y = Math.min(cropStart.y, cropEnd.y);
+
+  // 调用裁剪函数
+  cropCanvas(canvas, ctx, { x, y, width: cropWidth, height: cropHeight });
+};
 
 // 观察 canvas 和 ctx 是否已经初始化
 // watch([canvas, ctx], async ([newCanvas, newCtx], [oldCanvas, oldCtx]) => {
@@ -88,15 +137,25 @@ const saveImage = () => {
 
 // 开始绘制
 const handleMouseDown = (event: MouseEvent) => {
-  isDrawing = startDrawing(props.selectedTool, isDrawing);
+  if(props.selectedTool === ToolType.Crop) {
+    startCrop(event)
+  }else {
+    isDrawing = startDrawing(props.selectedTool, isDrawing);
+  }
+
 };
 
 
 
 // 停止绘制
 const handleMouseUp = () => {
-  stopDrawing(ctx);
-  isDrawing = false;
+  if(props.selectedTool === ToolType.Crop) {
+    endCrop()
+  }else{
+    stopDrawing(ctx);
+    isDrawing = false;
+  }
+
 
 
 
@@ -105,11 +164,17 @@ const handleMouseUp = () => {
 
 // 绘制事件
 const handleMouseMove = (event: MouseEvent) => {
-  draw(event, canvas, ctx, props.selectedTool, {
-    color: props.selectedColor,
-    brushSize: props.brushSize,
-    eraserSize: props.eraserSize
-  }, isDrawing);
+  if (props.selectedTool === ToolType.Crop && isCropping) {
+    // 如果是裁剪状态，绘制裁剪框
+    drawCropArea(event);
+     } else{
+    draw(event, canvas, ctx, props.selectedTool, {
+      color: props.selectedColor,
+      brushSize: props.brushSize,
+      eraserSize: props.eraserSize
+    }, isDrawing);
+  }
+
 };
 
 

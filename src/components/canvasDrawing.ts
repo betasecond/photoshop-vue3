@@ -111,6 +111,8 @@ export enum ToolType {
     Line = 'line',
     Rectangle = 'rectangle',
     Circle = 'circle',
+    Rotate = 'rotate',
+    Crop = 'crop'
     // 其他未来可能的工具类型
 }
 // 工具映射函数
@@ -124,6 +126,12 @@ function mapToolType(tool: string): ToolType {
             return ToolType.Line;
         case 'rectangle':
             return ToolType.Rectangle;
+        case 'circle':
+            return ToolType.Circle;
+        case 'rotate':
+            return ToolType.Rotate;
+        case 'crop':
+            return ToolType.Crop;
         default:
             throw new Error('Invalid tool type');
     }
@@ -180,3 +188,28 @@ function drawBrush(ctx: CanvasRenderingContext2D, x: number, y: number, config: 
 function drawEraser(ctx: CanvasRenderingContext2D, x: number, y: number, config: any) {
     ctx.clearRect(x - config.eraserSize / 2, y - config.eraserSize / 2, config.eraserSize, config.eraserSize);
 }
+
+export function cropCanvas(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, cropArea: { x: number, y: number, width: number, height: number }) {
+    const undoRedoStore = useUndoRedoStore(); // 获取 undo/redo store
+
+    if (!canvas.value || !ctx.value) {
+        console.error('Canvas or context is missing.');
+        return;
+    }
+
+    // 获取裁剪区域的图像数据
+    const croppedImageData = ctx.value.getImageData(cropArea.x, cropArea.y, cropArea.width, cropArea.height);
+
+    // 清空画布
+    ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
+
+    // 调整画布大小以适应裁剪后的区域
+    canvas.value.width = cropArea.width;
+    canvas.value.height = cropArea.height;
+
+    // 将裁剪后的图像重新绘制到画布上
+    ctx.value.putImageData(croppedImageData, 0, 0);
+    // 保存裁剪后的状态
+    undoRedoStore.saveCanvasState();
+}
+
