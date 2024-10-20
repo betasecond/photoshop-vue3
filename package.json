@@ -1,5 +1,5 @@
 {
-  "name": "vite-vue3-electron-ts-template",
+  "name": "photoshop-jimei",
   "private": true,
   "version": "0.0.1",
   "author": "Your Name",
@@ -16,7 +16,7 @@
     "app:preview": "npm run vite:build && tsc && electron ."
   },
   "build": {
-    "appId": "YourAppID",
+    "appId": "photoshop-vue",
     "asar": true,
     "directories": {
       "buildResources": "assets",
