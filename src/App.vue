@@ -10,7 +10,7 @@ const selectedTool = ref<ToolType>(ToolType.Brush);  // 默认选中画笔，使
 const selectedColor = ref('#000000');  // 默认颜色为黑色
 const brushSize = ref(10);  // 默认画笔大小
 const eraserSize = ref(10);  // 默认橡皮擦大小
-
+const brightness = ref(0);  // 亮度值
 // 工具栏选择工具的处理函数
 const handleSelectTool = (tool: ToolType) => {
   selectedTool.value = tool;
@@ -34,6 +34,14 @@ const updateEraserSize = (newSize: number) => {
   eraserSize.value = newSize;
   console.log(`Updated eraser size: ${eraserSize.value}`);
 };
+
+// 处理亮度调节
+const handleAdjustBrightness = (brightnessValue) => {
+  brightness.value = brightnessValue;
+  console.log(`Brightness value received in parent: ${brightnessValue}`);
+  // 将亮度调节值传递给 CanvasArea 进行处理
+
+};
 </script>
 
 <template>
@@ -44,6 +52,8 @@ const updateEraserSize = (newSize: number) => {
         :selectedColor="selectedColor"
         @selectTool="handleSelectTool"
         @updateColor="updateColor"
+        @adjustBrightness="handleAdjustBrightness"
+
     />
 
     <div class="main-container">
@@ -53,6 +63,7 @@ const updateEraserSize = (newSize: number) => {
           :selectedColor="selectedColor"
           :brushSize="brushSize"
           :eraserSize="eraserSize"
+          :brightness="brightness"
       />
 
       <!-- 属性面板 -->

@@ -4,6 +4,9 @@
     <button @click="selectTool(ToolType.Eraser)" :class="{ active: selectedTool === ToolType.Eraser }">Eraser</button>
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
+    <!-- 新增亮度调节滑块 -->
+    <label for="brightnessSlider">Brightness:</label>
+    <input type="range" id="brightnessSlider" min="-100" max="100" v-model="brightness" @input="emitBrightness" />
 
     <!-- 撤销和重做按钮 -->
     <button @click="undo" :disabled="!canUndo">Undo</button>
@@ -14,13 +17,13 @@
 <script setup lang="ts">
 import { ToolType } from './canvasDrawing';
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import {computed} from "vue";  // 引入 ToolType 枚举
-
+import {computed, ref} from "vue";  // 引入 ToolType 枚举
+import { adjustBrightness } from './canvasDrawing';  // 引入亮度调节逻辑
 const props = defineProps({
   selectedTool: ToolType,   // 接收父组件传递的选中工具，类型为枚举
   selectedColor: String,    // 接收当前的画笔颜色
 });
-const emit = defineEmits(['selectTool', 'updateColor']);
+const emit = defineEmits(['selectTool', 'updateColor', 'adjustBrightness']);  // 发射事件
 
 const selectTool = (tool: ToolType) => {
   console.log(`Tool selected: ${tool}`);
@@ -42,6 +45,15 @@ const redo = () => {
 // 计算是否可以撤销或重做
 const canUndo = computed(() => store.undoStack.length > 0);
 const canRedo = computed(() => store.redoStack.length > 0);
+
+
+// 亮度值
+const brightness = ref(0);  // 亮度值
+
+// 发射亮度调节事件
+const emitBrightness = () => {
+  emit('adjustBrightness', brightness.value);  // 发射亮度调节事件
+};
 </script>
 
 <style scoped>
