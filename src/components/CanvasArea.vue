@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {watch, ref, onMounted, reactive} from 'vue';
+import {watch, ref, onMounted, reactive, nextTick} from 'vue';
 import {initializeCanvas, loadImage, saveImage, startDrawing, stopDrawing, draw, ToolType} from './canvasDrawing';
+import {useUndoRedoStore} from "../store/undoRedoStore";
 
-
+const undoRedoStore = useUndoRedoStore();
 const canvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 let isDrawing = false;
@@ -26,18 +27,42 @@ onMounted(() => {
   initializeCanvas(canvas, ctx);
   console.log('Canvas ref:', canvas.value);
   console.log('Context ref:', ctx.value);
-});
 
 
-// 观察 canvas 是否已经初始化
-watch(canvas, (newCanvas, oldCanvas) => {
-  if (newCanvas) {
-    console.log('Canvas is now initialized and ready.');
+
+  if (canvas.value && ctx.value) {
+    console.log('Canvas and context are ready in onMounted.');
+    undoRedoStore.initializeCanvasState(canvas.value, ctx.value);  // 直接在 onMounted 中传递
   } else {
-    console.log('Canvas is not yet initialized.');
+    console.error('Canvas or context are undefined in onMounted.');
   }
 });
 
+
+// 观察 canvas 和 ctx 是否已经初始化
+// watch([canvas, ctx], async ([newCanvas, newCtx], [oldCanvas, oldCtx]) => {
+//   if (newCanvas && newCtx) {
+//     // debug
+//     console.log('Canvas and context are now initialized and ready.');
+//     console.log('Canvas value:', newCanvas); // 检查传入的 canvas
+//     console.log('Context value:', newCtx);   // 检查传入的 ctx
+//     //  因为看不懂异步，只能nextTick堆屎山近似成同步
+//     await nextTick();
+//
+//     const canvasValue = newCanvas?.value;
+//     const ctxValue = newCtx?.value;
+//
+//     console.log('Extracted canvas value:', canvasValue);
+//     console.log('Extracted context value:', ctxValue);
+//     if (canvasValue && ctxValue) {
+//       undoRedoStore.initializeCanvasState(canvasValue, ctxValue);  // 确保传递的是解包后的值
+//     } else {
+//       console.error('Unable to pass canvas or context as values are undefined after nextTick.');
+//     }
+//   }
+//
+//
+// });
 
 // 处理图片加载
 // 由于vue的dom和ref是异步处理，需要套一层，避免直接在模板中操作 ref
@@ -72,6 +97,9 @@ const handleMouseDown = (event: MouseEvent) => {
 const handleMouseUp = () => {
   stopDrawing(ctx);
   isDrawing = false;
+
+
+
 };
 
 
