@@ -1,15 +1,22 @@
 import { Ref } from 'vue';
+import { useUndoRedoStore } from '../store/undoRedoStore';
+
+
 
 export function initializeCanvas(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>) {
+    const undoRedoStore = useUndoRedoStore(); // 获取 store 实例
     if (canvas.value) {
         ctx.value = canvas.value.getContext('2d');
         ctx.value.fillStyle = '#ffffff';
         ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
         console.log('Canvas initialized');
+
+
     }
 }
 
 export function loadImage(event: Event, canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>) {
+    const undoRedoStore = useUndoRedoStore();
     // 参数校验
     if (!event || !canvas || !ctx) {
         console.log('Event, canvas, or context is missing');
@@ -56,6 +63,8 @@ export function loadImage(event: Event, canvas: Ref<HTMLCanvasElement | null>, c
             ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
             ctx.value.drawImage(img, 0, 0, canvas.value.width, canvas.value.height);
             console.log('Image drawn on canvas');
+
+            undoRedoStore.saveCanvasState(canvas, ctx);
         };
 
         // 确认 img.src 被正确设置
@@ -80,14 +89,19 @@ export function saveImage(canvas: Ref<HTMLCanvasElement | null>) {
 }
 
 export function startDrawing(tool: string, isDrawing: boolean) {
-    if (tool === 'brush' || tool === 'eraser') {
+    const undoRedoStore = useUndoRedoStore();
+    if (mapToolType(tool) === 'brush' || mapToolType(tool) === 'eraser') {
+        undoRedoStore.saveCanvasState();
         return true;
     }
     return false;
 }
 
 export function stopDrawing(ctx: Ref<CanvasRenderingContext2D | null>) {
+    const undoRedoStore = useUndoRedoStore();
+
     ctx.value?.beginPath();
+
 }
 
 // 工具类型定义
@@ -131,7 +145,6 @@ export function draw(
     const y = event.clientY - rect.top;
 
 
-
     switch (tool) {
         case ToolType.Brush:
             drawBrush(ctx.value, x, y, config);
@@ -143,6 +156,13 @@ export function draw(
         default:
             console.log('Unknown tool selected');
     }
+    // 检查绘制完成后是否保存了状态
+    const undoRedoStore = useUndoRedoStore();
+    // debug
+    // console.log('Before save state: undoStack:', undoRedoStore.undoStack.length, 'redoStack:', undoRedoStore.redoStack.length);
+    // undoRedoStore.saveCanvasState(canvas, ctx);
+    // console.log('After save state: undoStack:', undoRedoStore.undoStack.length, 'redoStack:', undoRedoStore.redoStack.length);
+
 }
 // 示例：画笔绘制函数
 function drawBrush(ctx: CanvasRenderingContext2D, x: number, y: number, config: any) {
