@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import {watch, ref, onMounted, reactive, nextTick} from 'vue';
-import {initializeCanvas, loadImage, saveImage, startDrawing, stopDrawing, draw, ToolType} from './canvasDrawing';
+import {
+  initializeCanvas,
+  loadImage,
+  saveImage,
+  startDrawing,
+  stopDrawing,
+  draw,
+  ToolType,
+  adjustBrightness
+} from './canvasDrawing';
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
 const undoRedoStore = useUndoRedoStore();
@@ -12,13 +21,13 @@ let isDrawing = false;
 
 
 
-
 const props = defineProps({
   selectedTool: ToolType,  // 接收父组件传递的选中工具
   selectedColor: String,  // 接收当前的画笔颜色
   brushSize: Number,       // 接收当前的画笔大小
-
+  brightness: Number,    // 接收父组件传递的亮度值
   eraserSize: Number      // 接收当前的橡皮擦大小
+
 });
 // 初始化 Canvas
 onMounted(() => {
@@ -37,7 +46,12 @@ onMounted(() => {
     console.error('Canvas or context are undefined in onMounted.');
   }
 });
-
+// 监听亮度值变化
+watch(() => props.brightness, (newBrightness) => {
+  if (newBrightness !== 0) {
+    adjustBrightness(canvas, ctx, newBrightness);
+  }
+});
 
 // 观察 canvas 和 ctx 是否已经初始化
 // watch([canvas, ctx], async ([newCanvas, newCtx], [oldCanvas, oldCtx]) => {
