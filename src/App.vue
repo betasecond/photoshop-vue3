@@ -1,67 +1,68 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
-import vue from "@vitejs/plugin-vue";
-
-
+import { ToolType } from './components/canvasDrawing'; // 引入 ToolType 枚举
 
 // 共享状态：选中的工具和颜色
-const selectedTool = ref('brush');  // 默认选中画笔
+const selectedTool = ref<ToolType>(ToolType.Brush);  // 默认选中画笔，使用枚举类型
 const selectedColor = ref('#000000');  // 默认颜色为黑色
 const brushSize = ref(10);  // 默认画笔大小
 const eraserSize = ref(10);  // 默认橡皮擦大小
 
-
 // 工具栏选择工具的处理函数
-const handleSelectTool = (tool) => {
+const handleSelectTool = (tool: ToolType) => {
   selectedTool.value = tool;
   console.log(`Current tool: ${selectedTool.value}`);
 };
 
 // 更新颜色
-const updateColor = (color) => {
+const updateColor = (color: string) => {
   selectedColor.value = color;
   console.log(`Selected color: ${selectedColor.value}`);
 };
 
 // 更新画笔大小
-const updateBrushSize = (newSize) => {
+const updateBrushSize = (newSize: number) => {
   brushSize.value = newSize;
   console.log(`Updated brush size: ${brushSize.value}`);
 };
 
 // 更新橡皮擦大小
-const updateEraserSize = (newSize) => {
+const updateEraserSize = (newSize: number) => {
   eraserSize.value = newSize;
   console.log(`Updated eraser size: ${eraserSize.value}`);
 };
-
-
 </script>
 
 <template>
   <div id="app">
     <!-- 工具栏 -->
-    <ToolBar :selectedTool="selectedTool" :selectedColor="selectedColor"
-             @selectTool="handleSelectTool" @updateColor="updateColor" />
+    <ToolBar
+        :selectedTool="selectedTool"
+        :selectedColor="selectedColor"
+        @selectTool="handleSelectTool"
+        @updateColor="updateColor"
+    />
 
     <div class="main-container">
-      <!-- 图层面板 -->
-
       <!-- 画布区域 -->
-      <CanvasArea :selectedTool="selectedTool"
-                  :selectedColor="selectedColor"
-                  :brushSize="brushSize"
-                  :eraserSize="eraserSize" />
+      <CanvasArea
+          :selectedTool="selectedTool"
+          :selectedColor="selectedColor"
+          :brushSize="brushSize"
+          :eraserSize="eraserSize"
+      />
 
       <!-- 属性面板 -->
-      <PropertyPanel :selectedTool="selectedTool"
-                     :brushSize="brushSize"
-                     :eraserSize="eraserSize"
-                     @update:brushSize="updateBrushSize"
-                     @update:eraserSize="updateEraserSize" />
+      <PropertyPanel
+          :selectedTool="selectedTool"
+          :brushSize="brushSize"
+          :eraserSize="eraserSize"
+          @update:brushSize="updateBrushSize"
+          @update:eraserSize="updateEraserSize"
+      />
     </div>
   </div>
 </template>

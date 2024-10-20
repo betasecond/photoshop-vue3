@@ -120,7 +120,7 @@ export function draw(
     event: MouseEvent,
     canvas: Ref<HTMLCanvasElement | null>,
     ctx: Ref<CanvasRenderingContext2D | null>,
-    tool: string,  // 这里接受来自 props 的字符串工具类型
+    tool: ToolType,
     config: { color: string, brushSize: number, eraserSize: number },
     isDrawing: boolean
 ) {
@@ -130,10 +130,9 @@ export function draw(
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // 将字符串工具映射到枚举值
-    const selectedTool = mapToolType(tool);
 
-    switch (selectedTool) {
+
+    switch (tool) {
         case ToolType.Brush:
             drawBrush(ctx.value, x, y, config);
             break;

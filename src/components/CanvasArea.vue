@@ -13,7 +13,7 @@ let isDrawing = false;
 
 
 const props = defineProps({
-  selectedTool: String,  // 接收父组件传递的选中工具
+  selectedTool: ToolType,  // 接收父组件传递的选中工具
   selectedColor: String,  // 接收当前的画笔颜色
   brushSize: Number,       // 接收当前的画笔大小
 
