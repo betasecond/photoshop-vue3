@@ -15,10 +15,10 @@
 </template>
 
 <script setup lang="ts">
-import { ToolType } from './canvasDrawing';
+import { ToolType } from '../module/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
 import {computed, ref} from "vue";  // 引入 ToolType 枚举
-import { adjustBrightness } from './canvasDrawing';  // 引入亮度调节逻辑
+import { adjustBrightness } from '../module/brightnessAdjust';  // 引入亮度调节逻辑
 const props = defineProps({
   selectedTool: ToolType,   // 接收父组件传递的选中工具，类型为枚举
   selectedColor: String,    // 接收当前的画笔颜色

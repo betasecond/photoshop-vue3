@@ -2,7 +2,7 @@
 import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
-import { ToolType } from './components/canvasDrawing'; // 引入 ToolType 枚举
+import { ToolType } from './module/toolType'; // 引入 ToolType 枚举
 
 // 共享状态：选中的工具和颜色
 const selectedTool = ref<ToolType>(ToolType.Brush);  // 默认选中画笔，使用枚举类型
