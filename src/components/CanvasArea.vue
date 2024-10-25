@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {watch, ref, onMounted, reactive, nextTick} from 'vue';
+
 import {
   initializeCanvas,
   loadImage,
