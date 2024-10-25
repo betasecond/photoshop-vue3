@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "module": "esnext",
-    "moduleResolution": "node"
+    "target": "esnext",
+    "module": "commonjs", // 修改为 "commonjs" 以适配 Electron 的 Node.js 环境
+    "moduleResolution": "node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "outDir": "dist/electron",
+    "composite": true // 添加此行
+
   },
-  "include": ["vite.config.ts"]
+  "include": ["src/electron/**/*"] // 指定 Electron 代码路径
 }
