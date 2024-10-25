@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ToolType } from './canvasDrawing';
+import { ToolType } from '../module/toolType';
 
 const props = defineProps({
   selectedTool: ToolType,  // 接收当前选中的工具

@@ -1,15 +1,13 @@
 <script setup lang="ts">
 
-import {
-  initializeCanvas,
-  loadImage,
-  saveImage,
-  startDrawing,
-  stopDrawing,
-  draw,
-  ToolType,
-  adjustBrightness
-} from './canvasDrawing';
+
+import {initializeCanvas} from '../module/canvasInitialize'
+import {loadImage} from "../module/imageLoad";
+import {saveImage} from "../module/imageSave"
+import {startDrawing,stopDrawing,draw} from "../module/drawing"
+import {ToolType} from "../module/toolType"
+import {adjustBrightness} from "../module/brightnessAdjust"
+
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
 const undoRedoStore = useUndoRedoStore();
