@@ -10,68 +10,100 @@ const selectedColor = ref('#000000');  // 默认颜色为黑色
 const brushSize = ref(10);  // 默认画笔大小
 const eraserSize = ref(10);  // 默认橡皮擦大小
 const brightness = ref(0);  // 亮度值
-// 工具栏选择工具的处理函数
+// 处理绘图信号
+const handleStartDrawing = (toolType: ToolType, startPosition: { x: number; y: number }) => {
+  console.log(`Start drawing with ${toolType} at`, startPosition);
+};
+
+const handleDraw = (currentPosition: { x: number; y: number }, attributes: { color: string; size: number }) => {
+  console.log(`Drawing at ${currentPosition} with attributes`, attributes);
+};
+
+const handleStopDrawing = (endPosition: { x: number; y: number }) => {
+  console.log(`Stop drawing at`, endPosition);
+};
+
+// 处理选择工具信号
+const handleSelectArea = (selectionBounds: { x: number; y: number; width: number; height: number }) => {
+  console.log('Selected area:', selectionBounds);
+};
+
+const handleRotate = (rotationAngle: number) => {
+  console.log(`Rotate image by ${rotationAngle} degrees`);
+};
+
+// 处理参数调整信号
+const handleAdjustParameter = (parameterType: string, value: number) => {
+  console.log(`Adjust ${parameterType} to ${value}`);
+};
+
+// 处理一键式效果信号
+const handleApplyEffect = (effectType: string) => {
+  console.log(`Apply effect: ${effectType}`);
+};
+
+// 工具选择处理
 const handleSelectTool = (tool: ToolType) => {
   selectedTool.value = tool;
   console.log(`Current tool: ${selectedTool.value}`);
 };
 
-// 更新颜色
+// 颜色更新处理
 const updateColor = (color: string) => {
   selectedColor.value = color;
   console.log(`Selected color: ${selectedColor.value}`);
 };
 
-// 更新画笔大小
+// 画笔和橡皮擦大小更新
 const updateBrushSize = (newSize: number) => {
   brushSize.value = newSize;
   console.log(`Updated brush size: ${brushSize.value}`);
 };
 
-// 更新橡皮擦大小
 const updateEraserSize = (newSize: number) => {
   eraserSize.value = newSize;
   console.log(`Updated eraser size: ${eraserSize.value}`);
 };
 
-// 处理亮度调节
-const handleAdjustBrightness = (brightnessValue) => {
+// 亮度调节处理
+const handleAdjustBrightness = (brightnessValue: number) => {
   brightness.value = brightnessValue;
   console.log(`Brightness value received in parent: ${brightnessValue}`);
-  // 将亮度调节值传递给 CanvasArea 进行处理
-
 };
 </script>
 
 <template>
   <div id="app">
-    <!-- 工具栏 -->
     <ToolBar
         :selectedTool="selectedTool"
         :selectedColor="selectedColor"
         @selectTool="handleSelectTool"
         @updateColor="updateColor"
         @adjustBrightness="handleAdjustBrightness"
-
+        @applyEffect="handleApplyEffect"
     />
 
     <div class="main-container">
-      <!-- 画布区域 -->
       <CanvasArea
           :selectedTool="selectedTool"
           :selectedColor="selectedColor"
           :brushSize="brushSize"
           :eraserSize="eraserSize"
           :brightness="brightness"
+          @startDrawing="handleStartDrawing"
+          @draw="handleDraw"
+          @stopDrawing="handleStopDrawing"
+          @selectArea="handleSelectArea"
+          @rotate="handleRotate"
       />
 
-      <!-- 属性面板 -->
       <PropertyPanel
           :selectedTool="selectedTool"
           :brushSize="brushSize"
           :eraserSize="eraserSize"
           @update:brushSize="updateBrushSize"
           @update:eraserSize="updateEraserSize"
+          @adjustParameter="handleAdjustParameter"
       />
     </div>
   </div>

@@ -5,12 +5,20 @@ import { adjustBrightness } from '../module/brightnessAdjust';  // 引入亮度�
 
 // 定义接收的 props
 const props = defineProps<{
-  selectedTool: ToolType,
-  selectedColor: string
+  selectedTool: ToolType;      // 当前选中的工具类型
+  selectedColor: string;       // 当前选中的颜色
 }>();
 
 // 定义 emit 事件
-const emit = defineEmits(['selectTool', 'updateColor', 'adjustBrightness']);
+const emit = defineEmits([
+  'selectTool',               // 工具选择
+  'updateColor',              // 颜色更新
+  'adjustBrightness',         // 亮度调整
+  'adjustContrast',           // 对比度调整
+  'adjustSaturation',         // 饱和度调整
+  'applyEffect'               // 一键式效果应用
+]);
+
 
 // 工具选择逻辑
 const selectTool = (tool: ToolType) => {
