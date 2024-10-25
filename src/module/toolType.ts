@@ -5,20 +5,32 @@ export enum ToolType {
     Line = 'line',
     Rectangle = 'rectangle',
     Circle = 'circle',
-    // 其他未来可能的工具类型
+    Crop = 'crop',
+    Rotate = 'rotate',
+    Brightness = 'brightness',
+    Contrast = 'contrast',
+    Saturation = 'saturation',
+    Exposure = 'exposure',
+    HSL = 'hsl',
+    Sharpen = 'sharpen',
+    Smoothing = 'smoothing',
+    CurveAdjustment = 'curveAdjustment',
+    HistogramEqualization = 'histogramEqualization',
+    ToneMapping = 'toneMapping',
+    ColorTemperature = 'colorTemperature',
+    Dehaze = 'dehaze',
+    FaceDetection = 'faceDetection',
+    FaceBeautify = 'faceBeautify',
+    AdvancedFilters = 'advancedFilters',
+    FaceExpression = 'faceExpression',
+    LocalBrightnessExposure = 'localBrightnessExposure'
 }
 // 工具映射函数
-function mapToolType(tool: string): ToolType {
-    switch (tool) {
-        case 'brush':
-            return ToolType.Brush;
-        case 'eraser':
-            return ToolType.Eraser;
-        case 'line':
-            return ToolType.Line;
-        case 'rectangle':
-            return ToolType.Rectangle;
-        default:
-            throw new Error('Invalid tool type');
+export function mapToolType(tool: string): ToolType {
+    const toolType = ToolType[tool as keyof typeof ToolType];
+    if (toolType) {
+        return toolType;
+    } else {
+        throw new Error(`Invalid tool type: ${tool}`);
     }
 }
