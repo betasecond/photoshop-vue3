@@ -17,13 +17,20 @@ const ctx = ref<CanvasRenderingContext2D | null>(null);
 let isDrawing = false;
 
 // 属性定义
-const props = defineProps({
-  selectedTool: ToolType,
-  selectedColor: String,
-  brushSize: Number,
-  brightness: Number,
-  eraserSize: Number
-});
+const props = defineProps<{
+  selectedTool: ToolType;       // 当前选中的工具类型
+  selectedColor: string;        // 绘图颜色（用于 Brush 和 Line 工具）
+  brushSize: number;            // 画笔大小（仅在 Brush 工具下使用）
+  eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
+  brightness: number;           // 亮度调整值（用于亮度调整）
+  rotationAngle?: number;       // 旋转角度（用于 Rotate 工具）
+  selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}>();
 
 // 挂载后的 Canvas 初始化
 onMounted(() => {

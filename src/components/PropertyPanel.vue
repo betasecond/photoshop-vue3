@@ -3,13 +3,31 @@ import { ToolType } from '../module/toolType';
 
 // 接收的 props
 const props = defineProps<{
-  selectedTool: ToolType,
-  brushSize: number,
-  eraserSize: number
+  selectedTool: ToolType;        // 当前选中的工具类型
+  brushSize: number;             // 画笔大小，适用于 Brush 工具
+  eraserSize: number;            // 橡皮擦大小，适用于 Eraser 工具
+  brightness: number;            // 亮度调整，适用于调整亮度的工具
+  contrast?: number;             // 对比度调整值（可选，适用于对比度工具）
+  saturation?: number;           // 饱和度调整值（可选，适用于饱和度工具）
+  exposure?: number;             // 曝光调整值（可选，适用于曝光工具）
+  hsl?: {                        // HSL 调整值，包含色相、饱和度、亮度
+    hue: number;
+    saturation: number;
+    lightness: number;
+  };
 }>();
 
 // 发出事件的 emit 定义
-const emit = defineEmits(['update:brushSize', 'update:eraserSize']);
+const emit = defineEmits([
+  'update:brushSize',
+  'update:eraserSize',
+  'adjustBrightness',
+  'adjustContrast',
+  'adjustSaturation',
+  'adjustExposure',
+  'adjustHSL'
+]);
+
 
 // 计算显示的工具属性
 const toolProperties = computed(() => {
