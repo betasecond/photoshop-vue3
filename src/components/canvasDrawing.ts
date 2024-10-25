@@ -5,13 +5,17 @@ import { useUndoRedoStore } from '../store/undoRedoStore';
 
 export function initializeCanvas(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>) {
     const undoRedoStore = useUndoRedoStore(); // 获取 store 实例
-    if (canvas.value) {
-        ctx.value = canvas.value.getContext('2d');
-        ctx.value.fillStyle = '#ffffff';
-        ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
-        console.log('Canvas initialized');
-
-
+    if (canvas.value) { // 确保 canvas.value 不为空
+        ctx.value = canvas.value.getContext('2d'); // 将 context 赋值给 ctx
+        if (ctx.value) { // 确保获取到的 context 不为空
+            ctx.value.fillStyle = '#ffffff';
+            ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
+            console.log('Canvas initialized');
+        } else {
+            console.error("Failed to get 2D context");
+        }
+    } else {
+        console.error("Canvas element is null");
     }
 }
 
@@ -64,7 +68,7 @@ export function loadImage(event: Event, canvas: Ref<HTMLCanvasElement | null>, c
             ctx.value.drawImage(img, 0, 0, canvas.value.width, canvas.value.height);
             console.log('Image drawn on canvas');
 
-            undoRedoStore.saveCanvasState(canvas, ctx);
+            undoRedoStore.saveCanvasState();
         };
 
         // 确认 img.src 被正确设置

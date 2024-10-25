@@ -2,20 +2,21 @@
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "commonjs",
+    "module": "esnext", // 修改为 "esnext" 以适配 Vue
     "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true, // 修改为 true 以适应 Vue 文件中的模块化处理
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
-    "outDir": "dist/electron"
+    "outDir": "dist"
   },
-  "include": ["src/electron/**/*"],
-  "references": [{
-    "path": "./tsconfig.node.json"
-  }]
+  "include": ["src/**/*.ts", "src/**/*.vue", "typings/auto-imports.d.ts"],
+  "exclude": ["src/electron/**/*"], // 排除 Electron 代码
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
 }
