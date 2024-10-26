@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ToolType } from '../module/toolType';
+import { DrawingToolType } from '../module/toolType';
 
 // 接收的 props
 const props = defineProps<{
-  selectedTool: ToolType;        // 当前选中的工具类型
+  selectedTool: DrawingToolType;        // 当前选中的工具类型
   brushSize: number;             // 画笔大小，适用于 Brush 工具
   eraserSize: number;            // 橡皮擦大小，适用于 Eraser 工具
   brightness: number;            // 亮度调整，适用于调整亮度的工具
@@ -32,9 +32,9 @@ const emit = defineEmits([
 // 计算显示的工具属性
 const toolProperties = computed(() => {
   switch (props.selectedTool) {
-    case ToolType.Brush:
+    case DrawingToolType.Brush:
       return `Brush Size: ${props.brushSize}px`;
-    case ToolType.Eraser:
+    case DrawingToolType.Eraser:
       return `Eraser Size: ${props.eraserSize}px`;
     default:
       return 'No specific properties';
@@ -61,7 +61,7 @@ const updateEraserSize = (event: Event) => {
     <p>{{ toolProperties }}</p>
 
     <!-- 画笔大小滑动条 -->
-    <template v-if="props.selectedTool === ToolType.Brush">
+    <template v-if="props.selectedTool === DrawingToolType.Brush">
       <label for="brush-size">Brush Size:</label>
       <input
           type="range"
@@ -75,7 +75,7 @@ const updateEraserSize = (event: Event) => {
     </template>
 
     <!-- 橡皮擦大小滑动条 -->
-    <template v-if="props.selectedTool === ToolType.Eraser">
+    <template v-if="props.selectedTool === DrawingToolType.Eraser">
       <label for="eraser-size">Eraser Size:</label>
       <input
           type="range"

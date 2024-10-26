@@ -2,16 +2,16 @@
 import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
-import { ToolType } from './module/toolType'; // 引入 ToolType 枚举
+import { DrawingToolType } from './module/toolType'; // 引入 ToolType 枚举
 
 // 共享状态：选中的工具和颜色
-const selectedTool = ref<ToolType>(ToolType.Brush);  // 默认选中画笔，使用枚举类型
+const selectedTool = ref<DrawingToolType>(DrawingToolType.Brush);  // 默认选中画笔，使用枚举类型
 const selectedColor = ref('#000000');  // 默认颜色为黑色
 const brushSize = ref(10);  // 默认画笔大小
 const eraserSize = ref(10);  // 默认橡皮擦大小
 const brightness = ref(0);  // 亮度值
 // 处理绘图信号
-const handleStartDrawing = (toolType: ToolType, startPosition: { x: number; y: number }) => {
+const handleStartDrawing = (toolType: DrawingToolType, startPosition: { x: number; y: number }) => {
   console.log(`Start drawing with ${toolType} at`, startPosition);
 };
 
@@ -43,7 +43,7 @@ const handleApplyEffect = (effectType: string) => {
 };
 
 // 工具选择处理
-const handleSelectTool = (tool: ToolType) => {
+const handleSelectTool = (tool: DrawingToolType) => {
   selectedTool.value = tool;
   console.log(`Current tool: ${selectedTool.value}`);
 };
@@ -104,7 +104,7 @@ const handleAdjustBrightness = (brightnessValue: number) => {
           @update:brushSize="updateBrushSize"
           @update:eraserSize="updateEraserSize"
           @adjustParameter="handleAdjustParameter"
-      />
+       brightness=""/>
     </div>
   </div>
 </template>
