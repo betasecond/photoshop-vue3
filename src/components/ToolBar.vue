@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DrawingToolType,OneClickActionToolType } from '../module/toolType';
+import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from '../module/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
 import { adjustBrightness } from '../module/brightnessAdjust';  // 引入亮度调节逻辑
 
@@ -17,7 +17,8 @@ const emit = defineEmits([
   'adjustBrightness',         // 亮度调整
   'adjustContrast',           // 对比度调整
   'adjustSaturation',         // 饱和度调整
-  'applyEffect'               // 一键式效果应用
+  'applyEffect',               // 一键式效果应用
+  'applyAdjust',              // 调整
 ]);
 
 
@@ -27,6 +28,9 @@ const selectTool = (tool: DrawingToolType) => {
 };
 const applyEffect = (tool: OneClickActionToolType) => {
   emit('applyEffect', tool);
+}
+const applyAdjust = (tool: AdjustmentToolType) => {
+  emit('applyAdjust', tool);
 }
 
 // 颜色更新逻辑
@@ -51,6 +55,7 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <button @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">Brush</button>
     <button @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</button>
     <button @click="applyEffect(OneClickActionToolType.Watermark)" >Watermark</button>
+    <button @click="applyAdjust(AdjustmentToolType.Contrast)" >Contrast</button>
 
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />

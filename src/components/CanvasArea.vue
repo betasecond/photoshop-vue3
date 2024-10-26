@@ -3,10 +3,11 @@ import { initializeCanvas } from '../module/canvasInitialize';
 import { loadImage } from "../module/imageLoad";
 import { saveImage } from "../module/imageSave";
 import { startDrawing, stopDrawing, draw } from "../module/drawing";
-import {OneClickActionToolType, ToolType} from "../module/toolType";
+import {AdjustmentToolType, OneClickActionToolType, ToolType} from "../module/toolType";
 import { adjustBrightness } from "../module/brightnessAdjust";
 import { useUndoRedoStore } from "../store/undoRedoStore";
 import {applyWatermark,WatermarkOptions, defaultOptions} from "../module/watermark";
+import {adjustContrast} from "../module/contrastAdjust";
 
 
 // 引入并初始化状态管理
@@ -24,6 +25,7 @@ const props = defineProps<{
   brushSize: number;            // 画笔大小（仅在 Brush 工具下使用）
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
+  contrast: number;             // 新增对比度属性
   rotationAngle?: number;       // 旋转角度（用于 Rotate 工具）
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
@@ -31,7 +33,8 @@ const props = defineProps<{
     width: number;
     height: number;
   };
-  appliedEffect: OneClickActionToolType | null;
+  appliedEffect: { type:OneClickActionToolType,id:number } | null;
+  appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
 }>();
 
 // 挂载后的 Canvas 初始化
@@ -77,16 +80,34 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
       break;
   }
 };
-
-// 监听 appliedEffect 的变化
-watch(
-    () => props.appliedEffect,
-    (newEffect, oldEffect) => {
-      if (newEffect && newEffect !== oldEffect) {
-        applyEffectLogic(newEffect);
+// 定义具体的一键效果逻辑
+const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
+  switch (adjustmentToolType) {
+    case AdjustmentToolType.Contrast:
+      console.log("Applying Contrast Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustContrast(canvas, ctx,props.contrast);
       }
-    }
-);
+      break;
+
+    default:
+      console.warn(`Adjustment ${adjustmentToolType} is not implemented.`);
+      break;
+  }
+};
+// 监听 appliedEffect 的变化
+watch(() => props.appliedEffect, (newEffect, oldEffect) => {
+  if (newEffect && (!oldEffect || newEffect.id !== oldEffect.id)) {
+    applyAdjustmentLogic(newEffect.type);
+  }
+});
+
+// 对比度调整监听
+watch(() => props.appliedAdjustment, (newAdjustment, oldAdjustment) => {
+  if (newAdjustment && (!oldAdjustment || newAdjustment.id !== oldAdjustment.id)) {
+    applyAdjustmentLogic(newAdjustment.type);
+  }
+});
 // 保存图片
 const handleSaveImage = () => {
   if (canvas.value) saveImage(canvas);

@@ -3,9 +3,13 @@ import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
 import { usePropertyStore } from './store/propertyStore';
-import { DrawingToolType,OneClickActionToolType } from './module/toolType'; // 引入 ToolType 枚举
+import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from './module/toolType'; // 引入 ToolType 枚举
 const propertyStore = usePropertyStore();
-
+// 新增：对比度调整处理
+const handleAdjustContrast = (contrastValue: number) => {
+  propertyStore.adjustContrast(contrastValue);
+  console.log(`Contrast value received in parent: ${propertyStore.contrast}`);
+};
 // 处理绘图信号
 const handleStartDrawing = (toolType: DrawingToolType, startPosition: { x: number; y: number }) => {
   console.log(`Start drawing with ${toolType} at`, startPosition);
@@ -28,10 +32,6 @@ const handleRotate = (rotationAngle: number) => {
   console.log(`Rotate image by ${rotationAngle} degrees`);
 };
 
-// 处理参数调整信号
-const handleAdjustParameter = (parameterType: string, value: number) => {
-  console.log(`Adjust ${parameterType} to ${value}`);
-};
 
 
 
@@ -69,6 +69,12 @@ const handleApplyEffect = (effect: OneClickActionToolType) => {
   propertyStore.applyEffect(effect);
   console.log(`Applying one-click effect: ${propertyStore.effect}`);
 };
+
+
+const handleApplyAdjust = (adjust:AdjustmentToolType)=>{
+  propertyStore.applyAdjustment(adjust);
+  console.log(`Adjusting adjust: ${adjust}`);
+}
 </script>
 
 <template>
@@ -81,6 +87,7 @@ const handleApplyEffect = (effect: OneClickActionToolType) => {
         @updateColor="updateColor"
         @adjustBrightness="handleAdjustBrightness"
         @applyEffect="handleApplyEffect"
+        @applyAdjust="handleApplyAdjust"
     />
 
     <div class="main-container">
@@ -91,12 +98,14 @@ const handleApplyEffect = (effect: OneClickActionToolType) => {
           :eraserSize="propertyStore.eraserSize"
           :brightness="propertyStore.brightness"
           :appliedEffect="propertyStore.appliedEffect"
+          :appliedAdjustment="propertyStore.appliedAdjustment"
+          :contrast="propertyStore.contrast"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
           @selectArea="handleSelectArea"
           @rotate="handleRotate"
-      />
+       applied-adjust=""/>
 
       <PropertyPanel/>
     </div>
