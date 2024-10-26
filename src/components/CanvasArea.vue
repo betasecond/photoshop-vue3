@@ -3,9 +3,10 @@ import { initializeCanvas } from '../module/canvasInitialize';
 import { loadImage } from "../module/imageLoad";
 import { saveImage } from "../module/imageSave";
 import { startDrawing, stopDrawing, draw } from "../module/drawing";
-import { ToolType } from "../module/toolType";
+import {OneClickActionToolType, ToolType} from "../module/toolType";
 import { adjustBrightness } from "../module/brightnessAdjust";
 import { useUndoRedoStore } from "../store/undoRedoStore";
+import {applyWatermark,WatermarkOptions, defaultOptions} from "../module/watermark";
 
 
 // 引入并初始化状态管理
@@ -30,6 +31,7 @@ const props = defineProps<{
     width: number;
     height: number;
   };
+  appliedEffect: OneClickActionToolType | null;
 }>();
 
 // 挂载后的 Canvas 初始化
@@ -57,7 +59,34 @@ const handleImageLoad = (event: Event) => {
     console.log('Canvas is not ready for loading images.');
   }
 };
+// 定义具体的一键效果逻辑
+const applyEffectLogic = (effect: OneClickActionToolType) => {
+  switch (effect) {
+    case OneClickActionToolType.Watermark:
+      console.log("Applying Watermark effect on canvas");
+      if (ctx.value && canvas.value) {
+        applyWatermark(canvas, ctx, defaultOptions); // TODO:后续改成不使用默认值
+      }
+      break;
+    case OneClickActionToolType.FaceDetection:
+      console.log("Applying Face Detection effect on canvas");
+      // 调用人脸检测逻辑
+      break;
+    default:
+      console.warn(`Effect ${effect} is not implemented.`);
+      break;
+  }
+};
 
+// 监听 appliedEffect 的变化
+watch(
+    () => props.appliedEffect,
+    (newEffect, oldEffect) => {
+      if (newEffect && newEffect !== oldEffect) {
+        applyEffectLogic(newEffect);
+      }
+    }
+);
 // 保存图片
 const handleSaveImage = () => {
   if (canvas.value) saveImage(canvas);
