@@ -2,7 +2,7 @@
 import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
-import { DrawingToolType } from './module/toolType'; // 引入 ToolType 枚举
+import { DrawingToolType,OneClickActionToolType } from './module/toolType'; // 引入 ToolType 枚举
 
 // 共享状态：选中的工具和颜色
 const selectedTool = ref<DrawingToolType>(DrawingToolType.Brush);  // 默认选中画笔，使用枚举类型
@@ -10,6 +10,7 @@ const selectedColor = ref('#000000');  // 默认颜色为黑色
 const brushSize = ref(10);  // 默认画笔大小
 const eraserSize = ref(10);  // 默认橡皮擦大小
 const brightness = ref(0);  // 亮度值
+const appliedEffect = ref<OneClickActionToolType | null>(null); // 当前应用的一键效果
 // 处理绘图信号
 const handleStartDrawing = (toolType: DrawingToolType, startPosition: { x: number; y: number }) => {
   console.log(`Start drawing with ${toolType} at`, startPosition);
@@ -37,10 +38,7 @@ const handleAdjustParameter = (parameterType: string, value: number) => {
   console.log(`Adjust ${parameterType} to ${value}`);
 };
 
-// 处理一键式效果信号
-const handleApplyEffect = (effectType: string) => {
-  console.log(`Apply effect: ${effectType}`);
-};
+
 
 // 工具选择处理
 const handleSelectTool = (tool: DrawingToolType) => {
@@ -70,6 +68,12 @@ const handleAdjustBrightness = (brightnessValue: number) => {
   brightness.value = brightnessValue;
   console.log(`Brightness value received in parent: ${brightnessValue}`);
 };
+
+// 一键式效果处理
+const handleApplyEffect = (effect: OneClickActionToolType) => {
+  appliedEffect.value = effect;
+  console.log(`Applying one-click effect: ${effect}`);
+};
 </script>
 
 <template>
@@ -77,6 +81,7 @@ const handleAdjustBrightness = (brightnessValue: number) => {
     <ToolBar
         :selectedTool="selectedTool"
         :selectedColor="selectedColor"
+        :appliedEffect="appliedEffect"
         @selectTool="handleSelectTool"
         @updateColor="updateColor"
         @adjustBrightness="handleAdjustBrightness"
@@ -90,6 +95,7 @@ const handleAdjustBrightness = (brightnessValue: number) => {
           :brushSize="brushSize"
           :eraserSize="eraserSize"
           :brightness="brightness"
+          :appliedEffect="appliedEffect"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
