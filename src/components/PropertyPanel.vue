@@ -39,7 +39,7 @@ const updateRotation = (event: Event) => {
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Rotate']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
