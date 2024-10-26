@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ToolType } from '../module/toolType';
+import { DrawingToolType } from '../module/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
 import { adjustBrightness } from '../module/brightnessAdjust';  // 引入亮度调节逻辑
 
 // 定义接收的 props
 const props = defineProps<{
-  selectedTool: ToolType;      // 当前选中的工具类型
+  selectedTool: DrawingToolType;      // 当前选中的工具类型
   selectedColor: string;       // 当前选中的颜色
 }>();
 
@@ -21,7 +21,7 @@ const emit = defineEmits([
 
 
 // 工具选择逻辑
-const selectTool = (tool: ToolType) => {
+const selectTool = (tool: DrawingToolType) => {
   emit('selectTool', tool);
 };
 
@@ -45,8 +45,8 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
 </script>
 <template>
   <div class="toolbar">
-    <button @click="selectTool(ToolType.Brush)" :class="{ active: selectedTool === ToolType.Brush }">Brush</button>
-    <button @click="selectTool(ToolType.Eraser)" :class="{ active: selectedTool === ToolType.Eraser }">Eraser</button>
+    <button @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">Brush</button>
+    <button @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</button>
 
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
