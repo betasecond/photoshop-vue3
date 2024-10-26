@@ -5,6 +5,7 @@ export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
         selectedTool: DrawingToolType.Brush,
         selectedColor: '#000000',
+        selectedParameter: 'Brush',
         brushSize: 10,
         eraserSize: 10,
         brightness: 50,
@@ -19,6 +20,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         appliedEffect: null as OneClickActionToolType | null,
     }),
     actions: {
+        // 设置当前选择的参数类型
+        setSelectedParameter(parameter: string) {
+            this.selectedParameter = parameter;
+        },
         // 更新当前选中的工具
         updateTool(tool: DrawingToolType) {
             this.selectedTool = tool;
