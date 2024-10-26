@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from "../module/toolType";
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../module/toolType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
@@ -12,6 +12,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         contrast: 0,
         saturation: 0,
         exposure: 0,
+        rotation: 0,
         hsl: {
             hue: 0,
             saturation: 0,
@@ -19,6 +20,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         },
         appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
         appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
+        appliedEditTool:null as {type:EditToolType,id:number} | null,
     }),
     actions: {
         // 设置当前选择的参数类型
@@ -65,6 +67,11 @@ export const usePropertyStore = defineStore('propertyStore', {
             this.appliedAdjustment = { type: adjustment, id: Date.now() };
 
         },
+        // 调整旋转角度
+        adjustRotation(angle: number) {
+            this.rotation = angle;
+        },
+
         // 应用一键式效果
         applyEffect(effect: OneClickActionToolType) {
             this.appliedEffect = {type:effect,id: Date.now() };
@@ -73,4 +80,8 @@ export const usePropertyStore = defineStore('propertyStore', {
         resetEffect() {
             this.appliedEffect = null;
         },
+        // 应用编辑工具效果
+        applyEditTool(editTool: EditToolType) {
+            this.appliedEditTool = {type: editTool,id:Date.now() };
+        }
     },});

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from '../module/toolType';
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from '../module/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import { adjustBrightness } from '../module/brightnessAdjust';  // 引入亮度调节逻辑
+import {adjustBrightness} from '../module/brightnessAdjust'; // 引入亮度调节逻辑
 
 // 定义接收的 props
 const props = defineProps<{
@@ -19,6 +19,7 @@ const emit = defineEmits([
   'adjustSaturation',         // 饱和度调整
   'applyEffect',               // 一键式效果应用
   'applyAdjust',              // 调整
+  'applyEditTool',          // 编辑工具
 ]);
 
 
@@ -32,6 +33,10 @@ const applyEffect = (tool: OneClickActionToolType) => {
 const applyAdjust = (tool: AdjustmentToolType) => {
   emit('applyAdjust', tool);
 }
+const applyEditTool = (tool: EditToolType) => {
+  emit('applyEditTool', tool);
+}
+
 
 // 颜色更新逻辑
 const updateColor = (event: Event) => {
@@ -56,13 +61,13 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <button @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</button>
     <button @click="applyEffect(OneClickActionToolType.Watermark)" >Watermark</button>
     <button @click="applyAdjust(AdjustmentToolType.Contrast)" >Contrast</button>
+    <button @click="applyEditTool(EditToolType.Rotate)">Rotate</button>
 
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
 
     <!-- 亮度调节滑块 -->
-    <label for="brightnessSlider">Brightness:</label>
-    <input type="range" id="brightnessSlider" min="-100" max="100" v-model="brightness" @input="emitBrightness" />
+    <button @click="applyAdjust(AdjustmentToolType.Brightness)" >Bright</button>
 
     <!-- 撤销和重做按钮 -->
     <button @click="undo" :disabled="!canUndo">Undo</button>

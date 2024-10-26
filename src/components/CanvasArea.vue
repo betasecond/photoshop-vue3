@@ -3,11 +3,12 @@ import { initializeCanvas } from '../module/canvasInitialize';
 import { loadImage } from "../module/imageLoad";
 import { saveImage } from "../module/imageSave";
 import { startDrawing, stopDrawing, draw } from "../module/drawing";
-import {AdjustmentToolType, OneClickActionToolType, ToolType} from "../module/toolType";
+import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../module/toolType";
 import { adjustBrightness } from "../module/brightnessAdjust";
 import { useUndoRedoStore } from "../store/undoRedoStore";
 import {applyWatermark,WatermarkOptions, defaultOptions} from "../module/watermark";
 import {adjustContrast} from "../module/contrastAdjust";
+import {adjustRotation} from "../module/rotation";
 
 
 // 引入并初始化状态管理
@@ -26,7 +27,7 @@ const props = defineProps<{
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
   contrast: number;             // 新增对比度属性
-  rotationAngle?: number;       // 旋转角度（用于 Rotate 工具）
+  rotation?: number;       // 旋转角度（用于 Rotate 工具）
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
     y: number;
@@ -35,6 +36,7 @@ const props = defineProps<{
   };
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
+  appliedEditTool:{type:EditToolType,id:number } | null;
 }>();
 
 // 挂载后的 Canvas 初始化
@@ -95,19 +97,40 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       break;
   }
 };
-// 监听 appliedEffect 的变化
+// 定义具体的编辑工具逻辑
+const applyEditToolLogic = (editTooType: EditToolType) => {
+  switch (editTooType) {
+    case EditToolType.Rotate:
+      console.log("Applying Rotate EditTool on canvas");
+      if (ctx.value && canvas.value) {
+        adjustRotation(canvas, ctx,props.rotation);
+      }
+      break;
+
+    default:
+      console.warn(`EditToolType ${editTooType} is not implemented.`);
+      break;
+  }
+};
+// 一键式功能监听
 watch(() => props.appliedEffect, (newEffect, oldEffect) => {
   if (newEffect && (!oldEffect || newEffect.id !== oldEffect.id)) {
-    applyAdjustmentLogic(newEffect.type);
+    applyEffectLogic(newEffect.type);
   }
 });
 
-// 对比度调整监听
+// 参数调整监听
 watch(() => props.appliedAdjustment, (newAdjustment, oldAdjustment) => {
   if (newAdjustment && (!oldAdjustment || newAdjustment.id !== oldAdjustment.id)) {
     applyAdjustmentLogic(newAdjustment.type);
   }
 });
+
+watch(() => props.appliedEditTool,(newEditTool,oldEditTool) => {
+  if(newEditTool &&( !oldEditTool ||  newEditTool.id !== oldEditTool.id) ){
+    applyEditToolLogic(newEditTool.type);
+  }
+})
 // 保存图片
 const handleSaveImage = () => {
   if (canvas.value) saveImage(canvas);

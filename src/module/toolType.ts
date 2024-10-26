@@ -9,8 +9,14 @@ export enum DrawingToolType {
 
 // 选择工具 (Shape Selection)
 export enum SelectionToolType {
+    pass= "pass"
+}
+
+export enum EditToolType {
     Crop = 'crop',
     Rotate = 'rotate',
+    FlipHorizontal = 'flipHorizontal',
+    FlipVertical = 'flipVertical',
 }
 
 // 参数调整工具 (Parameter Adjustment)
@@ -57,8 +63,13 @@ export function isAdjustmentTool(tool: ToolType): tool is AdjustmentToolType {
 export function isOneClickActionTool(tool: ToolType): tool is OneClickActionToolType {
     return Object.values(OneClickActionToolType).includes(tool as OneClickActionToolType);
 }
+// 判断工具类型是否属于编辑功能
+export function isEditTool(tool: ToolType): tool is EditToolType {
+    return Object.values(EditToolType).includes(tool as EditToolType);
+}
+
 // 所有工具类型集合
-export type ToolType = DrawingToolType | SelectionToolType | AdjustmentToolType | OneClickActionToolType;
+export type ToolType = DrawingToolType | SelectionToolType | AdjustmentToolType | OneClickActionToolType  | EditToolType;
 // 工具映射函数
 export function mapToolType(tool: string): ToolType {
     // 检查是否在绘图工具中
@@ -77,6 +88,7 @@ export function mapToolType(tool: string): ToolType {
     if (tool in OneClickActionToolType) {
         return OneClickActionToolType[tool as keyof typeof OneClickActionToolType];
     }
+
 
     // 若不属于任何工具分类，抛出错误
     throw new Error(`Invalid tool type: ${tool}`);
