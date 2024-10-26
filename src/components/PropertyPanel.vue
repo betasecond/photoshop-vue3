@@ -3,21 +3,6 @@ import { DrawingToolType } from '../module/toolType';
 import {usePropertyStore} from "../store/propertyStore";
 const propertyStore = usePropertyStore();
 
-
-
-
-// 工具属性的计算
-const toolProperties = computed(() => {
-  switch (propertyStore.selectedTool) {
-    case 'Brush':
-      return `Brush Size: ${propertyStore.brushSize}px`;
-    case 'Eraser':
-      return `Eraser Size: ${propertyStore.eraserSize}px`;
-    default:
-      return 'No specific properties';
-  }
-});
-
 // 更新 brushSize
 const updateBrushSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
@@ -29,16 +14,29 @@ const updateEraserSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
   propertyStore.updateEraserSize(newSize);
 };
+
+// 更新 selectedParameter
+const setParameter = (parameter: string) => {
+  propertyStore.setSelectedParameter(parameter);
+};
 </script>
 
 <template>
   <div class="property-panel">
     <h3>Properties</h3>
-    <p>Selected Tool: {{ propertyStore.selectedTool }}</p>
-    <p>{{ toolProperties }}</p>
-
+    <!-- 改进后的参数选择器 -->
+    <div class="parameter-selector">
+      <button
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness']"
+          :key="parameter"
+          :class="{ active: propertyStore.selectedParameter === parameter }"
+          @click="setParameter(parameter)"
+      >
+        {{ parameter }}
+      </button>
+    </div>
     <!-- 画笔大小滑动条 -->
-    <template v-if="propertyStore.selectedTool === DrawingToolType.Brush">
+    <template v-if="propertyStore.selectedParameter === 'Brush'">
       <label for="brush-size">Brush Size:</label>
       <input
           type="range"
@@ -52,7 +50,7 @@ const updateEraserSize = (event: Event) => {
     </template>
 
     <!-- 橡皮擦大小滑动条 -->
-    <template v-if="propertyStore.selectedTool === DrawingToolType.Eraser">
+    <template v-if="propertyStore.selectedParameter === 'Eraser'">
       <label for="eraser-size">Eraser Size:</label>
       <input
           type="range"
@@ -63,6 +61,19 @@ const updateEraserSize = (event: Event) => {
           @input="updateEraserSize"
       />
       <p>Current size: {{ propertyStore.eraserSize }}px</p>
+    </template>
+    <!-- 亮度滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Brightness'">
+      <label for="brightness">Brightness:</label>
+      <input
+          type="range"
+          id="brightness"
+          min="0"
+          max="100"
+          :value="propertyStore.brightness"
+          @input="event => propertyStore.adjustBrightness(Number(event.target.value))"
+      />
+      <p>Current brightness: {{ propertyStore.brightness }}%</p>
     </template>
   </div>
 </template>
