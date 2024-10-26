@@ -26,6 +26,11 @@ const updateContrast = (event: Event) => {
   propertyStore.adjustContrast(newContrast);
 };
 
+const updateRotation = (event: Event) => {
+  const newRotation = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustRotation(newRotation);
+}
+
 </script>
 
 <template>
@@ -34,7 +39,7 @@ const updateContrast = (event: Event) => {
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Rotate']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -94,6 +99,19 @@ const updateContrast = (event: Event) => {
           @input="updateContrast"
       />
       <p>Current contrast: {{ propertyStore.contrast }}%</p>
+    </template>
+    <!-- 旋转角度滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Rotate'">
+      <label for="rotation">Rotation:</label>
+      <input
+          type="range"
+          id="rotation"
+          min="-100"
+          max="100"
+          :value="propertyStore.rotation"
+          @input="updateRotation"
+      />
+      <p>Current rotation: {{ propertyStore.rotation }}</p>
     </template>
   </div>
 </template>

@@ -3,7 +3,7 @@ import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
 import { usePropertyStore } from './store/propertyStore';
-import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from './module/toolType'; // 引入 ToolType 枚举
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './module/toolType'; // 引入 ToolType 枚举
 const propertyStore = usePropertyStore();
 // 新增：对比度调整处理
 const handleAdjustContrast = (contrastValue: number) => {
@@ -70,10 +70,16 @@ const handleApplyEffect = (effect: OneClickActionToolType) => {
   console.log(`Applying one-click effect: ${propertyStore.effect}`);
 };
 
-
+// 参数调整工具处理
 const handleApplyAdjust = (adjust:AdjustmentToolType)=>{
   propertyStore.applyAdjustment(adjust);
   console.log(`Adjusting adjust: ${adjust}`);
+}
+
+// 编辑工具处理
+const handleApplyEditTool = (editTool:EditToolType)=>{
+  propertyStore.applyEditTool(editTool);
+  console.log(`Edit tool: ${editTool}`);
 }
 </script>
 
@@ -88,6 +94,7 @@ const handleApplyAdjust = (adjust:AdjustmentToolType)=>{
         @adjustBrightness="handleAdjustBrightness"
         @applyEffect="handleApplyEffect"
         @applyAdjust="handleApplyAdjust"
+        @applyEditTool="handleApplyEditTool"
     />
 
     <div class="main-container">
@@ -99,13 +106,15 @@ const handleApplyAdjust = (adjust:AdjustmentToolType)=>{
           :brightness="propertyStore.brightness"
           :appliedEffect="propertyStore.appliedEffect"
           :appliedAdjustment="propertyStore.appliedAdjustment"
+          :appliedEditTool="propertyStore.appliedEditTool"
           :contrast="propertyStore.contrast"
+          :rotation="propertyStore.rotation"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
           @selectArea="handleSelectArea"
           @rotate="handleRotate"
-       applied-adjust=""/>
+      />
 
       <PropertyPanel/>
     </div>
