@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {DrawingToolType, OneClickActionToolType} from "../module/toolType";
+import {AdjustmentToolType, DrawingToolType, OneClickActionToolType} from "../module/toolType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
@@ -17,7 +17,8 @@ export const usePropertyStore = defineStore('propertyStore', {
             saturation: 0,
             lightness: 0,
         },
-        appliedEffect: null as OneClickActionToolType | null,
+        appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
+        appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
     }),
     actions: {
         // 设置当前选择的参数类型
@@ -60,9 +61,13 @@ export const usePropertyStore = defineStore('propertyStore', {
         adjustHSL(hue: number, saturation: number, lightness: number) {
             this.hsl = { hue, saturation, lightness };
         },
+        applyAdjustment(adjustment: AdjustmentToolType) {
+            this.appliedAdjustment = { type: adjustment, id: Date.now() };
+
+        },
         // 应用一键式效果
         applyEffect(effect: OneClickActionToolType) {
-            this.appliedEffect = effect;
+            this.appliedEffect = {type:effect,id: Date.now() };
         },
         // 重置一键式效果（在工具切换或特定操作后调用）
         resetEffect() {

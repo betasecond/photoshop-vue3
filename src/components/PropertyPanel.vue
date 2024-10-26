@@ -19,15 +19,22 @@ const updateEraserSize = (event: Event) => {
 const setParameter = (parameter: string) => {
   propertyStore.setSelectedParameter(parameter);
 };
+
+// 更新对比度
+const updateContrast = (event: Event) => {
+  const newContrast = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustContrast(newContrast);
+};
+
 </script>
 
 <template>
   <div class="property-panel">
     <h3>Properties</h3>
-    <!-- 改进后的参数选择器 -->
+    <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -74,6 +81,19 @@ const setParameter = (parameter: string) => {
           @input="event => propertyStore.adjustBrightness(Number(event.target.value))"
       />
       <p>Current brightness: {{ propertyStore.brightness }}%</p>
+    </template>
+    <!-- 对比度滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Contrast'">
+      <label for="contrast">Contrast:</label>
+      <input
+          type="range"
+          id="contrast"
+          min="-100"
+          max="100"
+          :value="propertyStore.contrast"
+          @input="updateContrast"
+      />
+      <p>Current contrast: {{ propertyStore.contrast }}%</p>
     </template>
   </div>
 </template>
