@@ -18,6 +18,13 @@ export const usePropertyStore = defineStore('propertyStore', {
             saturation: 0,
             lightness: 0,
         },
+        // 裁剪区域
+        cropArea: {
+            x: 0,
+            y: 0,
+            width: 1000,
+            height: 1000,
+        },
         appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
         appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
         appliedEditTool:null as {type:EditToolType,id:number} | null,
@@ -42,6 +49,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         // 更新橡皮擦大小
         updateEraserSize(size: number) {
             this.eraserSize = size;
+        },
+        // 更新裁剪区域
+        updateCropArea(newCropArea: { x: number; y: number; width: number; height: number }) {
+            this.cropArea = newCropArea;
         },
         // 调整亮度
         adjustBrightness(value: number) {
