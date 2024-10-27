@@ -30,7 +30,14 @@ const updateRotation = (event: Event) => {
   const newRotation = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustRotation(newRotation);
 }
-
+const updateCropArea = () => {
+  propertyStore.updateCropArea({
+    x: propertyStore.cropArea.x,
+    y: propertyStore.cropArea.y,
+    width: propertyStore.cropArea.width,
+    height: propertyStore.cropArea.height,
+  });
+};
 </script>
 
 <template>
@@ -39,7 +46,7 @@ const updateRotation = (event: Event) => {
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Crop']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -112,6 +119,29 @@ const updateRotation = (event: Event) => {
           @input="updateRotation"
       />
       <p>Current rotation: {{ propertyStore.rotation }}</p>
+    </template>
+    <!-- 裁剪区域选择 -->
+    <template v-if="propertyStore.selectedParameter === 'Crop'">
+      <label for="crop">Crop:</label>
+      <div class="crop-controls">
+        <label>
+          X:
+          <input type="number" v-model.number="propertyStore.cropArea.x" @input="updateCropArea" />
+        </label>
+        <label>
+          Y:
+          <input type="number" v-model.number="propertyStore.cropArea.y" @input="updateCropArea" />
+        </label>
+        <label>
+          Width:
+          <input type="number" v-model.number="propertyStore.cropArea.width" @input="updateCropArea" />
+        </label>
+        <label>
+          Height:
+          <input type="number" v-model.number="propertyStore.cropArea.height" @input="updateCropArea" />
+        </label>
+
+      </div>
     </template>
   </div>
 </template>
