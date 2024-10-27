@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../module/toolType";
+import {WatermarkOptions} from "../types/watermark";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
@@ -25,6 +26,14 @@ export const usePropertyStore = defineStore('propertyStore', {
             width: 1000,
             height: 1000,
         },
+        // 水印
+        watermarkOption:{
+            text: "watermark" as string,             // 水印内容
+            fontSize:20 as number,       // 字体大小，默认 20
+            color:'#000000' as string,           // 字体颜色，默认黑色
+            opacity: 0.5 as number,        // 透明度，默认 0.5
+            position:{x:100,y:100} as { x: number; y: number },// 水印位置，默认右下角
+        } as WatermarkOptions,
         appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
         appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
         appliedEditTool:null as {type:EditToolType,id:number} | null,
@@ -81,6 +90,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         // 调整旋转角度
         adjustRotation(angle: number) {
             this.rotation = angle;
+        },
+        adjustWatermarkOption(watermarkOption: Partial<WatermarkOptions>) {
+            // 部分更新
+            this.watermarkOption = { ...this.watermarkOption, ...watermarkOption };
         },
 
         // 应用一键式效果

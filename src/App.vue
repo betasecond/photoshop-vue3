@@ -3,7 +3,8 @@ import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
 import { usePropertyStore } from './store/propertyStore';
-import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './module/toolType'; // 引入 ToolType 枚举
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './module/toolType';
+import {WatermarkOptions} from "./types/watermark"; // 引入 ToolType 枚举
 const propertyStore = usePropertyStore();
 // 新增：对比度调整处理
 const handleAdjustContrast = (contrastValue: number) => {
@@ -57,8 +58,11 @@ const updateEraserSize = (newSize: number) => {
   propertyStore.updateEraserSize(newSize);
   console.log(`Updated eraser size: ${propertyStore.eraserSize}`);
 };
-
-
+// 处理水印
+const handleUpdateWatermarkOption = (newWatermarkOptions:WatermarkOptions) =>{
+  propertyStore.adjustWatermarkOption(newWatermarkOptions);
+  console.log(`Update watermark options: ${propertyStore.watermarkOptions}`);
+}
 // 亮度调节处理
 const handleAdjustBrightness = (brightnessValue: number) => {
   propertyStore.adjustBrightness(brightnessValue);
@@ -113,12 +117,13 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :contrast="propertyStore.contrast"
           :rotation="propertyStore.rotation"
           :selectionBounds="propertyStore.cropArea"
+          :watermark-options="propertyStore.watermarkOption"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
           @selectArea="handleSelectArea"
           @rotate="handleRotate"
-      />
+          />
 
       <PropertyPanel/>
     </div>
