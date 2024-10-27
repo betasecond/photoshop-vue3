@@ -1,67 +1,131 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
 import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
-import vue from "@vitejs/plugin-vue";
-
-
-
-// 共享状态：选中的工具和颜色
-const selectedTool = ref('brush');  // 默认选中画笔
-const selectedColor = ref('#000000');  // 默认颜色为黑色
-const brushSize = ref(10);  // 默认画笔大小
-const eraserSize = ref(10);  // 默认橡皮擦大小
-
-
-// 工具栏选择工具的处理函数
-const handleSelectTool = (tool) => {
-  selectedTool.value = tool;
-  console.log(`Current tool: ${selectedTool.value}`);
+import { usePropertyStore } from './store/propertyStore';
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './types/toolType';
+import {WatermarkOptions} from "./types/watermarkType"; // 引入 ToolType 枚举
+const propertyStore = usePropertyStore();
+// 新增：对比度调整处理
+const handleAdjustContrast = (contrastValue: number) => {
+  propertyStore.adjustContrast(contrastValue);
+  console.log(`Contrast value received in parent: ${propertyStore.contrast}`);
+};
+// 处理绘图信号
+const handleStartDrawing = (toolType: DrawingToolType, startPosition: { x: number; y: number }) => {
+  console.log(`Start drawing with ${toolType} at`, startPosition);
 };
 
-// 更新颜色
-const updateColor = (color) => {
-  selectedColor.value = color;
-  console.log(`Selected color: ${selectedColor.value}`);
+const handleDraw = (currentPosition: { x: number; y: number }, attributes: { color: string; size: number }) => {
+  console.log(`Drawing at ${currentPosition} with attributes`, attributes);
 };
 
-// 更新画笔大小
-const updateBrushSize = (newSize) => {
-  brushSize.value = newSize;
-  console.log(`Updated brush size: ${brushSize.value}`);
+const handleStopDrawing = (endPosition: { x: number; y: number }) => {
+  console.log(`Stop drawing at`, endPosition);
 };
 
-// 更新橡皮擦大小
-const updateEraserSize = (newSize) => {
-  eraserSize.value = newSize;
-  console.log(`Updated eraser size: ${eraserSize.value}`);
+// 处理选择工具信号
+const handleSelectArea = (selectionBounds: { x: number; y: number; width: number; height: number }) => {
+  console.log('Selected area:', selectionBounds);
 };
+
+const handleRotate = (rotationAngle: number) => {
+  console.log(`Rotate image by ${rotationAngle} degrees`);
+};
+
+
+
+
+// 工具选择处理
+const handleSelectTool = (tool: DrawingToolType) => {
+  propertyStore.updateTool(tool);
+  console.log(`Current tool: ${propertyStore.selectedTool}`);
+};
+
+// 颜色更新处理
+const updateColor = (color: string) => {
+  propertyStore.updateColor(color);
+  console.log(`Selected color: ${propertyStore.selectedColor}`);
+};
+
+// 画笔和橡皮擦大小更新
+const updateBrushSize = (newSize: number) => {
+  propertyStore.updateBrushSize(newSize);
+  console.log(`Updated brush size: ${propertyStore.brushSize}`);
+};
+
+const updateEraserSize = (newSize: number) => {
+  propertyStore.updateEraserSize(newSize);
+  console.log(`Updated eraser size: ${propertyStore.eraserSize}`);
+};
+// 处理水印
+const handleUpdateWatermarkOption = (newWatermarkOptions:WatermarkOptions) =>{
+  propertyStore.adjustWatermarkOption(newWatermarkOptions);
+  console.log(`Update watermark options: ${propertyStore.watermarkOptions}`);
+}
+// 亮度调节处理
+const handleAdjustBrightness = (brightnessValue: number) => {
+  propertyStore.adjustBrightness(brightnessValue);
+  console.log(`Brightness value received in parent: ${propertyStore.brightnessValue}`);
+};
+
+// 一键式效果处理
+const handleApplyEffect = (effect: OneClickActionToolType) => {
+  propertyStore.applyEffect(effect);
+  console.log(`Applying one-click effect: ${propertyStore.effect}`);
+};
+
+// 参数调整工具处理
+const handleApplyAdjust = (adjust:AdjustmentToolType)=>{
+  propertyStore.applyAdjustment(adjust);
+  console.log(`Adjusting adjust: ${adjust}`);
+}
+
+// 编辑工具处理
+const handleApplyEditTool = (editTool:EditToolType)=>{
+  propertyStore.applyEditTool(editTool);
+  console.log(`Edit tool: ${editTool}`);
+}
 
 
 </script>
 
 <template>
   <div id="app">
-    <!-- 工具栏 -->
-    <ToolBar :selectedTool="selectedTool" :selectedColor="selectedColor"
-             @selectTool="handleSelectTool" @updateColor="updateColor" />
+    <ToolBar
+        :selectedTool="propertyStore.selectedTool"
+        :selectedColor="propertyStore.selectedColor"
+        :appliedEffect="propertyStore.appliedEffect"
+        @selectTool="handleSelectTool"
+        @updateColor="updateColor"
+        @adjustBrightness="handleAdjustBrightness"
+        @applyEffect="handleApplyEffect"
+        @applyAdjust="handleApplyAdjust"
+        @applyEditTool="handleApplyEditTool"
+    />
 
     <div class="main-container">
-      <!-- 图层面板 -->
+      <CanvasArea
+          :selectedTool="propertyStore.selectedTool"
+          :selectedColor="propertyStore.selectedColor"
+          :brushSize="propertyStore.brushSize"
+          :eraserSize="propertyStore.eraserSize"
+          :brightness="propertyStore.brightness"
+          :appliedEffect="propertyStore.appliedEffect"
+          :appliedAdjustment="propertyStore.appliedAdjustment"
+          :appliedEditTool="propertyStore.appliedEditTool"
+          :contrast="propertyStore.contrast"
+          :rotation="propertyStore.rotation"
+          :selectionBounds="propertyStore.cropArea"
+          :watermark-options="propertyStore.watermarkOption"
+          @startDrawing="handleStartDrawing"
+          @draw="handleDraw"
+          @stopDrawing="handleStopDrawing"
+          @selectArea="handleSelectArea"
+          @rotate="handleRotate"
+          />
 
-      <!-- 画布区域 -->
-      <CanvasArea :selectedTool="selectedTool"
-                  :selectedColor="selectedColor"
-                  :brushSize="brushSize"
-                  :eraserSize="eraserSize" />
-
-      <!-- 属性面板 -->
-      <PropertyPanel :selectedTool="selectedTool"
-                     :brushSize="brushSize"
-                     :eraserSize="eraserSize"
-                     @update:brushSize="updateBrushSize"
-                     @update:eraserSize="updateEraserSize" />
+      <PropertyPanel/>
     </div>
   </div>
 </template>
