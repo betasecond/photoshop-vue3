@@ -179,7 +179,7 @@ const handleMouseMove = (event: MouseEvent) => {
         @mouseup="handleMouseUp"
         @mousemove="handleMouseMove"
     ></canvas>
-    <button @click="saveImage(canvas)">Save Image</button>
+    <button @click="handleSaveImage">Save Image</button>
   </div>
 </template>
 <style scoped>
