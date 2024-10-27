@@ -3,8 +3,8 @@ import ToolBar from './components/ToolBar.vue';
 import CanvasArea from './components/CanvasArea.vue';
 import PropertyPanel from './components/PropertyPanel.vue';
 import { usePropertyStore } from './store/propertyStore';
-import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './module/toolType';
-import {WatermarkOptions} from "./types/watermark"; // 引入 ToolType 枚举
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from './types/toolType';
+import {WatermarkOptions} from "./types/watermarkType"; // 引入 ToolType 枚举
 const propertyStore = usePropertyStore();
 // 新增：对比度调整处理
 const handleAdjustContrast = (contrastValue: number) => {

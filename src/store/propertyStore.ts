@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
-import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../module/toolType";
-import {WatermarkOptions} from "../types/watermark";
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../types/toolType";
+import {WatermarkOptions} from "../types/watermarkType";
+import {HSL} from "../types/HSLType";
+import {CropArea} from "../types/CropAreaType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
@@ -18,14 +20,14 @@ export const usePropertyStore = defineStore('propertyStore', {
             hue: 0,
             saturation: 0,
             lightness: 0,
-        },
+        } as HSL,
         // 裁剪区域
         cropArea: {
             x: 0,
             y: 0,
             width: 1000,
             height: 1000,
-        },
+        } as CropArea,
         // 水印
         watermarkOption:{
             text: "watermark" as string,             // 水印内容
@@ -60,7 +62,7 @@ export const usePropertyStore = defineStore('propertyStore', {
             this.eraserSize = size;
         },
         // 更新裁剪区域
-        updateCropArea(newCropArea: { x: number; y: number; width: number; height: number }) {
+        updateCropArea(newCropArea:CropArea) {
             this.cropArea = newCropArea;
         },
         // 调整亮度

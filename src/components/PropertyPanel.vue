@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { DrawingToolType } from '../module/toolType';
+import { DrawingToolType } from '../types/toolType';
 import {usePropertyStore} from "../store/propertyStore";
+import {CropArea} from "../types/CropAreaType";
 const propertyStore = usePropertyStore();
 
 // 更新 brushSize
@@ -36,7 +37,7 @@ const updateCropArea = () => {
     y: propertyStore.cropArea.y,
     width: propertyStore.cropArea.width,
     height: propertyStore.cropArea.height,
-  });
+  } as CropArea);
 };
 // 更新水印选项
 const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.watermarkOptions>) => {
