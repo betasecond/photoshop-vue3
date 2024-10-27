@@ -9,6 +9,7 @@ import { useUndoRedoStore } from "../store/undoRedoStore";
 import {applyWatermark,WatermarkOptions, defaultOptions} from "../module/watermark";
 import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
+import {cropCanvas} from "../module/crop";
 
 
 // 引入并初始化状态管理
@@ -91,7 +92,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
         adjustContrast(canvas, ctx,props.contrast);
       }
       break;
-
+    case AdjustmentToolType.Brightness:
+      console.log("Applying Bright Adjustment on canvas");
+      if(ctx.value && canvas.value){
+        adjustBrightness(canvas,ctx,props.brightness);
+      }
+      break;
     default:
       console.warn(`Adjustment ${adjustmentToolType} is not implemented.`);
       break;
@@ -106,7 +112,12 @@ const applyEditToolLogic = (editTooType: EditToolType) => {
         adjustRotation(canvas, ctx,props.rotation);
       }
       break;
-
+    case EditToolType.Crop:
+      console.log("Applying Crop EditTool on canvas");
+      if(ctx.value && canvas.value){
+        cropCanvas(canvas, ctx,props.selectionBounds);
+      }
+      break;
     default:
       console.warn(`EditToolType ${editTooType} is not implemented.`);
       break;

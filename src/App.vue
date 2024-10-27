@@ -58,6 +58,7 @@ const updateEraserSize = (newSize: number) => {
   console.log(`Updated eraser size: ${propertyStore.eraserSize}`);
 };
 
+
 // 亮度调节处理
 const handleAdjustBrightness = (brightnessValue: number) => {
   propertyStore.adjustBrightness(brightnessValue);
@@ -81,6 +82,8 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
   propertyStore.applyEditTool(editTool);
   console.log(`Edit tool: ${editTool}`);
 }
+
+
 </script>
 
 <template>
@@ -109,6 +112,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :appliedEditTool="propertyStore.appliedEditTool"
           :contrast="propertyStore.contrast"
           :rotation="propertyStore.rotation"
+          :selectionBounds="propertyStore.cropArea"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
