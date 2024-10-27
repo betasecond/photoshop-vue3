@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from '../module/toolType';
+import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from '../types/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
 import {adjustBrightness} from '../module/brightnessAdjust'; // 引入亮度调节逻辑
 

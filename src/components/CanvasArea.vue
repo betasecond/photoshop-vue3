@@ -3,14 +3,14 @@ import { initializeCanvas } from '../module/canvasInitialize';
 import { loadImage } from "../module/imageLoad";
 import { saveImage } from "../module/imageSave";
 import { startDrawing, stopDrawing, draw } from "../module/drawing";
-import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../module/toolType";
+import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../types/toolType";
 import { adjustBrightness } from "../module/brightnessAdjust";
 import { useUndoRedoStore } from "../store/undoRedoStore";
 import {applyWatermark, defaultOptions} from "../module/watermark";
 import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
-import {WatermarkOptions} from "../types/watermark";
+import {WatermarkOptions} from "../types/watermarkType";
 
 
 // 引入并初始化状态管理

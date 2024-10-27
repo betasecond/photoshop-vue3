@@ -1,5 +1,5 @@
 import { useUndoRedoStore } from '../store/undoRedoStore';
-import {WatermarkOptions} from "../types/watermark";
+import {WatermarkOptions} from "../types/watermarkType";
 
 
 // 默认水印配置
