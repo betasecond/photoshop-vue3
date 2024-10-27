@@ -142,6 +142,20 @@ const updateCropArea = () => {
         </label>
 
       </div>
+      <!-- SVG 指示图 -->
+      <svg width="200" height="200" viewBox="0 0 1000 1000" class="crop-indicator">
+        <!-- 画布背景 -->
+        <rect x="0" y="0" width="1000" height="1000" fill="#f0f0f0" stroke="#ccc" />
+        <!-- 裁剪区域 -->
+        <rect
+            :x="propertyStore.cropArea.x"
+            :y="propertyStore.cropArea.y"
+            :width="propertyStore.cropArea.width"
+            :height="propertyStore.cropArea.height"
+            fill="rgba(0, 123, 255, 0.3)"
+            stroke="#007bff"
+        />
+      </svg>
     </template>
   </div>
 </template>
