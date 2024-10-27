@@ -1,124 +1,190 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { initializeCanvas } from '../module/canvasInitialize';
+import { loadImage } from "../module/imageLoad";
+import { saveImage } from "../module/imageSave";
+import { startDrawing, stopDrawing, draw } from "../module/drawing";
+import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../types/toolType";
+import { adjustBrightness } from "../module/brightnessAdjust";
+import { useUndoRedoStore } from "../store/undoRedoStore";
+import {applyWatermark, defaultOptions} from "../module/watermark";
+import {adjustContrast} from "../module/contrastAdjust";
+import {adjustRotation} from "../module/rotation";
+import {cropCanvas} from "../module/crop";
+import {WatermarkOptions} from "../types/watermarkType";
 
 
-const canvas = ref(null);
-const ctx = ref(null);
-const selectedColor = ref('#000000');  // 默认画笔颜色为黑色
+// 引入并初始化状态管理
+const undoRedoStore = useUndoRedoStore();
+
+// 引用和状态
+const canvas = ref<HTMLCanvasElement | null>(null);
+const ctx = ref<CanvasRenderingContext2D | null>(null);
 let isDrawing = false;
 
-const props = defineProps({
-  selectedTool: String,  // 接收父组件传递的选中工具
-  selectedColor: String,  // 接收当前的画笔颜色
-  brushSize: Number,       // 接收当前的画笔大小
-
-  eraserSize: Number      // 接收当前的橡皮擦大小
-});
-// 初始化 Canvas
-onMounted(() => {
-  ctx.value = canvas.value.getContext('2d');
-  console.log('Canvas initialized');  // 初始化日志
-  ctx.value.fillStyle = '#ffffff';
-  ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
-});
-
-
-
-// 读取图片
-const loadImage = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const img = new Image();
-    img.onload = function () {
-      ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height); // 清空画布
-      ctx.value.drawImage(img, 0, 0, canvas.value.width, canvas.value.height); // 绘制图片到画布
-    };
-    img.src = e.target.result;
+// 属性定义
+const props = defineProps<{
+  selectedTool: ToolType;       // 当前选中的工具类型
+  selectedColor: string;        // 绘图颜色（用于 Brush 和 Line 工具）
+  brushSize: number;            // 画笔大小（仅在 Brush 工具下使用）
+  eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
+  brightness: number;           // 亮度调整值（用于亮度调整）
+  contrast: number;             // 新增对比度属性
+  rotation?: number;       // 旋转角度（用于 Rotate 工具）
+  selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   };
-  reader.readAsDataURL(file);
+  watermarkOptions: WatermarkOptions;
+  appliedEffect: { type:OneClickActionToolType,id:number } | null;
+  appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
+  appliedEditTool:{type:EditToolType,id:number } | null;
+}>();
+
+// 挂载后的 Canvas 初始化
+onMounted(() => {
+  initializeCanvas(canvas, ctx);
+  if (canvas.value && ctx.value) {
+    undoRedoStore.initializeCanvasState(canvas.value, ctx.value);
+  } else {
+    console.error('Failed to initialize canvas or context');
+  }
+});
+
+// 亮度调整监听
+watch(() => props.brightness, (newBrightness) => {
+  if (newBrightness !== 0) {
+    adjustBrightness(canvas, ctx, newBrightness);
+  }
+});
+
+// 图片加载处理
+const handleImageLoad = (event: Event) => {
+  if (canvas.value) {
+    loadImage(event, canvas, ctx);
+  } else {
+    console.log('Canvas is not ready for loading images.');
+  }
 };
+// 定义具体的一键效果逻辑
+const applyEffectLogic = (effect: OneClickActionToolType) => {
+  switch (effect) {
+    case OneClickActionToolType.Watermark:
+      console.log("Applying Watermark effect on canvas");
+      if (ctx.value && canvas.value) {
+        applyWatermark(canvas, ctx, props.watermarkOptions);
+      }
+      break;
+    case OneClickActionToolType.FaceDetection:
+      console.log("Applying Face Detection effect on canvas");
+      // 调用人脸检测逻辑
+      break;
 
+    default:
+      console.warn(`Effect ${effect} is not implemented.`);
+      break;
+  }
+};
+// 定义具体的一键效果逻辑
+const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
+  switch (adjustmentToolType) {
+    case AdjustmentToolType.Contrast:
+      console.log("Applying Contrast Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustContrast(canvas, ctx,props.contrast);
+      }
+      break;
+    case AdjustmentToolType.Brightness:
+      console.log("Applying Bright Adjustment on canvas");
+      if(ctx.value && canvas.value){
+        adjustBrightness(canvas,ctx,props.brightness);
+      }
+      break;
+    default:
+      console.warn(`Adjustment ${adjustmentToolType} is not implemented.`);
+      break;
+  }
+};
+// 定义具体的编辑工具逻辑
+const applyEditToolLogic = (editTooType: EditToolType) => {
+  switch (editTooType) {
+    case EditToolType.Rotate:
+      console.log("Applying Rotate EditTool on canvas");
+      if (ctx.value && canvas.value) {
+        adjustRotation(canvas, ctx,props.rotation);
+      }
+      break;
+    case EditToolType.Crop:
+      console.log("Applying Crop EditTool on canvas");
+      if(ctx.value && canvas.value){
+        cropCanvas(canvas, ctx,props.selectionBounds);
+      }
+      break;
+    default:
+      console.warn(`EditToolType ${editTooType} is not implemented.`);
+      break;
+  }
+};
+// 一键式功能监听
+watch(() => props.appliedEffect, (newEffect, oldEffect) => {
+  if (newEffect && (!oldEffect || newEffect.id !== oldEffect.id)) {
+    applyEffectLogic(newEffect.type);
+  }
+});
 
+// 参数调整监听
+watch(() => props.appliedAdjustment, (newAdjustment, oldAdjustment) => {
+  if (newAdjustment && (!oldAdjustment || newAdjustment.id !== oldAdjustment.id)) {
+    applyAdjustmentLogic(newAdjustment.type);
+  }
+});
 
-
+watch(() => props.appliedEditTool,(newEditTool,oldEditTool) => {
+  if(newEditTool &&( !oldEditTool ||  newEditTool.id !== oldEditTool.id) ){
+    applyEditToolLogic(newEditTool.type);
+  }
+})
 // 保存图片
-const saveImage = () => {
-  const dataURL = canvas.value.toDataURL('image/png');
-  const link = document.createElement('a');
-  link.href = dataURL;
-  link.download = 'image.png';
-  link.click(); // 自动触发下载
+const handleSaveImage = () => {
+  if (canvas.value) saveImage(canvas);
 };
 
-
-
-
-// 开始绘制
-const startDrawing = (event) => {
-  if (props.selectedTool === 'brush' || props.selectedTool === 'eraser') {
-    isDrawing = true;
-    console.log(`Start drawing with tool: ${props.selectedTool}`);
-  }
+// 绘制相关事件
+const handleMouseDown = (event: MouseEvent) => {
+  isDrawing = startDrawing(props.selectedTool, isDrawing);
 };
 
-// 停止绘制
-const stopDrawing = () => {
+const handleMouseUp = () => {
+  stopDrawing(ctx);
   isDrawing = false;
-  ctx.value.beginPath();  // 结束当前路径
 };
 
-
-
-// 根据工具绘制
-const draw = (event) => {
-  if (!isDrawing) return;
-
-  const rect = canvas.value.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  if (props.selectedTool === 'brush') {
-    ctx.value.lineWidth = props.brushSize;  // 设置画笔大小
-    ctx.value.lineCap = 'round';
-    ctx.value.strokeStyle = props.selectedColor;  // 设置画笔颜色
-
-    ctx.value.lineTo(x, y);
-    ctx.value.stroke();
-    ctx.value.beginPath();
-    ctx.value.moveTo(x, y);
-    console.log(`Drawing at (${x}, ${y}) with brush size ${props.brushSize} and color ${props.selectedColor}`);
-  } else if (props.selectedTool === 'eraser') {
-    ctx.value.clearRect(x - props.eraserSize / 2, y - props.eraserSize / 2, props.eraserSize, props.eraserSize);  // 使用橡皮擦大小
-    console.log(`Erasing at (${x}, ${y})`);
-  }
+const handleMouseMove = (event: MouseEvent) => {
+  draw(event, canvas, ctx, props.selectedTool, {
+    color: props.selectedColor,
+    brushSize: props.brushSize,
+    eraserSize: props.eraserSize
+  }, isDrawing);
 };
-
-
-
-
-
-
 
 </script>
 
 <template>
   <div class="canvas-container">
-    <input type="file" accept="image/*" @change="loadImage" />
+    <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvas, ctx)" />
+
     <canvas
         ref="canvas"
-        width="800"
-        height="600"
-        @mousedown="startDrawing"
-        @mouseup="stopDrawing"
-        @mousemove="draw"
+        width="1000"
+        height="1000"
+        @mousedown="handleMouseDown"
+        @mouseup="handleMouseUp"
+        @mousemove="handleMouseMove"
     ></canvas>
-    <button @click="saveImage">Save Image</button>
+    <button @click="handleSaveImage">Save Image</button>
   </div>
 </template>
-
 <style scoped>
 .canvas-container {
   flex: 1;
