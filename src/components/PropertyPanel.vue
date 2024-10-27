@@ -38,6 +38,10 @@ const updateCropArea = () => {
     height: propertyStore.cropArea.height,
   });
 };
+// 更新水印选项
+const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.watermarkOptions>) => {
+  propertyStore.adjustWatermarkOption(option);
+};
 </script>
 
 <template>
@@ -46,7 +50,7 @@ const updateCropArea = () => {
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Crop']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Crop', 'Watermark']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -157,12 +161,96 @@ const updateCropArea = () => {
         />
       </svg>
     </template>
+    <!-- 水印选项控制和预览 -->
+    <template v-if="propertyStore.selectedParameter === 'Watermark'">
+      <div class="watermark-control">
+        <div>
+          <label for="watermark-text">Text:</label>
+          <input
+              type="text"
+              id="watermark-text"
+              :value="propertyStore.watermarkOption.text"
+              @input="event => handleUpdateWatermarkOptions({ text: event.target.value })"
+          />
+        </div>
+
+        <div>
+          <label for="font-size">Font Size:</label>
+          <input
+              type="number"
+              id="font-size"
+              min="10"
+              max="100"
+              :value="propertyStore.watermarkOption.fontSize"
+              @input="event => handleUpdateWatermarkOptions({ fontSize: Number(event.target.value) })"
+          />
+        </div>
+
+        <div>
+          <label for="color">Color:</label>
+          <input
+              type="color"
+              id="color"
+              :value="propertyStore.watermarkOption.color"
+              @input="event => handleUpdateWatermarkOptions({ color: event.target.value })"
+          />
+        </div>
+
+        <div>
+          <label for="opacity">Opacity:</label>
+          <input
+              type="range"
+              id="opacity"
+              min="0"
+              max="1"
+              step="0.1"
+              :value="propertyStore.watermarkOption.opacity"
+              @input="event => handleUpdateWatermarkOptions({ opacity: Number(event.target.value) })"
+          />
+        </div>
+
+        <div>
+          <label for="position-x">Position X:</label>
+          <input
+              type="number"
+              id="position-x"
+              :value="propertyStore.watermarkOption.position.x"
+              @input="event => handleUpdateWatermarkOptions({ position: { ...propertyStore.watermarkOption.position, x: Number(event.target.value) } })"
+          />
+        </div>
+
+        <div>
+          <label for="position-y">Position Y:</label>
+          <input
+              type="number"
+              id="position-y"
+              :value="propertyStore.watermarkOption.position.y"
+              @input="event => handleUpdateWatermarkOptions({ position: { ...propertyStore.watermarkOption.position, y: Number(event.target.value) } })"
+          />
+        </div>
+      </div>
+
+      <!-- 水印预览 -->
+      <svg width="200" height="200" viewBox="0 0 1000 1000" class="watermark-preview">
+        <rect x="0" y="0" width="1000" height="1000" fill="#f0f0f0" stroke="#ccc" />
+        <text
+            :x="propertyStore.watermarkOption.position.x"
+            :y="propertyStore.watermarkOption.position.y"
+            :font-size="propertyStore.watermarkOption.fontSize"
+            :fill="propertyStore.watermarkOption.color"
+            :opacity="propertyStore.watermarkOption.opacity"
+            font-family="Arial, sans-serif"
+        >
+          {{ propertyStore.watermarkOption.text }}
+        </text>
+      </svg>
+    </template>
   </div>
 </template>
 
 <style scoped>
 .property-panel {
-  width: 200px;
+  width: 300px;
   padding: 10px;
   background-color: #f9f9f9;
   border-left: 1px solid #ccc;

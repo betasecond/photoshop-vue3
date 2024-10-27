@@ -6,10 +6,11 @@ import { startDrawing, stopDrawing, draw } from "../module/drawing";
 import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../module/toolType";
 import { adjustBrightness } from "../module/brightnessAdjust";
 import { useUndoRedoStore } from "../store/undoRedoStore";
-import {applyWatermark,WatermarkOptions, defaultOptions} from "../module/watermark";
+import {applyWatermark, defaultOptions} from "../module/watermark";
 import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
+import {WatermarkOptions} from "../types/watermark";
 
 
 // 引入并初始化状态管理
@@ -35,6 +36,7 @@ const props = defineProps<{
     width: number;
     height: number;
   };
+  watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
   appliedEditTool:{type:EditToolType,id:number } | null;
@@ -71,13 +73,14 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
     case OneClickActionToolType.Watermark:
       console.log("Applying Watermark effect on canvas");
       if (ctx.value && canvas.value) {
-        applyWatermark(canvas, ctx, defaultOptions); // TODO:后续改成不使用默认值
+        applyWatermark(canvas, ctx, props.watermarkOptions);
       }
       break;
     case OneClickActionToolType.FaceDetection:
       console.log("Applying Face Detection effect on canvas");
       // 调用人脸检测逻辑
       break;
+
     default:
       console.warn(`Effect ${effect} is not implemented.`);
       break;
