@@ -170,6 +170,7 @@ const handleMouseMove = (event: MouseEvent) => {
 <template>
   <div class="canvas-container">
     <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvas, ctx)" />
+
     <canvas
         ref="canvas"
         width="1000"
