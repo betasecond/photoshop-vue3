@@ -3,7 +3,10 @@ import {usePropertyStore} from "../store/propertyStore";
 import {CropArea} from "../types/CropAreaType";
 
 const propertyStore = usePropertyStore();
-
+const hslPreviewColor = computed(() => {
+  const { hue, saturation, lightness } = propertyStore.hsl;
+  return `hsl(${hue}, ${saturation + 100}%, ${lightness + 50}%)`; // 中心色以更明显的颜色来预览
+});
 // 更新 brushSize
 const updateBrushSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
@@ -196,6 +199,14 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           @input="updateLightness"
       />
       <p>Current lightness: {{ propertyStore.hsl.lightness }}%</p>
+
+
+      <!-- HSL 预览三角形 -->
+      <div class="hsl-preview">
+        <svg width="50" height="50">
+          <polygon points="25,0 0,50 50,50" :fill="hslPreviewColor" />
+        </svg>
+      </div>
     </template>
     <!-- 旋转角度滑动条 -->
     <template v-if="propertyStore.selectedParameter === 'Rotate'">
