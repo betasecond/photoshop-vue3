@@ -120,6 +120,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :rotation="propertyStore.rotation"
           :selectionBounds="propertyStore.cropArea"
           :watermark-options="propertyStore.watermarkOption"
+          :hsl="propertyStore.hsl"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"

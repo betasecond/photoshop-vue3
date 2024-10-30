@@ -76,6 +76,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         // 调整饱和度
         adjustSaturation(value: number) {
             this.saturation = value;
+            this.hsl.saturation = value;
         },
         // 调整曝光度
         adjustExposure(value: number) {
@@ -84,6 +85,12 @@ export const usePropertyStore = defineStore('propertyStore', {
         // 调整 HSL 值
         adjustHSL(hue: number, saturation: number, lightness: number) {
             this.hsl = { hue, saturation, lightness };
+        },
+        adjustHue(hue: number) {
+            this.hsl.hue = hue;
+        },
+        adjustLightness(lightness: number) {
+            this.hsl.lightness = lightness;
         },
         applyAdjustment(adjustment: AdjustmentToolType) {
             this.appliedAdjustment = { type: adjustment, id: Date.now() };

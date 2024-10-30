@@ -13,6 +13,8 @@ import {cropCanvas} from "../module/crop";
 import {WatermarkOptions} from "../types/watermarkType";
 import {adjustSaturation} from "../module/saturation";
 import {adjustExposure} from "../module/exposure";
+import {adjustHSL} from "../module/hsl";
+import {HSL} from "../types/HSLType";
 
 
 // 引入并初始化状态管理
@@ -40,6 +42,7 @@ const props = defineProps<{
     width: number;
     height: number;
   };
+  hsl:HSL,
   watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
@@ -115,6 +118,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Saturation Adjustment on canvas");
       if (ctx.value && canvas.value) {
         adjustSaturation(canvas, ctx, props.saturation);
+      }
+      break;
+    case AdjustmentToolType.HSL:
+      console.log("Applying HSL Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustHSL(canvas, ctx, props.hsl);
       }
       break;
     default:
