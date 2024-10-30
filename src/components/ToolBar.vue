@@ -61,14 +61,13 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <button @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</button>
     <button @click="applyEffect(OneClickActionToolType.Watermark)" >Watermark</button>
     <button @click="applyAdjust(AdjustmentToolType.Contrast)" >Contrast</button>
+    <button @click="applyAdjust(AdjustmentToolType.Exposure)" >Exposure</button>
+    <button @click="applyAdjust(AdjustmentToolType.Saturation)" >Saturation</button>
+    <button @click="applyAdjust(AdjustmentToolType.Brightness)" >Bright</button>
     <button @click="applyEditTool(EditToolType.Rotate)">Rotate</button>
     <button @click="applyEditTool(EditToolType.Crop)">Crop</button>
-
     <label for="colorPicker">Color:</label>
     <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
-
-    <!-- 亮度调节滑块 -->
-    <button @click="applyAdjust(AdjustmentToolType.Brightness)" >Bright</button>
 
     <!-- 撤销和重做按钮 -->
     <button @click="undo" :disabled="!canUndo">Undo</button>
