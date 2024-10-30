@@ -43,6 +43,17 @@ const updateSaturation = (event: Event) => {
   const newSaturation = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustSaturation(newSaturation);
 };
+
+const updateHue = (event: Event) => {
+  const newHue = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustHue(newHue);
+};
+
+
+const updateLightness = (event: Event) => {
+  const newLightness = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustLightness(newLightness);
+};
 const updateCropArea = () => {
   propertyStore.updateCropArea({
     x: propertyStore.cropArea.x,
@@ -63,7 +74,7 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Exposure','Saturation','Crop', 'Watermark']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Exposure','Saturation','HSL','Crop', 'Watermark']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -150,6 +161,41 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           @input="updateSaturation"
       />
       <p>Current saturation: {{ propertyStore.saturation }}%</p>
+    </template>
+    <!-- HSL 调整 -->
+    <template v-if="propertyStore.selectedParameter === 'HSL'">
+      <label for="hue">Hue:</label>
+      <input
+          type="range"
+          id="hue"
+          min="0"
+          max="360"
+          :value="propertyStore.hsl.hue"
+          @input="updateHue"
+      />
+      <p>Current hue: {{ propertyStore.hsl.hue }}°</p>
+
+      <label for="saturation">Saturation:</label>
+      <input
+          type="range"
+          id="saturation"
+          min="-100"
+          max="100"
+          :value="propertyStore.hsl.saturation"
+          @input="updateSaturation"
+      />
+      <p>Current saturation: {{ propertyStore.hsl.saturation }}%</p>
+
+      <label for="lightness">Lightness:</label>
+      <input
+          type="range"
+          id="lightness"
+          min="-100"
+          max="100"
+          :value="propertyStore.hsl.lightness"
+          @input="updateLightness"
+      />
+      <p>Current lightness: {{ propertyStore.hsl.lightness }}%</p>
     </template>
     <!-- 旋转角度滑动条 -->
     <template v-if="propertyStore.selectedParameter === 'Rotate'">
