@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { DrawingToolType } from '../types/toolType';
 import {usePropertyStore} from "../store/propertyStore";
 import {CropArea} from "../types/CropAreaType";
+
 const propertyStore = usePropertyStore();
 
 // 更新 brushSize
@@ -31,6 +31,18 @@ const updateRotation = (event: Event) => {
   const newRotation = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustRotation(newRotation);
 }
+
+// 更新曝光
+const updateExposure = (event: Event) => {
+  const newExposure = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustExposure(newExposure);
+};
+
+// 更新饱和度
+const updateSaturation = (event: Event) => {
+  const newSaturation = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustSaturation(newSaturation);
+};
 const updateCropArea = () => {
   propertyStore.updateCropArea({
     x: propertyStore.cropArea.x,
@@ -51,7 +63,7 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Crop', 'Watermark']"
+          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Exposure','Saturation','Crop', 'Watermark']"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -111,6 +123,33 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           @input="updateContrast"
       />
       <p>Current contrast: {{ propertyStore.contrast }}%</p>
+    </template>
+    <!-- 曝光滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Exposure'">
+      <label for="exposure">Exposure:</label>
+      <input
+          type="range"
+          id="exposure"
+          min="-100"
+          max="100"
+          :value="propertyStore.exposure"
+          @input="updateExposure"
+      />
+      <p>Current exposure: {{ propertyStore.exposure }}%</p>
+    </template>
+
+    <!-- 饱和度滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Saturation'">
+      <label for="saturation">Saturation:</label>
+      <input
+          type="range"
+          id="saturation"
+          min="-100"
+          max="100"
+          :value="propertyStore.saturation"
+          @input="updateSaturation"
+      />
+      <p>Current saturation: {{ propertyStore.saturation }}%</p>
     </template>
     <!-- 旋转角度滑动条 -->
     <template v-if="propertyStore.selectedParameter === 'Rotate'">

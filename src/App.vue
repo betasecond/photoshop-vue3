@@ -115,6 +115,8 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :appliedAdjustment="propertyStore.appliedAdjustment"
           :appliedEditTool="propertyStore.appliedEditTool"
           :contrast="propertyStore.contrast"
+          :saturation="propertyStore.saturation"
+          :exposure="propertyStore.exposure"
           :rotation="propertyStore.rotation"
           :selectionBounds="propertyStore.cropArea"
           :watermark-options="propertyStore.watermarkOption"
