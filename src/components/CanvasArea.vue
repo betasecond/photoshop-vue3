@@ -11,6 +11,8 @@ import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
 import {WatermarkOptions} from "../types/watermarkType";
+import {adjustSaturation} from "../module/saturation";
+import {adjustExposure} from "../module/exposure";
 
 
 // 引入并初始化状态管理
@@ -29,6 +31,8 @@ const props = defineProps<{
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
   contrast: number;             // 新增对比度属性
+  saturation:number;            // 饱和度
+  exposure:number;              // 曝光
   rotation?: number;       // 旋转角度（用于 Rotate 工具）
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
@@ -99,6 +103,18 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Bright Adjustment on canvas");
       if(ctx.value && canvas.value){
         adjustBrightness(canvas,ctx,props.brightness);
+      }
+      break;
+    case AdjustmentToolType.Exposure:
+      console.log("Applying Exposure Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustExposure(canvas, ctx, props.exposure);
+      }
+      break;
+    case AdjustmentToolType.Saturation:
+      console.log("Applying Saturation Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustSaturation(canvas, ctx, props.saturation);
       }
       break;
     default:
