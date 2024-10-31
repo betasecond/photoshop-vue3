@@ -121,6 +121,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :selectionBounds="propertyStore.cropArea"
           :watermark-options="propertyStore.watermarkOption"
           :hsl="propertyStore.hsl"
+          :intensity="propertyStore.intensity"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"

@@ -52,7 +52,10 @@ const updateHue = (event: Event) => {
   propertyStore.adjustHue(newHue);
 };
 
-
+const updateSharpen = (event: Event) => {
+  const newUpdateSharpen = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustIntensity(newUpdateSharpen);
+}
 const updateLightness = (event: Event) => {
   const newLightness = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustLightness(newLightness);
@@ -77,7 +80,18 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
     <!-- 参数选择器 -->
     <div class="parameter-selector">
       <button
-          v-for="parameter in ['Brush', 'Eraser', 'Brightness', 'Contrast','Exposure','Saturation','HSL','Crop', 'Watermark']"
+          v-for="parameter in [
+              'Brush',
+              'Eraser',
+              'Brightness',
+              'Contrast',
+              'Exposure',
+              'Saturation',
+              'HSL',
+              'Crop',
+              'Watermark',
+              'Sharpen'
+              ]"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
           @click="setParameter(parameter)"
@@ -341,6 +355,20 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           {{ propertyStore.watermarkOption.text }}
         </text>
       </svg>
+    </template>
+    <!-- 锐化滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Sharpen'">
+      <label for="sharpen">Sharpen Intensity:</label>
+      <input
+          type="range"
+          id="sharpen"
+          min="0"
+          max="10"
+          step="0.1"
+          :value="propertyStore.intensity"
+          @input="updateSharpen"
+      />
+      <p>Current sharpen intensity: {{ propertyStore.intensity }}</p>
     </template>
   </div>
 </template>
