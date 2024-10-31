@@ -15,6 +15,7 @@ import {adjustSaturation} from "../module/saturation";
 import {adjustExposure} from "../module/exposure";
 import {adjustHSL} from "../module/hsl";
 import {HSL} from "../types/HSLType";
+import {applySharpen} from "../module/applySharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
 
 
@@ -37,6 +38,7 @@ const props = defineProps<{
   saturation:number;            // 饱和度
   exposure:number;              // 曝光
   rotation?: number;       // 旋转角度（用于 Rotate 工具）
+  intensity:number;              // 锐化强度
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
     y: number;
@@ -131,6 +133,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying HistogramEqualization Adjustment on canvas");
       if (ctx.value && canvas.value) {
         histogramEqualization(canvas,ctx);
+      }
+      break;
+    case AdjustmentToolType.Sharpen:
+      console.log("Applying Sharpend Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        applySharpen(canvas,ctx,props.intensity);
       }
       break;
     default:

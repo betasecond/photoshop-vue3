@@ -16,6 +16,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         saturation: 0,
         exposure: 0,
         rotation: 0,
+        intensity:1,
         hsl: {
             hue: 0,
             saturation: 0,
@@ -91,6 +92,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         },
         adjustLightness(lightness: number) {
             this.hsl.lightness = lightness;
+        },
+        // 更新锐化强度
+        adjustIntensity(intensity: number) {
+            this.intensity = intensity;
         },
         applyAdjustment(adjustment: AdjustmentToolType) {
             this.appliedAdjustment = { type: adjustment, id: Date.now() };
