@@ -17,6 +17,7 @@ import {adjustHSL} from "../module/hsl";
 import {HSL} from "../types/HSLType";
 import {applySharpen} from "../module/applySharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
+import {applySmoothing} from "../module/applySmoothing";
 
 
 // 引入并初始化状态管理
@@ -45,6 +46,7 @@ const props = defineProps<{
     width: number;
     height: number;
   };
+  smoothRadius:number,
   hsl:HSL,
   watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
@@ -139,6 +141,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Sharpend Adjustment on canvas");
       if (ctx.value && canvas.value) {
         applySharpen(canvas,ctx,props.intensity);
+      }
+      break;
+    case AdjustmentToolType.Smoothing:
+      console.log("Applying Smoothing Adjustment on canvas");
+      if(ctx.value && canvas.value){
+        applySmoothing(canvas,ctx,props.smoothRadius);
       }
       break;
     default:

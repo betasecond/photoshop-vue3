@@ -17,6 +17,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         exposure: 0,
         rotation: 0,
         intensity:1,
+        smoothingRadius: 5,
         hsl: {
             hue: 0,
             saturation: 0,
@@ -29,6 +30,7 @@ export const usePropertyStore = defineStore('propertyStore', {
             width: 1000,
             height: 1000,
         } as CropArea,
+
         // 水印
         watermarkOption:{
             text: "watermark" as string,             // 水印内容
@@ -100,6 +102,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         applyAdjustment(adjustment: AdjustmentToolType) {
             this.appliedAdjustment = { type: adjustment, id: Date.now() };
 
+        },
+        // 调整平滑半径
+        adjustSmoothingRadius(radius: number) {
+            this.smoothingRadius = radius;
         },
         // 调整旋转角度
         adjustRotation(angle: number) {

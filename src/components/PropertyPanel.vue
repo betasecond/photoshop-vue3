@@ -68,6 +68,10 @@ const updateCropArea = () => {
     height: propertyStore.cropArea.height,
   } as CropArea);
 };
+const updateSmoothingRadius = (event:Event) =>{
+  const newSmoothingRadius = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustSmoothingRadius(newSmoothingRadius);
+}
 // 更新水印选项
 const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.watermarkOptions>) => {
   propertyStore.adjustWatermarkOption(option);
@@ -90,7 +94,8 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
               'HSL',
               'Crop',
               'Watermark',
-              'Sharpen'
+              'Sharpen',
+              'Smooth'
               ]"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
@@ -370,6 +375,20 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
       />
       <p>Current sharpen intensity: {{ propertyStore.intensity }}</p>
     </template>
+    <!-- 平滑半径滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Smooth'">
+      <label for="smoothing-radius">Smoothing Radius:</label>
+      <input
+          type="range"
+          id="smoothing-radius"
+          min="1"
+          max="20"
+          :value="propertyStore.smoothingRadius"
+          @input="updateSmoothingRadius"
+      />
+      <p>Current smoothing radius: {{ propertyStore.smoothingRadius }}</p>
+    </template>
+
   </div>
 </template>
 

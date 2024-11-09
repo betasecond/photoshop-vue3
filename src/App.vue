@@ -122,6 +122,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :watermark-options="propertyStore.watermarkOption"
           :hsl="propertyStore.hsl"
           :intensity="propertyStore.intensity"
+          :smoothRadius="propertyStore.smoothingRadius"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
