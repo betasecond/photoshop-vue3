@@ -15,6 +15,7 @@ import {adjustSaturation} from "../module/saturation";
 import {adjustExposure} from "../module/exposure";
 import {adjustHSL} from "../module/hsl";
 import {HSL} from "../types/HSLType";
+import {histogramEqualization} from "../module/histogramEqualization";
 
 
 // 引入并初始化状态管理
@@ -124,6 +125,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying HSL Adjustment on canvas");
       if (ctx.value && canvas.value) {
         adjustHSL(canvas, ctx, props.hsl);
+      }
+      break;
+    case AdjustmentToolType.HistogramEqualization:
+      console.log("Applying HistogramEqualization Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        histogramEqualization(canvas,ctx);
       }
       break;
     default:
