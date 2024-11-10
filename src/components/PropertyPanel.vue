@@ -114,7 +114,7 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
               'Crop',
               'Watermark',
               'Sharpen',
-              'Smooth'
+              'Smooth',
               'Curve',
               'Sharpen'
               ]"
@@ -487,20 +487,6 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
         <p>Selected Curve: {{ propertyStore.selectedChannel }} Channel</p>
       </template>
     </template>
-    <!-- 平滑半径滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Smooth'">
-      <label for="smoothing-radius">Smoothing Radius:</label>
-      <input
-          type="range"
-          id="smoothing-radius"
-          min="1"
-          max="20"
-          :value="propertyStore.smoothingRadius"
-          @input="updateSmoothingRadius"
-      />
-      <p>Current smoothing radius: {{ propertyStore.smoothingRadius }}</p>
-    </template>
-
   </div>
 </template>
 
