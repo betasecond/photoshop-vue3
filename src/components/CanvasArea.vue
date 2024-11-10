@@ -11,6 +11,14 @@ import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
 import {WatermarkOptions} from "../types/watermarkType";
+import {adjustSaturation} from "../module/saturation";
+import {adjustExposure} from "../module/exposure";
+import {adjustHSL} from "../module/hsl";
+import {HSL} from "../types/HSLType";
+import {applySharpen} from "../module/applySharpen";
+import {histogramEqualization} from "../module/histogramEqualization";
+import {adjustCurve} from "../module/adjustCurve";
+import {applySmoothing} from "../module/applySmoothing";
 
 
 // 引入并初始化状态管理
@@ -29,13 +37,20 @@ const props = defineProps<{
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
   contrast: number;             // 新增对比度属性
+  saturation:number;            // 饱和度
+  exposure:number;              // 曝光
   rotation?: number;       // 旋转角度（用于 Rotate 工具）
+  intensity:number;              // 锐化强度
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
     y: number;
     width: number;
     height: number;
   };
+  channel: 'red' | 'green' | 'blue',
+  smoothRadius:number,
+  hsl:HSL,
+  curveAdjustmentState:CurveAdjustmentState,
   watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
@@ -99,6 +114,56 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Bright Adjustment on canvas");
       if(ctx.value && canvas.value){
         adjustBrightness(canvas,ctx,props.brightness);
+      }
+      break;
+    case AdjustmentToolType.Exposure:
+      console.log("Applying Exposure Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustExposure(canvas, ctx, props.exposure);
+      }
+      break;
+    case AdjustmentToolType.Saturation:
+      console.log("Applying Saturation Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustSaturation(canvas, ctx, props.saturation);
+      }
+      break;
+    case AdjustmentToolType.HSL:
+      console.log("Applying HSL Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        adjustHSL(canvas, ctx, props.hsl);
+      }
+      break;
+    case AdjustmentToolType.HistogramEqualization:
+      console.log("Applying HistogramEqualization Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        histogramEqualization(canvas,ctx);
+      }
+      break;
+    case AdjustmentToolType.Sharpen:
+      console.log("Applying Sharpend Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        applySharpen(canvas,ctx,props.intensity);
+      }
+      break;
+    case AdjustmentToolType.Smoothing:
+      console.log("Applying Smoothing Adjustment on canvas");
+      if(ctx.value && canvas.value){
+        applySmoothing(canvas,ctx,props.smoothRadius);
+      }
+      break;
+    case AdjustmentToolType.CurveAdjustment:
+      console.log("Applying Curve Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        let channel = props.channel;
+        //  TODO:用法太自由 后续改成switch
+        let key:string = `${channel}Curve`;
+        let curve = props.curveAdjustmentState[key];
+        if(!curve){
+          console.log("curve is missing. content key:"+key);
+          return;
+        }
+        adjustCurve(canvas, ctx, curve, channel);
       }
       break;
     default:

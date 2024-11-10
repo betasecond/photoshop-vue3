@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../types/toolType";
 import {WatermarkOptions} from "../types/watermarkType";
 import {HSL} from "../types/HSLType";
@@ -16,6 +16,8 @@ export const usePropertyStore = defineStore('propertyStore', {
         saturation: 0,
         exposure: 0,
         rotation: 0,
+        intensity:1,
+        smoothingRadius: 5,
         hsl: {
             hue: 0,
             saturation: 0,
@@ -28,6 +30,7 @@ export const usePropertyStore = defineStore('propertyStore', {
             width: 1000,
             height: 1000,
         } as CropArea,
+
         // 水印
         watermarkOption:{
             text: "watermark" as string,             // 水印内容
@@ -36,6 +39,12 @@ export const usePropertyStore = defineStore('propertyStore', {
             opacity: 0.5 as number,        // 透明度，默认 0.5
             position:{x:100,y:100} as { x: number; y: number },// 水印位置，默认右下角
         } as WatermarkOptions,
+        curveAdjustment: {
+            redCurve: [{ input: 0, output: 0 }, { input: 128, output: 128 }, { input: 255, output: 255 }],
+            greenCurve: [{ input: 0, output: 0 }, { input: 128, output: 128 }, { input: 255, output: 255 }],
+            blueCurve: [{ input: 0, output: 0 }, { input: 128, output: 128 }, { input: 255, output: 255 }],
+        } as CurveAdjustmentState,
+        selectedChannel: 'red' | 'green' | 'blue',
         appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
         appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
         appliedEditTool:null as {type:EditToolType,id:number} | null,
@@ -76,6 +85,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         // 调整饱和度
         adjustSaturation(value: number) {
             this.saturation = value;
+            this.hsl.saturation = value;
         },
         // 调整曝光度
         adjustExposure(value: number) {
@@ -85,9 +95,23 @@ export const usePropertyStore = defineStore('propertyStore', {
         adjustHSL(hue: number, saturation: number, lightness: number) {
             this.hsl = { hue, saturation, lightness };
         },
+        adjustHue(hue: number) {
+            this.hsl.hue = hue;
+        },
+        adjustLightness(lightness: number) {
+            this.hsl.lightness = lightness;
+        },
+        // 更新锐化强度
+        adjustIntensity(intensity: number) {
+            this.intensity = intensity;
+        },
         applyAdjustment(adjustment: AdjustmentToolType) {
             this.appliedAdjustment = { type: adjustment, id: Date.now() };
 
+        },
+        // 调整平滑半径
+        adjustSmoothingRadius(radius: number) {
+            this.smoothingRadius = radius;
         },
         // 调整旋转角度
         adjustRotation(angle: number) {
@@ -97,6 +121,20 @@ export const usePropertyStore = defineStore('propertyStore', {
             // 部分更新
             this.watermarkOption = { ...this.watermarkOption, ...watermarkOption };
         },
+        // 更新曲线调整
+        updateCurveAdjustment(channel: 'red' | 'green' | 'blue') {
+            this.selectedChannel = channel;
+        },
+        // 更新曲线控制点
+        updateCurve(channel: 'red' | 'green' | 'blue', index: number, value: number) {
+            const curve = this.curveAdjustment[channel + 'Curve'];
+            curve[index].output = value;
+            this.curveAdjustment[channel + 'Curve'] = [...curve]; // 强制视图更新
+            this.updateCurveAdjustment(channel);
+        },
+
+
+
 
         // 应用一键式效果
         applyEffect(effect: OneClickActionToolType) {
