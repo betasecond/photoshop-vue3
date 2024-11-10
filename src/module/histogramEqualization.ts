@@ -11,7 +11,8 @@ export function histogramEqualization(
         console.error('Canvas or context is missing.');
         return;
     }
-
+    // Save the state for undo/redo
+    undoRedoStore.saveCanvasState();
     // Step 1: Get the current image data
     const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
     const data = imageData.data;
@@ -64,6 +65,5 @@ export function histogramEqualization(
     // Step 7: Put the updated image data back onto the canvas
     ctx.value.putImageData(imageData, 0, 0);
 
-    // Save the state for undo/redo
-    undoRedoStore.saveCanvasState();
+
 }
