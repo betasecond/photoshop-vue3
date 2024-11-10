@@ -1,3 +1,5 @@
+import {useUndoRedoStore} from "../store/undoRedoStore";
+
 export function adjustCurve(
     canvas: Ref<HTMLCanvasElement | null>,
     ctx: Ref<CanvasRenderingContext2D | null>,
@@ -8,10 +10,14 @@ export function adjustCurve(
         console.error('Canvas or context is missing.');
         return;
     }
-
+    if(!curve){
+        console.error('curve is missing.');
+        return;
+    }
+    const undoRedoStore = useUndoRedoStore();
     const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
     const data = imageData.data;
-
+    undoRedoStore.saveCanvasState();
     // 对每个像素进行曲线调整
     for (let i = 0; i < data.length; i += 4) {
         let channelValue: number;

@@ -60,6 +60,23 @@ const updateLightness = (event: Event) => {
   const newLightness = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustLightness(newLightness);
 };
+
+// 更新曲线控制点
+const handleUpdateCurve = (channel: 'red' | 'green' | 'blue', index: number, value: string) => {
+  const newValue = Number(value);
+  propertyStore.updateCurve(channel, index, newValue);
+};
+
+// 生成曲线路径 (SVG Path)
+const getCurvePath = (curve: Curve) => {
+  let pathData = `M 0 ${250 - curve[0].output}`;
+  for (let i = 1; i < curve.length; i++) {
+    const x = (i / (curve.length - 1)) * 280; // X 轴位置
+    const y = 250 - curve[i].output; // Y 轴位置
+    pathData += ` L ${x} ${y}`;
+  }
+  return pathData;
+};
 const updateCropArea = () => {
   propertyStore.updateCropArea({
     x: propertyStore.cropArea.x,
@@ -90,6 +107,7 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
               'HSL',
               'Crop',
               'Watermark',
+              'Curve',
               'Sharpen'
               ]"
           :key="parameter"
@@ -369,6 +387,95 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           @input="updateSharpen"
       />
       <p>Current sharpen intensity: {{ propertyStore.intensity }}</p>
+    </template>
+    <!-- 曲线调整控制面板 -->
+    <template v-if="propertyStore.selectedParameter === 'Curve'">
+      <div class="curve-adjustment-control">
+        <!-- 红色通道曲线 -->
+        <div>
+          <label for="red-curve">Red Curve:</label>
+          <input
+              type="range"
+              id="red-curve"
+              min="0"
+              max="255"
+              step="1"
+              v-for="(point, index) in propertyStore.curveAdjustment.redCurve"
+              :key="index"
+              :value="point.output"
+              @input="event => handleUpdateCurve('red', index, event.target.value)"
+          />
+        </div>
+
+        <!-- 绿色通道曲线 -->
+        <div>
+          <label for="green-curve">Green Curve:</label>
+          <input
+              type="range"
+              id="green-curve"
+              min="0"
+              max="255"
+              step="1"
+              v-for="(point, index) in propertyStore.curveAdjustment.greenCurve"
+              :key="index"
+              :value="point.output"
+              @input="event => handleUpdateCurve('green', index, event.target.value)"
+          />
+        </div>
+
+        <!-- 蓝色通道曲线 -->
+        <div>
+          <label for="blue-curve">Blue Curve:</label>
+          <input
+              type="range"
+              id="blue-curve"
+              min="0"
+              max="255"
+              step="1"
+              v-for="(point, index) in propertyStore.curveAdjustment.blueCurve"
+              :key="index"
+              :value="point.output"
+              @input="event => handleUpdateCurve('blue', index, event.target.value)"
+          />
+        </div>
+      </div>
+
+      <!-- 曲线预览 -->
+      <svg width="300" height="300" viewBox="0 0 300 300" class="curve-preview">
+        <g transform="translate(10, 10)">
+          <!-- X 轴 (输入色阶) -->
+          <line x1="0" y1="250" x2="280" y2="250" stroke="black" />
+          <text x="140" y="270" text-anchor="middle">Input Levels</text>
+
+          <!-- Y 轴 (输出色阶) -->
+          <line x1="0" y1="0" x2="0" y2="250" stroke="black" />
+          <text x="-10" y="125" text-anchor="middle" transform="rotate(-90)">Output Levels</text>
+
+          <!-- 曲线 -->
+          <path
+              :d="getCurvePath(propertyStore.curveAdjustment.redCurve)"
+              fill="transparent"
+              stroke="red"
+              stroke-width="2"
+          />
+          <path
+              :d="getCurvePath(propertyStore.curveAdjustment.greenCurve)"
+              fill="transparent"
+              stroke="green"
+              stroke-width="2"
+          />
+          <path
+              :d="getCurvePath(propertyStore.curveAdjustment.blueCurve)"
+              fill="transparent"
+              stroke="blue"
+              stroke-width="2"
+          />
+        </g>
+      </svg>
+      <!-- 展示当前选择的曲线通道 -->
+      <template v-if="propertyStore.selectedChannel !== undefined">
+        <p>Selected Curve: {{ propertyStore.selectedChannel }} Channel</p>
+      </template>
     </template>
   </div>
 </template>

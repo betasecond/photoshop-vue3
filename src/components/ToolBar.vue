@@ -67,6 +67,7 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <button @click="applyAdjust(AdjustmentToolType.Brightness)" >Bright</button>
     <button @click="applyAdjust(AdjustmentToolType.Sharpen)" >Sharpen</button>
     <button @click="applyAdjust(AdjustmentToolType.HistogramEqualization)" >HE</button>
+    <button @click="applyAdjust(AdjustmentToolType.CurveAdjustment)" >Curve</button>
     <button @click="applyEditTool(EditToolType.Rotate)">Rotate</button>
     <button @click="applyEditTool(EditToolType.Crop)">Crop</button>
     <label for="colorPicker">Color:</label>
