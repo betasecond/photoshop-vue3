@@ -3,6 +3,13 @@ import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolTyp
 import {WatermarkOptions} from "../types/watermarkType";
 import {HSL} from "../types/HSLType";
 import {CropArea} from "../types/CropAreaType";
+import {
+    ACESParams,
+    FilmicParams,
+    ReinhardParams,
+    ToneMappingConfig,
+    ToneMappingType
+} from "../types/ToneMappingConfigType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
@@ -44,10 +51,19 @@ export const usePropertyStore = defineStore('propertyStore', {
             greenCurve: [{ input: 0, output: 0 }, { input: 128, output: 128 }, { input: 255, output: 255 }],
             blueCurve: [{ input: 0, output: 0 }, { input: 128, output: 128 }, { input: 255, output: 255 }],
         } as CurveAdjustmentState,
+        // 当前选择的色调映射配置
+        toneMappingConfig: {
+            type: ToneMappingType.Reinhard, // 默认选择Reinhard算法
+            params: {
+                a: 0.18, // Reinhard算法的默认暗区亮度调整
+                maxLuminance: 1.0, // 最大亮度
+            } as ReinhardParams, // 默认使用Reinhard算法的参数
+        } as ToneMappingConfig,
         selectedChannel: 'red' | 'green' | 'blue',
         appliedEffect: null as { type:OneClickActionToolType,id:number } | null,
         appliedAdjustment: null as {type:AdjustmentToolType,id:number} | null,
         appliedEditTool:null as {type:EditToolType,id:number} | null,
+
     }),
     actions: {
         // 设置当前选择的参数类型
@@ -135,7 +151,33 @@ export const usePropertyStore = defineStore('propertyStore', {
 
 
 
+        // 设置色调映射类型
+        setToneMappingType(type: ToneMappingType) {
+            this.toneMappingConfig.type = type;
+            // 根据类型更新params
+            switch (type) {
+                case ToneMappingType.Reinhard:
+                    // 适当减小a值，使Reinhard算法的效果不那么显著
+                    this.toneMappingConfig.params = { a: 0.05, maxLuminance: 2 } as ReinhardParams;
+                    break;
 
+                case ToneMappingType.ACES:
+                    // 提高曝光度和白点，让效果更显著
+                    this.toneMappingConfig.params = { exposure: 2, whitePoint: 1.2 } as ACESParams;
+                    break;
+
+                case ToneMappingType.Filmic:
+                    // 增强曝光度、对比度和饱和度，使其效果更加明显
+                    this.toneMappingConfig.params = { exposure: 3, contrast: 1.2, saturation: 1.2 } as FilmicParams;
+                    break;
+
+                // 可以添加更多的case
+            }
+        },
+        // 设置色调映射参数
+        setToneMappingParams(params: ReinhardParams | ACESParams | FilmicParams) {
+            this.toneMappingConfig.params = params;
+        },
         // 应用一键式效果
         applyEffect(effect: OneClickActionToolType) {
             this.appliedEffect = {type:effect,id: Date.now() };

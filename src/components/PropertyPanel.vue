@@ -92,9 +92,16 @@ const updateSmoothingRadius = (event:Event) =>{
   propertyStore.adjustSmoothingRadius(newSmoothingRadius);
 }
 // 更新水印选项
-const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.watermarkOptions>) => {
+const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.watermarkOption>) => {
   propertyStore.adjustWatermarkOption(option);
 };
+
+// 中间方法：处理色调映射选择
+function handleToneMappingChange(event) {
+  const selectedType = event.target.value;
+  // 调用store中的更新方法来设置选择的色调映射算法
+  propertyStore.setToneMappingType(selectedType);
+}
 </script>
 
 <template>
@@ -115,7 +122,8 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
               'Watermark',
               'Smooth',
               'Curve',
-              'Sharpen'
+              'Sharpen',
+              'ToneMapping'
               ]"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
@@ -498,6 +506,16 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
       <template v-if="propertyStore.selectedChannel !== undefined">
         <p>Selected Curve: {{ propertyStore.selectedChannel }} Channel</p>
       </template>
+    </template>
+    <!-- 色调映射类型选择 -->
+    <template v-if="propertyStore.selectedParameter === 'ToneMapping'">
+      <label for="toneMappingType">Tone Mapping Type:</label>
+      <select id="toneMappingType" :value="propertyStore.toneMappingConfig.type" @change="handleToneMappingChange">
+        <option value="Reinhard">Reinhard</option>
+        <option value="ACES">ACES</option>
+        <option value="Filmic">Filmic</option>
+      </select>
+      <p>Current tone mapping type: {{ propertyStore.toneMappingConfig.type }}</p>
     </template>
 
   </div>

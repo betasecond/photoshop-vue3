@@ -1,10 +1,12 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
-
+import {ACESParams, FilmicParams, ReinhardParams, ToneMappingType} from "../types/ToneMappingConfigType";
+import {applyReinhard} from  "./toneMappingFunction/reinhard"
+import {applyACES} from "./toneMappingFunction/ACES";
+import {applyFilmic} from "./toneMappingFunction/filmic";
 export function applyToneMapping(
     canvas: Ref<HTMLCanvasElement | null>,
     ctx: Ref<CanvasRenderingContext2D | null>,
-    toneMappingType: string,
-    params: { [key: string]: number }
+    type: ToneMappingType, params: ReinhardParams | ACESParams | FilmicParams
 ) {
     const undoRedoStore = useUndoRedoStore();
 
@@ -12,28 +14,37 @@ export function applyToneMapping(
         console.error('Canvas or context is missing.');
         return;
     }
-
+    undoRedoStore.saveCanvasState();
     // 获取当前图像数据
     const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
     const data = imageData.data;
 
-    // 色调映射算法（举例：Reinhard 算法）
-    const applyReinhard = (r: number, g: number, b: number): [number, number, number] => {
-        // Reinhard Tone Mapping公式（简单示例）
-        const a = 0.18; // 暗区亮度参数
-        const maxLuminance = 1.0; // 最大亮度
-        r = r * a / (r + maxLuminance);
-        g = g * a / (g + maxLuminance);
-        b = b * a / (b + maxLuminance);
-        return [r, g, b];
-    };
 
     // 根据选择的色调映射类型应用不同的算法
     const toneMappingFunction = (r: number, g: number, b: number) => {
-        switch (toneMappingType) {
+        switch (type) {
             case 'Reinhard':
-                return applyReinhard(r, g, b);
-            // 可以添加更多的色调映射算法（如ACES、Filmic等）
+                // 判断 params 是否符合 ReinhardParams 类型
+                if ('a' in params && 'maxLuminance' in params) {
+                    return applyReinhard(r, g, b, params);
+                }
+                // 如果不符合 ReinhardParams 类型，返回原色
+                return [r, g, b];
+
+            case 'ACES':
+                // 判断 params 是否符合 ACESParams 类型
+                if ('exposure' in params && 'whitePoint' in params) {
+                    return applyACES(r, g, b, params);
+                }
+                return [r, g, b];
+
+            case 'Filmic':
+                // 判断 params 是否符合 FilmicParams 类型
+                if ('exposure' in params && 'contrast' in params && 'saturation' in params) {
+                    return applyFilmic(r, g, b, params);
+                }
+                return [r, g, b];
+
             default:
                 return [r, g, b]; // 默认返回原色
         }
@@ -56,5 +67,5 @@ export function applyToneMapping(
 
     // 更新画布数据
     ctx.value.putImageData(imageData, 0, 0);
-    undoRedoStore.saveCanvasState();
+
 }

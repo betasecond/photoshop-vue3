@@ -19,6 +19,8 @@ import {applySharpen} from "../module/applySharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
 import {adjustCurve} from "../module/adjustCurve";
 import {applySmoothing} from "../module/applySmoothing";
+import {ToneMappingConfig, ToneMappingType} from "../types/ToneMappingConfigType";
+import {applyToneMapping} from "../module/toneMapping";
 
 
 // 引入并初始化状态管理
@@ -51,6 +53,7 @@ const props = defineProps<{
   smoothRadius:number,
   hsl:HSL,
   curveAdjustmentState:CurveAdjustmentState,
+  toneMappingConfig:ToneMappingConfig,
   watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
@@ -164,6 +167,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
           return;
         }
         adjustCurve(canvas, ctx, curve, channel);
+      }
+      break;
+    case AdjustmentToolType.ToneMapping:
+      console.log("Applying Tone Mapping Adjustment on canvas");
+      if(ctx.value && canvas.value) {
+        applyToneMapping(canvas,ctx,props.toneMappingConfig.type,props.toneMappingConfig.params);
       }
       break;
     default:
