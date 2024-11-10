@@ -125,6 +125,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :curveAdjustmentState="propertyStore.curveAdjustment"
           :channel="propertyStore.selectedChannel"
           :smoothRadius="propertyStore.smoothingRadius"
+          :toneMappingConfig="propertyStore.toneMappingConfig"
           @startDrawing="handleStartDrawing"
           @draw="handleDraw"
           @stopDrawing="handleStopDrawing"
