@@ -68,6 +68,7 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
 
       <button @click="applyEffect(OneClickActionToolType.Watermark)">Watermark</button>
       <button @click="applyEffect(OneClickActionToolType.Dehaze)">Dehaze</button>
+      <button @click="applyEffect(OneClickActionToolType.FaceDetection)">FaceDetect</button>
 
     <!-- 编辑工具组 -->
 
