@@ -23,6 +23,8 @@ import {ToneMappingConfig} from "../types/ToneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
 import {adjustDehaze} from "../module/dehaze";
+import {detectFaceInCanvas} from "../module/face/detectFaceInCanvas";
+import {loadModels} from "../module/face/faceDetection";
 
 
 // 引入并初始化状态管理
@@ -72,6 +74,8 @@ onMounted(() => {
   } else {
     console.error('Failed to initialize canvas or context');
   }
+  // 人脸模型
+  loadModels();
 });
 
 // 亮度调整监听
@@ -101,6 +105,16 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
     case OneClickActionToolType.FaceDetection:
       console.log("Applying Face Detection effect on canvas");
       // 调用人脸检测逻辑
+      if (canvas.value) {
+        // 调用人脸检测逻辑并绘制框
+        detectFaceInCanvas(canvas,true)  // true表示绘制红框
+            .then((detections) => {
+              console.log('Face Detection Results:', detections);
+            })
+            .catch((error) => {
+              console.error('Error during face detection:', error);
+            });
+      }
       break;
     case OneClickActionToolType.Dehaze:
       console.log("Applying Dehaze effect on canvas");
