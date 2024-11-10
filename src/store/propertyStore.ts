@@ -25,6 +25,7 @@ export const usePropertyStore = defineStore('propertyStore', {
         rotation: 0,
         intensity:1,
         smoothingRadius: 5,
+        dehazeStrength:0,
         hsl: {
             hue: 0,
             saturation: 0,
@@ -116,6 +117,9 @@ export const usePropertyStore = defineStore('propertyStore', {
         },
         adjustLightness(lightness: number) {
             this.hsl.lightness = lightness;
+        },
+        adjustDehazeStrength(dehazeStrength: number) {
+            this.dehazeStrength = dehazeStrength;
         },
         // 更新锐化强度
         adjustIntensity(intensity: number) {
