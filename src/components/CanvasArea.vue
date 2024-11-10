@@ -17,6 +17,7 @@ import {adjustHSL} from "../module/hsl";
 import {HSL} from "../types/HSLType";
 import {applySharpen} from "../module/applySharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
+import {adjustCurve} from "../module/adjustCurve";
 import {applySmoothing} from "../module/applySmoothing";
 
 
@@ -46,8 +47,10 @@ const props = defineProps<{
     width: number;
     height: number;
   };
+  channel: 'red' | 'green' | 'blue',
   smoothRadius:number,
   hsl:HSL,
+  curveAdjustmentState:CurveAdjustmentState,
   watermarkOptions: WatermarkOptions;
   appliedEffect: { type:OneClickActionToolType,id:number } | null;
   appliedAdjustment: {type: AdjustmentToolType,id:number }| null;
@@ -147,6 +150,20 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Smoothing Adjustment on canvas");
       if(ctx.value && canvas.value){
         applySmoothing(canvas,ctx,props.smoothRadius);
+      }
+      break;
+    case AdjustmentToolType.CurveAdjustment:
+      console.log("Applying Curve Adjustment on canvas");
+      if (ctx.value && canvas.value) {
+        let channel = props.channel;
+        //  TODO:用法太自由 后续改成switch
+        let key:string = `${channel}Curve`;
+        let curve = props.curveAdjustmentState[key];
+        if(!curve){
+          console.log("curve is missing. content key:"+key);
+          return;
+        }
+        adjustCurve(canvas, ctx, curve, channel);
       }
       break;
     default:
