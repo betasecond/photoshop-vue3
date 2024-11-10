@@ -113,7 +113,6 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
               'HSL',
               'Crop',
               'Watermark',
-              'Sharpen',
               'Smooth',
               'Curve',
               'Sharpen'
@@ -398,6 +397,19 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
       />
       <p>Current sharpen intensity: {{ propertyStore.intensity }}</p>
     </template>
+    <!-- 平滑半径滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Smooth'">
+      <label for="smoothing-radius">Smoothing Radius:</label>
+      <input
+          type="range"
+          id="smoothing-radius"
+          min="1"
+          max="20"
+          :value="propertyStore.smoothingRadius"
+          @input="updateSmoothingRadius"
+      />
+      <p>Current smoothing radius: {{ propertyStore.smoothingRadius }}</p>
+    </template>
     <!-- 曲线调整控制面板 -->
     <template v-if="propertyStore.selectedParameter === 'Curve'">
       <div class="curve-adjustment-control">
@@ -487,6 +499,7 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
         <p>Selected Curve: {{ propertyStore.selectedChannel }} Channel</p>
       </template>
     </template>
+
   </div>
 </template>
 
