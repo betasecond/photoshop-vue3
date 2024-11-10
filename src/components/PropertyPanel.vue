@@ -18,7 +18,9 @@ const updateEraserSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
   propertyStore.updateEraserSize(newSize);
 };
-
+const setEraserToFullScreen = () =>{
+  propertyStore.eraserSize = Math.max(window.innerWidth, window.innerHeight);
+}
 // 更新 selectedParameter
 const setParameter = (parameter: string) => {
   propertyStore.setSelectedParameter(parameter);
@@ -149,6 +151,8 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
           @input="updateEraserSize"
       />
       <p>Current size: {{ propertyStore.eraserSize }}px</p>
+      <!-- 按钮 -->
+      <button @click="setEraserToFullScreen">Set Eraser to Full Screen</button>
     </template>
     <!-- 亮度滑动条 -->
     <template v-if="propertyStore.selectedParameter === 'Brightness'">
