@@ -23,8 +23,10 @@ import {ToneMappingConfig} from "../types/ToneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
 import {adjustDehaze} from "../module/dehaze";
-import {detectFaceInCanvas} from "../module/face/detectFaceInCanvas";
+import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/detectFaceInCanvas";
 import {loadModels} from "../module/face/faceDetection";
+import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
+import {BeautifyParams} from "../types/beautifyType";
 
 
 // 引入并初始化状态管理
@@ -119,6 +121,33 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
     case OneClickActionToolType.Dehaze:
       console.log("Applying Dehaze effect on canvas");
       adjustDehaze(canvas,ctx,props.dehazeStrength);
+      break;
+    case OneClickActionToolType.FaceBeautify:
+      const beautifyParams:BeautifyParams = {
+        smoothStrength: 5,
+        brightness: 10,
+        contrast: 1.2, // 适当的对比度调整
+        skinTone:'warm'
+      };
+      console.log("Applying Face Beautify effect on canvas");
+
+      // 调用人脸检测获取所有人脸框
+      detectFaceInCanvasForBeautify(canvas).then(faceDetections => {
+        if (faceDetections.length > 0) {
+          // 调用美颜滤镜应用函数，传入检测到的人脸框和美颜参数
+          applyBeautifyFilter(
+              canvas,
+              ctx,
+              faceDetections,
+              beautifyParams,
+          );
+        } else {
+          console.log("No faces detected, skipping beautify.");
+        }
+      }).catch(error => {
+        console.error("Error during face detection:", error);
+      });
+
       break;
     default:
       console.warn(`Effect ${effect} is not implemented.`);
