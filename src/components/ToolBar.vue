@@ -70,6 +70,7 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <button @click="applyAdjust(AdjustmentToolType.Smoothing)" >Smooth</button>
     <button @click="applyAdjust(AdjustmentToolType.CurveAdjustment)" >Curve</button>
     <button @click="applyAdjust(AdjustmentToolType.ToneMapping)" >TM</button>
+    <button @click="applyAdjust(AdjustmentToolType.ColorTemperature)" >CT</button>
     <button @click="applyEditTool(EditToolType.Rotate)">Rotate</button>
     <button @click="applyEditTool(EditToolType.Crop)">Crop</button>
     <label for="colorPicker">Color:</label>

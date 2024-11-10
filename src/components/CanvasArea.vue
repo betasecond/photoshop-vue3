@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { initializeCanvas } from '../module/canvasInitialize';
-import { loadImage } from "../module/imageLoad";
-import { saveImage } from "../module/imageSave";
-import { startDrawing, stopDrawing, draw } from "../module/drawing";
+import {initializeCanvas} from '../module/canvasInitialize';
+import {loadImage} from "../module/imageLoad";
+import {saveImage} from "../module/imageSave";
+import {draw, startDrawing, stopDrawing} from "../module/drawing";
 import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../types/toolType";
-import { adjustBrightness } from "../module/brightnessAdjust";
-import { useUndoRedoStore } from "../store/undoRedoStore";
-import {applyWatermark, defaultOptions} from "../module/watermark";
+import {adjustBrightness} from "../module/brightnessAdjust";
+import {useUndoRedoStore} from "../store/undoRedoStore";
+import {applyWatermark} from "../module/watermark";
 import {adjustContrast} from "../module/contrastAdjust";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
@@ -19,8 +19,9 @@ import {applySharpen} from "../module/applySharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
 import {adjustCurve} from "../module/adjustCurve";
 import {applySmoothing} from "../module/applySmoothing";
-import {ToneMappingConfig, ToneMappingType} from "../types/ToneMappingConfigType";
+import {ToneMappingConfig} from "../types/ToneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
+import {adjustColorTemperature} from "../module/colorTemperature"
 
 
 // 引入并初始化状态管理
@@ -43,6 +44,7 @@ const props = defineProps<{
   exposure:number;              // 曝光
   rotation?: number;       // 旋转角度（用于 Rotate 工具）
   intensity:number;              // 锐化强度
+  colorTemperature:number;
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
     y: number;
@@ -173,6 +175,12 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Tone Mapping Adjustment on canvas");
       if(ctx.value && canvas.value) {
         applyToneMapping(canvas,ctx,props.toneMappingConfig.type,props.toneMappingConfig.params);
+      }
+      break;
+    case AdjustmentToolType.ColorTemperature:
+      console.log("Applying ColorTemperature on canvas");
+      if(ctx.value && canvas.value) {
+        adjustColorTemperature(canvas,ctx,props.colorTemperature);
       }
       break;
     default:

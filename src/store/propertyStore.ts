@@ -37,7 +37,7 @@ export const usePropertyStore = defineStore('propertyStore', {
             width: 1000,
             height: 1000,
         } as CropArea,
-
+        colorTemperature:0 as number, // 范围可以从-100到100，表示冷色到暖色
         // 水印
         watermarkOption:{
             text: "watermark" as string,             // 水印内容
@@ -148,7 +148,9 @@ export const usePropertyStore = defineStore('propertyStore', {
             this.curveAdjustment[channel + 'Curve'] = [...curve]; // 强制视图更新
             this.updateCurveAdjustment(channel);
         },
-
+        updateColorTemperature(colorTemperature:number){
+            this.colorTemperature = colorTemperature;
+        },
 
 
         // 设置色调映射类型

@@ -62,7 +62,28 @@ const updateLightness = (event: Event) => {
   const newLightness = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustLightness(newLightness);
 };
+const updateColorTemperature= (event: Event)  =>{
+  const value = (event.target as HTMLInputElement).valueAsNumber;
+  propertyStore.updateColorTemperature(value);
 
+};
+
+// 根据色温值生成色调预览
+const getColorPreview = (colorTemperature: number) =>{
+  // 生成色温预览色，根据 colorTemperature 值调整背景颜色
+  // -100 -> 蓝色, 0 -> 白色, 100 -> 红色
+  let r = 255;
+  let g = 255;
+  let b = 255;
+
+  if (colorTemperature < 0) {
+    b = Math.min(255, Math.max(0, 255 + colorTemperature * 1.5));  // 偏蓝
+  } else {
+    r = Math.min(255, Math.max(0, 255 - colorTemperature * 1.5));  // 偏红
+  }
+
+  return `rgb(${r}, ${g}, ${b})`;
+};
 // 更新曲线控制点
 const handleUpdateCurve = (channel: 'red' | 'green' | 'blue', index: number, value: string) => {
   const newValue = Number(value);
@@ -123,7 +144,8 @@ function handleToneMappingChange(event) {
               'Smooth',
               'Curve',
               'Sharpen',
-              'ToneMapping'
+              'ToneMapping',
+              'ColorTemperature',
               ]"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
@@ -213,6 +235,28 @@ function handleToneMappingChange(event) {
           @input="updateSaturation"
       />
       <p>Current saturation: {{ propertyStore.saturation }}%</p>
+    </template>
+    <!-- 色温滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'ColorTemperature'">
+      <label for="colorTemperature">Color Temperature:</label>
+      <input
+          type="range"
+          id="colorTemperature"
+          min="-100"
+          max="100"
+          :value="propertyStore.colorTemperature"
+          @input="updateColorTemperature"
+      />
+      <p>Current color temperature: {{ propertyStore.colorTemperature }}</p>
+
+      <!-- 色调预览条 -->
+      <div class="color-preview">
+        <div
+            class="color-sample"
+            :style="{ backgroundColor: getColorPreview(propertyStore.colorTemperature) }">
+        </div>
+        <p>Color preview</p>
+      </div>
     </template>
     <!-- HSL 调整 -->
     <template v-if="propertyStore.selectedParameter === 'HSL'">
@@ -528,4 +572,17 @@ function handleToneMappingChange(event) {
   background-color: #f9f9f9;
   border-left: 1px solid #ccc;
 }
+.color-preview {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.color-sample {
+  width: 100px;
+  height: 20px;
+  border: 1px solid #000;
+}
+
 </style>
