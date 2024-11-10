@@ -22,6 +22,7 @@ import {applySmoothing} from "../module/applySmoothing";
 import {ToneMappingConfig} from "../types/ToneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
+import {adjustDehaze} from "../module/dehaze";
 
 
 // 引入并初始化状态管理
@@ -54,6 +55,7 @@ const props = defineProps<{
   channel: 'red' | 'green' | 'blue',
   smoothRadius:number,
   hsl:HSL,
+  dehazeStrength:number,
   curveAdjustmentState:CurveAdjustmentState,
   toneMappingConfig:ToneMappingConfig,
   watermarkOptions: WatermarkOptions;
@@ -100,7 +102,10 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
       console.log("Applying Face Detection effect on canvas");
       // 调用人脸检测逻辑
       break;
-
+    case OneClickActionToolType.Dehaze:
+      console.log("Applying Dehaze effect on canvas");
+      adjustDehaze(canvas,ctx,props.dehazeStrength);
+      break;
     default:
       console.warn(`Effect ${effect} is not implemented.`);
       break;
