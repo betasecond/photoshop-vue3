@@ -7,7 +7,8 @@ export function applySmoothing(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<C
         console.error('Canvas or context is missing.');
         return;
     }
-
+    // Save the canvas state for undo/redo functionality
+    undoRedoStore.saveCanvasState();
     // Get the current image data from the canvas
     const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
     const data = imageData.data;
@@ -48,6 +49,5 @@ export function applySmoothing(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<C
     // Put the modified image data back to the canvas
     ctx.value.putImageData(imageData, 0, 0);
 
-    // Save the canvas state for undo/redo functionality
-    undoRedoStore.saveCanvasState();
+
 }
