@@ -2,8 +2,7 @@ import { Ref } from 'vue';
 import { useUndoRedoStore } from "../store/undoRedoStore";
 
 export function histogramEqualization(
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>
+{ canvas, ctx }: CanvasContext
 ) {
     const undoRedoStore = useUndoRedoStore();
 

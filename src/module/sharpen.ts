@@ -14,7 +14,7 @@ const sharpenKernel = [
 ];
 // TODO:后续可能要换wasm实现
 export function applySharpen(
-    canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>,
+    { canvas, ctx }: CanvasContext,
     intensity: number
 ): void {
     const undoRedoStore = useUndoRedoStore();

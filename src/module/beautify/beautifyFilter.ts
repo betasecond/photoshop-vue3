@@ -8,8 +8,7 @@ import {applySmoothingToFace} from "./smooth";
 
 // 应用美颜滤镜
 export function applyBeautifyFilter(
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>,
+{ canvas, ctx }: CanvasContext,
     faceDetections: FaceDetectionResult[],
     beautifyParams: BeautifyParams,
 ) {

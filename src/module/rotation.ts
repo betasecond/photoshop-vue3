@@ -1,6 +1,6 @@
 import { useUndoRedoStore } from '../store/undoRedoStore';
 
-export function adjustRotation(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, angle: number) {
+export function adjustRotation({ canvas, ctx }: CanvasContext, angle: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

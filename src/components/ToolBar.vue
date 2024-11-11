@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from '../types/toolType';
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import {adjustBrightness} from '../module/brightnessAdjust'; // 引入亮度调节逻辑
+import {adjustBrightness} from '../module/brightness'; // 引入亮度调节逻辑
 
 // 定义接收的 props
 const props = defineProps<{

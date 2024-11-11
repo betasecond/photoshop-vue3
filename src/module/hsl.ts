@@ -2,7 +2,7 @@ import { useUndoRedoStore } from "../store/undoRedoStore";
 import { rgbToHsl, hslToRgb } from "../utils/colorUtils";
 import {HSL} from "../types/HSLType";
 
-export function adjustHSL(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, newHSL:HSL) {
+export function adjustHSL({ canvas, ctx }: CanvasContext, newHSL:HSL) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

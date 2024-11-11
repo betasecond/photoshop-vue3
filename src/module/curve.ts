@@ -1,8 +1,7 @@
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
 export function adjustCurve(
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>,
+{ canvas, ctx }: CanvasContext,
     curve: Curve,
     channel: 'red' | 'green' | 'blue'
 ) {
