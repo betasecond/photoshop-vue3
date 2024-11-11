@@ -1,6 +1,6 @@
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
-export function adjustContrast(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, contrastValue: number) {
+export function adjustContrast({ canvas, ctx }: CanvasContext, contrastValue: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

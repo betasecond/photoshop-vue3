@@ -121,6 +121,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :selectionBounds="propertyStore.cropArea"
           :watermark-options="propertyStore.watermarkOption"
           :hsl="propertyStore.hsl"
+          :dehazeStrength="propertyStore.dehazeStrength"
           :intensity="propertyStore.intensity"
           :colorTemperature="propertyStore.colorTemperature"
           :curveAdjustmentState="propertyStore.curveAdjustment"

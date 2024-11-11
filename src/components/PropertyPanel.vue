@@ -90,6 +90,11 @@ const handleUpdateCurve = (channel: 'red' | 'green' | 'blue', index: number, val
   propertyStore.updateCurve(channel, index, newValue);
 };
 
+const updateDehazeStrength = (event:Event) =>{
+  const newUpdateDehazeStrength = Number((event.target as HTMLInputElement).value);
+  propertyStore.adjustDehazeStrength(newUpdateDehazeStrength);
+};
+
 // 生成曲线路径 (SVG Path)
 const getCurvePath = (curve: Curve) => {
   let pathData = `M 0 ${250 - curve[0].output}`;
@@ -146,6 +151,7 @@ function handleToneMappingChange(event) {
               'Sharpen',
               'ToneMapping',
               'ColorTemperature',
+              'Dehaze',
               ]"
           :key="parameter"
           :class="{ active: propertyStore.selectedParameter === parameter }"
@@ -462,6 +468,19 @@ function handleToneMappingChange(event) {
       />
       <p>Current smoothing radius: {{ propertyStore.smoothingRadius }}</p>
     </template>
+    <!-- 去雾强度滑动条 -->
+    <template v-if="propertyStore.selectedParameter === 'Dehaze'">
+      <label for="dehaze-strength">Dehaze Strength:</label>
+      <input
+          type="range"
+          id="dehaze-strength"
+          min="0"
+          max="100"
+          :value="propertyStore.dehazeStrength"
+          @input="updateDehazeStrength"
+      />
+      <p>Current dehaze strength: {{ propertyStore.dehazeStrength }}</p>
+    </template>
     <!-- 曲线调整控制面板 -->
     <template v-if="propertyStore.selectedParameter === 'Curve'">
       <div class="curve-adjustment-control">
@@ -584,5 +603,13 @@ function handleToneMappingChange(event) {
   height: 20px;
   border: 1px solid #000;
 }
+#dehaze-strength {
+  width: 100%;
+  margin: 10px 0;
+}
 
+p {
+  font-size: 14px;
+  color: #666;
+}
 </style>

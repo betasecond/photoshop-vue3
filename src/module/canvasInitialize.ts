@@ -2,7 +2,7 @@ import { useUndoRedoStore } from '../store/undoRedoStore';
 
 
 
-export function initializeCanvas(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>) {
+export function initializeCanvas({ canvas, ctx }: CanvasContext) {
     if (canvas.value) { // 确保 canvas.value 不为空
         ctx.value = canvas.value.getContext('2d'); // 将 context 赋值给 ctx
         if (ctx.value) { // 确保获取到的 context 不为空

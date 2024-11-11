@@ -50,6 +50,8 @@
     }
   },
   "dependencies": {
+    "face-api.js": "^0.22.2",
+    "unplugin-auto-import": "^0.18.3",
     "vue": "^3.2.25"
   },
   "devDependencies": {

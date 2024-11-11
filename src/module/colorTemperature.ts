@@ -1,6 +1,6 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
 
-export function adjustColorTemperature(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, colorTemperature: number) {
+export function adjustColorTemperature({ canvas, ctx }: CanvasContext, colorTemperature: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

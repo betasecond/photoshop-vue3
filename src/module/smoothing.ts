@@ -1,6 +1,6 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
 
-export function applySmoothing(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, radius: number) {
+export function smoothing({ canvas, ctx }: CanvasContext, radius: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

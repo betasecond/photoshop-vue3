@@ -4,8 +4,7 @@ import {applyReinhard} from  "./toneMappingFunction/reinhard"
 import {applyACES} from "./toneMappingFunction/ACES";
 import {applyFilmic} from "./toneMappingFunction/filmic";
 export function applyToneMapping(
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>,
+{ canvas, ctx }: CanvasContext,
     type: ToneMappingType, params: ReinhardParams | ACESParams | FilmicParams
 ) {
     const undoRedoStore = useUndoRedoStore();

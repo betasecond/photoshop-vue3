@@ -1,6 +1,6 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
 
-export function adjustExposure(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, exposureValue: number) {
+export function adjustExposure({ canvas, ctx }: CanvasContext, exposureValue: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {initializeCanvas} from '../module/canvasInitialize';
-import {loadImage} from "../module/imageLoad";
-import {saveImage} from "../module/imageSave";
+import {loadImage} from "../module/imageIO/imageLoad";
+import {saveImage} from "../module/imageIO/imageSave";
 import {draw, startDrawing, stopDrawing} from "../module/drawing";
 import {AdjustmentToolType, EditToolType, OneClickActionToolType, ToolType} from "../types/toolType";
-import {adjustBrightness} from "../module/brightnessAdjust";
+import {adjustBrightness} from "../module/brightness";
 import {useUndoRedoStore} from "../store/undoRedoStore";
 import {applyWatermark} from "../module/watermark";
-import {adjustContrast} from "../module/contrastAdjust";
+import {adjustContrast} from "../module/contrast";
 import {adjustRotation} from "../module/rotation";
 import {cropCanvas} from "../module/crop";
 import {WatermarkOptions} from "../types/watermarkType";
@@ -15,21 +15,52 @@ import {adjustSaturation} from "../module/saturation";
 import {adjustExposure} from "../module/exposure";
 import {adjustHSL} from "../module/hsl";
 import {HSL} from "../types/HSLType";
-import {applySharpen} from "../module/applySharpen";
+import {applySharpen} from "../module/sharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
-import {adjustCurve} from "../module/adjustCurve";
-import {applySmoothing} from "../module/applySmoothing";
+import {adjustCurve} from "../module/curve";
+import {smoothing} from "../module/smoothing";
 import {ToneMappingConfig} from "../types/ToneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
-
+import {adjustDehaze} from "../module/dehaze";
+import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/detectFaceInCanvas";
+import {loadModels} from "../module/face/faceDetection";
+import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
+import {BeautifyParams} from "../types/beautifyType";
+import  {CanvasContext}from  "../types/ContextType"
 
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
 
 // 引用和状态
-const canvas = ref<HTMLCanvasElement | null>(null);
-const ctx = ref<CanvasRenderingContext2D | null>(null);
+
+const canvasRef: CanvasContext = {
+  canvas: ref(null),
+  ctx: ref(null),
+  getContext(){
+    return this.ctx;
+  },
+  getCanvas(){
+    return this.canvas;
+  },
+  // 检查 canvas 和 ctx 是否都有效
+  isValid() {
+    return this.canvas.value !== null && this.ctx.value !== null;
+  },
+
+  // 检查 canvas 是否有效
+  isCanvasValid() {
+    return this.canvas.value !== null;
+  },
+
+  // 检查 ctx 是否有效
+  isContextValid() {
+    return this.ctx.value !== null;
+  },
+
+
+};
+
 let isDrawing = false;
 
 // 属性定义
@@ -54,6 +85,7 @@ const props = defineProps<{
   channel: 'red' | 'green' | 'blue',
   smoothRadius:number,
   hsl:HSL,
+  dehazeStrength:number,
   curveAdjustmentState:CurveAdjustmentState,
   toneMappingConfig:ToneMappingConfig,
   watermarkOptions: WatermarkOptions;
@@ -62,27 +94,35 @@ const props = defineProps<{
   appliedEditTool:{type:EditToolType,id:number } | null;
 }>();
 
+const canvasELementRef = ref<HTMLCanvasElement | null>(null);
+const ctxElementRef = ref<CanvasRenderingContext2D | null>(null);
 // 挂载后的 Canvas 初始化
 onMounted(() => {
-  initializeCanvas(canvas, ctx);
-  if (canvas.value && ctx.value) {
-    undoRedoStore.initializeCanvasState(canvas.value, ctx.value);
+
+  // 更新 canvasRef 中的 canvas 和 ctx
+  canvasRef.canvas.value = canvasELementRef.value;
+  canvasRef.ctx.value = canvasELementRef.value.getContext('2d');
+  initializeCanvas(canvasRef);
+  if (canvasRef.isValid()) {
+    undoRedoStore.initializeCanvasState(canvasRef.getCanvas().value, canvasRef.getContext().value);
   } else {
     console.error('Failed to initialize canvas or context');
   }
+  // 人脸模型
+  loadModels();
 });
 
 // 亮度调整监听
 watch(() => props.brightness, (newBrightness) => {
   if (newBrightness !== 0) {
-    adjustBrightness(canvas, ctx, newBrightness);
+    adjustBrightness(canvasRef, newBrightness);
   }
 });
 
 // 图片加载处理
 const handleImageLoad = (event: Event) => {
-  if (canvas.value) {
-    loadImage(event, canvas, ctx);
+  if (canvasRef.isCanvasValid()) {
+    loadImage(event, canvasRef);
   } else {
     console.log('Canvas is not ready for loading images.');
   }
@@ -92,15 +132,54 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
   switch (effect) {
     case OneClickActionToolType.Watermark:
       console.log("Applying Watermark effect on canvas");
-      if (ctx.value && canvas.value) {
-        applyWatermark(canvas, ctx, props.watermarkOptions);
+      if (canvasRef.isValid()) {
+        applyWatermark(canvasRef, props.watermarkOptions);
       }
       break;
     case OneClickActionToolType.FaceDetection:
       console.log("Applying Face Detection effect on canvas");
       // 调用人脸检测逻辑
+      if (canvasRef.isCanvasValid()) {
+        // 调用人脸检测逻辑并绘制框
+        detectFaceInCanvas(canvasRef.getCanvas(),true)  // true表示绘制红框
+            .then((detections) => {
+              console.log('Face Detection Results:', detections);
+            })
+            .catch((error) => {
+              console.error('Error during face detection:', error);
+            });
+      }
       break;
+    case OneClickActionToolType.Dehaze:
+      console.log("Applying Dehaze effect on canvas");
+      adjustDehaze(canvasRef,props.dehazeStrength);
+      break;
+    case OneClickActionToolType.FaceBeautify:
+      const beautifyParams:BeautifyParams = {
+        smoothStrength: 5,
+        brightness: 10,
+        contrast: 1.2, // 适当的对比度调整
+        skinTone:'warm'
+      };
+      console.log("Applying Face Beautify effect on canvas");
 
+      // 调用人脸检测获取所有人脸框
+      detectFaceInCanvasForBeautify(canvasRef.getCanvas()).then(faceDetections => {
+        if (faceDetections.length > 0) {
+          // 调用美颜滤镜应用函数，传入检测到的人脸框和美颜参数
+          applyBeautifyFilter(
+              canvasRef,
+              faceDetections,
+              beautifyParams,
+          );
+        } else {
+          console.log("No faces detected, skipping beautify.");
+        }
+      }).catch(error => {
+        console.error("Error during face detection:", error);
+      });
+
+      break;
     default:
       console.warn(`Effect ${effect} is not implemented.`);
       break;
@@ -111,55 +190,55 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
   switch (adjustmentToolType) {
     case AdjustmentToolType.Contrast:
       console.log("Applying Contrast Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        adjustContrast(canvas, ctx,props.contrast);
+      if (canvasRef.isValid()) {
+        adjustContrast(canvasRef,props.contrast);
       }
       break;
     case AdjustmentToolType.Brightness:
       console.log("Applying Bright Adjustment on canvas");
-      if(ctx.value && canvas.value){
-        adjustBrightness(canvas,ctx,props.brightness);
+      if(canvasRef.isValid()){
+        adjustBrightness(canvasRef,props.brightness);
       }
       break;
     case AdjustmentToolType.Exposure:
       console.log("Applying Exposure Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        adjustExposure(canvas, ctx, props.exposure);
+      if (canvasRef.isValid()) {
+        adjustExposure(canvasRef, props.exposure);
       }
       break;
     case AdjustmentToolType.Saturation:
       console.log("Applying Saturation Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        adjustSaturation(canvas, ctx, props.saturation);
+      if (canvasRef.isValid()) {
+        adjustSaturation(canvasRef, props.saturation);
       }
       break;
     case AdjustmentToolType.HSL:
       console.log("Applying HSL Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        adjustHSL(canvas, ctx, props.hsl);
+      if (canvasRef.isValid()) {
+        adjustHSL(canvasRef, props.hsl);
       }
       break;
     case AdjustmentToolType.HistogramEqualization:
       console.log("Applying HistogramEqualization Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        histogramEqualization(canvas,ctx);
+      if (canvasRef.isValid()) {
+        histogramEqualization(canvasRef);
       }
       break;
     case AdjustmentToolType.Sharpen:
       console.log("Applying Sharpend Adjustment on canvas");
-      if (ctx.value && canvas.value) {
-        applySharpen(canvas,ctx,props.intensity);
+      if (canvasRef.isValid()) {
+        applySharpen(canvasRef,props.intensity);
       }
       break;
     case AdjustmentToolType.Smoothing:
       console.log("Applying Smoothing Adjustment on canvas");
-      if(ctx.value && canvas.value){
-        applySmoothing(canvas,ctx,props.smoothRadius);
+      if(canvasRef.isValid()){
+        smoothing(canvasRef,props.smoothRadius);
       }
       break;
     case AdjustmentToolType.CurveAdjustment:
       console.log("Applying Curve Adjustment on canvas");
-      if (ctx.value && canvas.value) {
+      if (canvasRef.isValid()) {
         let channel = props.channel;
         //  TODO:用法太自由 后续改成switch
         let key:string = `${channel}Curve`;
@@ -168,19 +247,19 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
           console.log("curve is missing. content key:"+key);
           return;
         }
-        adjustCurve(canvas, ctx, curve, channel);
+        adjustCurve(canvasRef, curve, channel);
       }
       break;
     case AdjustmentToolType.ToneMapping:
       console.log("Applying Tone Mapping Adjustment on canvas");
-      if(ctx.value && canvas.value) {
-        applyToneMapping(canvas,ctx,props.toneMappingConfig.type,props.toneMappingConfig.params);
+      if(canvasRef.isValid()) {
+        applyToneMapping(canvasRef,props.toneMappingConfig.type,props.toneMappingConfig.params);
       }
       break;
     case AdjustmentToolType.ColorTemperature:
       console.log("Applying ColorTemperature on canvas");
-      if(ctx.value && canvas.value) {
-        adjustColorTemperature(canvas,ctx,props.colorTemperature);
+      if(canvasRef.isValid()) {
+        adjustColorTemperature(canvasRef,props.colorTemperature);
       }
       break;
     default:
@@ -193,14 +272,14 @@ const applyEditToolLogic = (editTooType: EditToolType) => {
   switch (editTooType) {
     case EditToolType.Rotate:
       console.log("Applying Rotate EditTool on canvas");
-      if (ctx.value && canvas.value) {
-        adjustRotation(canvas, ctx,props.rotation);
+      if (canvasRef.isValid()) {
+        adjustRotation(canvasRef,props.rotation);
       }
       break;
     case EditToolType.Crop:
       console.log("Applying Crop EditTool on canvas");
-      if(ctx.value && canvas.value){
-        cropCanvas(canvas, ctx,props.selectionBounds);
+      if(canvasRef.isValid()){
+        cropCanvas(canvasRef,props.selectionBounds);
       }
       break;
     default:
@@ -229,7 +308,7 @@ watch(() => props.appliedEditTool,(newEditTool,oldEditTool) => {
 })
 // 保存图片
 const handleSaveImage = () => {
-  if (canvas.value) saveImage(canvas);
+  if (canvasRef.isCanvasValid()) saveImage(canvas);
 };
 
 // 绘制相关事件
@@ -238,12 +317,12 @@ const handleMouseDown = (event: MouseEvent) => {
 };
 
 const handleMouseUp = () => {
-  stopDrawing(ctx);
+  stopDrawing(canvasRef.getContext());
   isDrawing = false;
 };
 
 const handleMouseMove = (event: MouseEvent) => {
-  draw(event, canvas, ctx, props.selectedTool, {
+  draw(event, canvasRef, props.selectedTool, {
     color: props.selectedColor,
     brushSize: props.brushSize,
     eraserSize: props.eraserSize
@@ -254,19 +333,21 @@ const handleMouseMove = (event: MouseEvent) => {
 
 <template>
   <div class="canvas-container">
-    <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvas, ctx)" />
+    <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvasRef)" />
 
     <canvas
-        ref="canvas"
-        width="1000"
-        height="1000"
-        @mousedown="handleMouseDown"
-        @mouseup="handleMouseUp"
-        @mousemove="handleMouseMove"
+        ref="canvasELementRef"
+    width="1000"
+    height="1000"
+    @mousedown="handleMouseDown"
+    @mouseup="handleMouseUp"
+    @mousemove="handleMouseMove"
     ></canvas>
+
     <button @click="handleSaveImage">Save Image</button>
   </div>
 </template>
+
 <style scoped>
 .canvas-container {
   flex: 1;

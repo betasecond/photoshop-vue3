@@ -1,4 +1,4 @@
-import {useUndoRedoStore} from "../store/undoRedoStore";
+import {useUndoRedoStore} from "../../store/undoRedoStore";
 
 export function saveImage(canvas: Ref<HTMLCanvasElement | null>) {
     if (!canvas.value) {

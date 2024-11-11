@@ -1,7 +1,7 @@
-import { useUndoRedoStore } from '../store/undoRedoStore';
+import { useUndoRedoStore } from '../../store/undoRedoStore';
 
 
-export function loadImage(event: Event, canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>) {// 参数校验
+export function loadImage(event: Event, { canvas, ctx }: CanvasContext) {// 参数校验
     const undoRedoStore = useUndoRedoStore();
 
     if (!event || !canvas || !ctx) {

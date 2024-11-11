@@ -1,8 +1,7 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
 
 export function cropCanvas(
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>,
+{ canvas, ctx }: CanvasContext,
     cropArea: { x: number, y: number, width: number, height: number }
 ) {
     const undoRedoStore = useUndoRedoStore();
