@@ -1,4 +1,5 @@
 import { useUndoRedoStore } from '../store/undoRedoStore';
+import {CanvasContext} from "../types/ContextType";
 
 export function adjustRotation({ canvas, ctx }: CanvasContext, angle: number) {
     const undoRedoStore = useUndoRedoStore();

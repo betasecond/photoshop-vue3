@@ -3,7 +3,7 @@ interface CurvePoint {
     output: number; // 输出色阶（y轴）
 }
 
-interface CurveAdjustmentState {
+export interface CurveAdjustmentState {
     redCurve: Curve;
     greenCurve: Curve;
     blueCurve: Curve;

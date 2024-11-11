@@ -1,6 +1,7 @@
 import { Ref } from 'vue';
 import { adjustContrast } from './contrast';  // 导入现有的对比度调整函数
-import { adjustBrightness } from './brightness';  // 导入现有的亮度调整函数
+import { adjustBrightness } from './brightness';
+import {CanvasContext} from "../types/ContextType";  // 导入现有的亮度调整函数
 
 // 用于去雾的算法实现
 export function adjustDehaze({ canvas, ctx }: CanvasContext, dehazeStrength: number) {

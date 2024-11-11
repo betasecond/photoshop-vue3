@@ -3,6 +3,7 @@ import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolTyp
 import {WatermarkOptions} from "../types/watermarkType";
 import {HSL} from "../types/HSLType";
 import {CropArea} from "../types/CropAreaType";
+import {CurveAdjustmentState} from "../types/CurveType"
 import {
     ACESParams,
     FilmicParams,
