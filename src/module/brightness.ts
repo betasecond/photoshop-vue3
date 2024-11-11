@@ -1,6 +1,6 @@
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
-export function adjustBrightness(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, brightnessValue: number) {
+export function adjustBrightness({ canvas, ctx }: CanvasContext, brightnessValue: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

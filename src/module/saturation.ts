@@ -1,7 +1,7 @@
 import {hslToRgb, rgbToHsl} from "../utils/colorUtils";
 import {useUndoRedoStore} from "../store/undoRedoStore";
 
-export function adjustSaturation(canvas: Ref<HTMLCanvasElement | null>, ctx: Ref<CanvasRenderingContext2D | null>, saturationValue: number) {
+export function adjustSaturation({ canvas, ctx }: CanvasContext, saturationValue: number) {
     const undoRedoStore = useUndoRedoStore();
 
     if (!canvas.value || !ctx.value) {

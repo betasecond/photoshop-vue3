@@ -27,8 +27,7 @@ export function stopDrawing(ctx: Ref<CanvasRenderingContext2D | null>) {
 // 绘制函数签名
 export function draw(
     event: MouseEvent,
-    canvas: Ref<HTMLCanvasElement | null>,
-    ctx: Ref<CanvasRenderingContext2D | null>,
+{ canvas, ctx }: CanvasContext,
     tool: DrawingToolType,
     config: { color: string, brushSize: number, eraserSize: number },
     isDrawing: boolean
