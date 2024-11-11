@@ -25,7 +25,6 @@ export const useCanvasStore = defineStore('canvas', () => {
         },
     }
 
-    // 可以在 store 中定义一些方法，用于初始化和操作 canvas
     const initializeCanvas = (canvasElement: HTMLCanvasElement | null) => {
         if (canvasElement) {
             canvasRef.value.canvas = canvasElement;

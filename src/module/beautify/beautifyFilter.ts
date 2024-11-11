@@ -41,6 +41,8 @@ export function applyBeautifyFilter(
         // 2. 亮度调整
         applyBrightnessAdjustment(faceData, beautifyParams.brightness);
 
+
+
         // 3. 对比度调整
         applyContrastAdjustment(faceData, beautifyParams.contrast);
 

@@ -13,7 +13,7 @@ export interface CanvasContext {
     // 检查 ctx 是否有效（为 null 表示无效）
     isContextValid(): boolean;
 
-    getContext(): Ref<HTMLCanvasElement | null>;
+    getContext(): Ref<CanvasRenderingContext2D | null>;
 
     getCanvas():Ref<HTMLCanvasElement | null>;
 }
