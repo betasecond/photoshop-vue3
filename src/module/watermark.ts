@@ -1,5 +1,6 @@
 import { useUndoRedoStore } from '../store/undoRedoStore';
 import {WatermarkOptions} from "../types/watermarkType";
+import {CanvasContext} from "../types/ContextType";
 
 
 // 默认水印配置

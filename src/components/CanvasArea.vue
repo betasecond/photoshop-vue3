@@ -28,6 +28,7 @@ import {loadModels} from "../module/face/faceDetection";
 import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
 import {BeautifyParams} from "../types/beautifyType";
 import  {CanvasContext}from  "../types/ContextType"
+import {CurveAdjustmentState} from "../types/CurveType";
 
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
