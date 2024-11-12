@@ -138,7 +138,11 @@ const updateSaturation = (event: Event) => {
   const newSaturation = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustSaturation(newSaturation);
 };
+const updateBrushColor = (event:Event) => {
+  const newBrushColor = String((event.target as HTMLInputElement).value);
+  propertyStore.updateColor(newBrushColor);
 
+}
 const updateHue = (event: Event) => {
   const newHue = Number((event.target as HTMLInputElement).value);
   propertyStore.adjustHue(newHue);
@@ -238,7 +242,16 @@ function handleToneMappingChange(event) {
           step="1"
       @input="updateBrushSize"
       />
+
       <var-chip type="primary">Brush Size: {{ propertyStore.brushSize }}px</var-chip>
+      <!-- 颜色 -->
+      <div>
+        <h4>Color:</h4>
+        <var-input
+            v-model="propertyStore.selectedColor"
+            type="color"
+        />
+      </div>
     </template>
     <!-- 橡皮擦大小滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Eraser')">

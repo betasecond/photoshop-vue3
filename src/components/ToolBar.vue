@@ -88,11 +88,6 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
       <var-button type="success" @click="undo" :disabled="!canUndo">Undo</var-button>
       <var-button type="success" @click="redo" :disabled="!canRedo">Redo</var-button>
 
-      <!-- 颜色选择器 -->
-
-      <label for="colorPicker">Color:</label>
-      <input type="color" id="colorPicker" :value="selectedColor" @input="updateColor" />
-
 
     </div>
     <!-- 参数调整组 -->
