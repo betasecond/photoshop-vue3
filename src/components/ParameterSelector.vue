@@ -37,14 +37,12 @@ const setParameter = (parameter) => {
 
 };
 const handleSwitchChange = (parameter) => {
-  // 可以根据需要处理启用状态变化
-  setParameter(parameter);
-  parameters.value.forEach(p => {
-    if (p !== parameter) {
-      p.enabled = false;
-    }
-  });
+  // 切换当前参数的启用状态
   parameter.enabled = !parameter.enabled;
+
+  // 更新选中的参数列表
+  setParameter(parameter);
+
   console.log(`${parameter.name} is now ${parameter.enabled ? 'enabled' : 'disabled'}`);
 };
 
@@ -66,7 +64,7 @@ const handleSwitchChange = (parameter) => {
           :icon="parameter.icon"
           :border=true
           :border-offset=0
-          @click="setParameter(parameter)"
+
       >
         {{ parameter.name }}
 

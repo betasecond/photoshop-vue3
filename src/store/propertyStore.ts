@@ -17,6 +17,8 @@ export const usePropertyStore = defineStore('propertyStore', {
         selectedTool: DrawingToolType.Brush,
         selectedColor: '#000000',
         selectedParameter: 'Brush',
+        // 在 store 中初始化 selectedParameterList
+        selectedParameterList: [],
         brushSize: 10,
         eraserSize: 10,
         brightness: 50,
@@ -70,7 +72,18 @@ export const usePropertyStore = defineStore('propertyStore', {
     actions: {
         // 设置当前选择的参数类型
         setSelectedParameter(parameter: string) {
-            this.selectedParameter = parameter;
+            const index = this.selectedParameterList.indexOf(parameter);
+            if (index === -1) {
+                // 如果没有选中，则添加
+                this.selectedParameterList.push(parameter);
+            } else {
+                // 如果已选中，则移除
+                this.selectedParameterList.splice(index, 1);
+            }
+        },
+        // 检查当前参数是否已选中
+        checkSelectedParameter(parameter: string): boolean {
+            return this.selectedParameterList.includes(parameter);
         },
         // 更新当前选中的工具
         updateTool(tool: DrawingToolType) {

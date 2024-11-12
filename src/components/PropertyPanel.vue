@@ -228,7 +228,7 @@ function handleToneMappingChange(event) {
 
 
     <!-- 画笔大小滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Brush'">
+    <template v-if="propertyStore.checkSelectedParameter('Brush')">
       <h3>Brush Size:</h3>
       <var-slider
           track-height="8" thumb-size="8"
@@ -241,7 +241,7 @@ function handleToneMappingChange(event) {
       <var-chip type="primary">Brush Size: {{ propertyStore.brushSize }}px</var-chip>
     </template>
     <!-- 橡皮擦大小滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Eraser'">
+    <template v-if="propertyStore.checkSelectedParameter('Eraser')">
       <h3>Eraser Size:</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
@@ -261,7 +261,7 @@ function handleToneMappingChange(event) {
       </var-button>
     </template>
     <!-- 亮度滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Brightness'">
+    <template v-if="propertyStore.checkSelectedParameter('Brightness')">
       <h3>Brightness:</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
@@ -281,7 +281,7 @@ function handleToneMappingChange(event) {
       </var-button>
     </template>
     <!-- 对比度滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Contrast'">
+    <template v-if="propertyStore.checkSelectedParameter('Contrast')">
       <h3>Contrast:</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
@@ -301,7 +301,7 @@ function handleToneMappingChange(event) {
       </var-button>
     </template>
     <!-- 曝光滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Exposure'">
+    <template v-if="propertyStore.checkSelectedParameter('Exposure')">
       <h3>Exposure:</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
@@ -322,7 +322,7 @@ function handleToneMappingChange(event) {
     </template>
 
     <!-- 饱和度滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Saturation'">
+    <template v-if="propertyStore.checkSelectedParameter('Saturation')">
       <h3>Saturation:</h3>
 
       <!-- 使用 var-slider 组件 -->
@@ -343,7 +343,7 @@ function handleToneMappingChange(event) {
     </template>
 
     <!-- 色温滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'ColorTemperature'">
+    <template v-if="propertyStore.checkSelectedParameter('ColorTemperature')">
       <h3>Color Temperature Adjustment:</h3>
 
       <!-- Color Temperature 调整 -->
@@ -373,7 +373,7 @@ function handleToneMappingChange(event) {
       </var-button>
     </template>
     <!-- HSL 调整 -->
-    <template v-if="propertyStore.selectedParameter === 'HSL'">
+    <template v-if="propertyStore.checkSelectedParameter('HSL')">
       <h3>HSL Adjustments:</h3>
 
       <!-- Hue 调整 -->
@@ -428,7 +428,7 @@ function handleToneMappingChange(event) {
       </var-button>
     </template>
     <!-- 旋转角度滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Rotate'">
+    <template v-if="propertyStore.checkSelectedParameter('Rotate')">
       <label for="rotation">Rotation:</label>
       <input
           type="range"
@@ -440,7 +440,7 @@ function handleToneMappingChange(event) {
       />
       <p>Current rotation: {{ propertyStore.rotation }}</p>
     </template>
-    <template v-if="propertyStore.selectedParameter === 'Crop'">
+    <template v-if="propertyStore.checkSelectedParameter('Crop')">
       <h3>Crop:</h3>
       <div class="crop-controls">
         <label>
@@ -492,8 +492,9 @@ function handleToneMappingChange(event) {
     </template>
 
     <!-- 水印选项控制和预览 -->
-    <template v-if="propertyStore.selectedParameter === 'Watermark'">
+    <template v-if="propertyStore.checkSelectedParameter('Watermark')">
       <div class="watermark-control">
+        <h3>Watermark:</h3>
         <!-- 水印文本 -->
         <div>
           <var-input
@@ -587,7 +588,7 @@ function handleToneMappingChange(event) {
 
     </template>
     <!-- 锐化滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Sharpen'">
+    <template v-if="propertyStore.checkSelectedParameter('Sharpen')">
       <h3>Sharpen Intensity:</h3>
 
       <var-slider
@@ -609,7 +610,7 @@ function handleToneMappingChange(event) {
 
 
     <!-- 平滑半径滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Smooth'">
+    <template v-if="propertyStore.checkSelectedParameter('Smooth')">
       <h3>Smoothing Radius:</h3>
 
       <var-slider
@@ -626,7 +627,7 @@ function handleToneMappingChange(event) {
     </template>
 
     <!-- 去雾强度滑动条 -->
-    <template v-if="propertyStore.selectedParameter === 'Dehaze'">
+    <template v-if="propertyStore.checkSelectedParameter('Dehaze')">
       <h3>Dehaze Strength:</h3>
 
       <var-slider
@@ -643,7 +644,7 @@ function handleToneMappingChange(event) {
     </template>
 
     <!-- 曲线调整控制面板 -->
-    <template v-if="propertyStore.selectedParameter === 'Curve'">
+    <template v-if="propertyStore.checkSelectedParameter('Curve')">
       <div class="curve-adjustment-control">
         <!-- 红色通道曲线 -->
         <div>
@@ -737,7 +738,7 @@ function handleToneMappingChange(event) {
 
 
     <!-- 色调映射类型选择 -->
-    <template v-if="propertyStore.selectedParameter === 'ToneMapping'">
+    <template v-if="propertyStore.checkSelectedParameter('ToneMapping')">
       <h3>Tone Mapping Type:</h3>
 
       <!-- 使用 var-select 来替换原有的 <select> -->
