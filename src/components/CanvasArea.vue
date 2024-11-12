@@ -368,5 +368,6 @@ button {
   margin-top: 10px;
   padding: 10px 20px;
   cursor: pointer;
+  width: 300px; /* 根据需要调整宽度 */
 }
 </style>
