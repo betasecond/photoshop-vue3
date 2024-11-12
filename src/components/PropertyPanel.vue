@@ -1,12 +1,37 @@
 <script setup lang="ts">
 import {usePropertyStore} from "../store/propertyStore";
 import {CropArea} from "../types/CropAreaType";
-
+import { Button as VarButton,Snackbar, } from '@varlet/ui'
+import '@varlet/ui/es/button/style/index'
+import '@varlet/ui/es/snackbar/style/index'
+import '@varlet/ui/es/ripple/style/index'
+import '@varlet/ui/es/paper/style/index'
+import '@varlet/ui/es/switch/style/index'
+import '@varlet/ui/es/cell/style/index'
+import '@varlet/ui/es/input/style/index'
 const propertyStore = usePropertyStore();
 const hslPreviewColor = computed(() => {
   const { hue, saturation, lightness } = propertyStore.hsl;
   return `hsl(${hue}, ${saturation + 100}%, ${lightness + 50}%)`; // 中心色以更明显的颜色来预览
 });
+const parameters = ref([
+  { name: 'Brush', icon: 'brush', enabled: false },
+  { name: 'Eraser', icon: 'eraser', enabled: false },
+  { name: 'Brightness', icon: 'brightness-6', enabled: false },
+  { name: 'Contrast', icon: 'contrast', enabled: false },
+  { name: 'Exposure', icon: 'exposure', enabled: false },
+  { name: 'Saturation', icon: 'invert_colors', enabled: false },
+  { name: 'HSL', icon: 'color-lens', enabled: false },
+  { name: 'Crop', icon: 'crop', enabled: false },
+  { name: 'Watermark', icon: 'watermark', enabled: false },
+  { name: 'Smooth', icon: 'smooth', enabled: false },
+  { name: 'Curve', icon: 'curve', enabled: false },
+  { name: 'Sharpen', icon: 'sharpen', enabled: false },
+  { name: 'ToneMapping', icon: 'photo-filter', enabled: false },
+  { name: 'ColorTemperature', icon: 'wb_sunny', enabled: false },
+  { name: 'Dehaze', icon: 'blur_circular', enabled: false },
+]);
+const parameterState = ref({})  // 用来存储每个参数的状态
 // 更新 brushSize
 const updateBrushSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
@@ -22,10 +47,21 @@ const setEraserToFullScreen = () =>{
   propertyStore.eraserSize = Math.max(window.innerWidth, window.innerHeight);
 }
 // 更新 selectedParameter
-const setParameter = (parameter: string) => {
-  propertyStore.setSelectedParameter(parameter);
-};
+const setParameter = (parameter) => {
+  propertyStore.setSelectedParameter(parameter.name);
 
+};
+const handleSwitchChange = (parameter) => {
+  // 可以根据需要处理启用状态变化
+  setParameter(parameter);
+  parameters.value.forEach(p => {
+    if (p !== parameter) {
+      p.enabled = false;
+    }
+  });
+  parameter.enabled = !parameter.enabled;
+  console.log(`${parameter.name} is now ${parameter.enabled ? 'enabled' : 'disabled'}`);
+};
 // 更新对比度
 const updateContrast = (event: Event) => {
   const newContrast = Number((event.target as HTMLInputElement).value);
@@ -131,35 +167,12 @@ function handleToneMappingChange(event) {
 </script>
 
 <template>
+
   <div class="property-panel">
     <h3>Properties</h3>
-    <!-- 参数选择器 -->
-    <div class="parameter-selector">
-      <button
-          v-for="parameter in [
-              'Brush',
-              'Eraser',
-              'Brightness',
-              'Contrast',
-              'Exposure',
-              'Saturation',
-              'HSL',
-              'Crop',
-              'Watermark',
-              'Smooth',
-              'Curve',
-              'Sharpen',
-              'ToneMapping',
-              'ColorTemperature',
-              'Dehaze',
-              ]"
-          :key="parameter"
-          :class="{ active: propertyStore.selectedParameter === parameter }"
-          @click="setParameter(parameter)"
-      >
-        {{ parameter }}
-      </button>
-    </div>
+  <var-paper>
+
+
     <!-- 画笔大小滑动条 -->
     <template v-if="propertyStore.selectedParameter === 'Brush'">
       <label for="brush-size">Brush Size:</label>
@@ -320,33 +333,46 @@ function handleToneMappingChange(event) {
       />
       <p>Current rotation: {{ propertyStore.rotation }}</p>
     </template>
-    <!-- 裁剪区域选择 -->
     <template v-if="propertyStore.selectedParameter === 'Crop'">
       <label for="crop">Crop:</label>
       <div class="crop-controls">
         <label>
-          X:
-          <input type="number" v-model.number="propertyStore.cropArea.x" @input="updateCropArea" />
+          <var-input
+              v-model.number="propertyStore.cropArea.x"
+              type="number"
+              @input="updateCropArea"
+              placeholder="X坐标"
+          />
         </label>
         <label>
-          Y:
-          <input type="number" v-model.number="propertyStore.cropArea.y" @input="updateCropArea" />
+          <var-input
+              v-model.number="propertyStore.cropArea.y"
+              type="number"
+              @input="updateCropArea"
+              placeholder="输入Y坐标"
+          />
         </label>
         <label>
-          Width:
-          <input type="number" v-model.number="propertyStore.cropArea.width" @input="updateCropArea" />
+          <var-input
+              v-model.number="propertyStore.cropArea.width"
+              type="number"
+              @input="updateCropArea"
+              placeholder="输入宽度"
+          />
         </label>
         <label>
-          Height:
-          <input type="number" v-model.number="propertyStore.cropArea.height" @input="updateCropArea" />
+          <var-input
+              v-model.number="propertyStore.cropArea.height"
+              type="number"
+              @input="updateCropArea"
+              placeholder="输入高度"
+          />
         </label>
-
       </div>
+
       <!-- SVG 指示图 -->
       <svg width="200" height="200" viewBox="0 0 1000 1000" class="crop-indicator">
-        <!-- 画布背景 -->
         <rect x="0" y="0" width="1000" height="1000" fill="#f0f0f0" stroke="#ccc" />
-        <!-- 裁剪区域 -->
         <rect
             :x="propertyStore.cropArea.x"
             :y="propertyStore.cropArea.y"
@@ -357,6 +383,7 @@ function handleToneMappingChange(event) {
         />
       </svg>
     </template>
+
     <!-- 水印选项控制和预览 -->
     <template v-if="propertyStore.selectedParameter === 'Watermark'">
       <div class="watermark-control">
@@ -580,13 +607,13 @@ function handleToneMappingChange(event) {
       </select>
       <p>Current tone mapping type: {{ propertyStore.toneMappingConfig.type }}</p>
     </template>
-
+  </var-paper>
   </div>
 </template>
 
 <style scoped>
 .property-panel {
-  width: 300px;
+  width: 400px;
   padding: 10px;
   background-color: #f9f9f9;
   border-left: 1px solid #ccc;
@@ -611,5 +638,20 @@ function handleToneMappingChange(event) {
 p {
   font-size: 14px;
   color: #666;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 300px; /* 根据需要调整宽度 */
+}
+
+
+/* 设置固定高度和宽度 */
+.carousel-item {
+  width: 200px;  /* 可以根据需求调整 */
+  height: 150px; /* 可以根据需求调整 */
+  margin: 10px;
 }
 </style>
