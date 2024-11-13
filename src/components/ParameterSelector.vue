@@ -53,11 +53,12 @@ const handleSwitchChange = (parameter) => {
 
 
 <template>
+  <var-paper :elevation="8" :width="'175px'" :height="'100%'" ripple  >
   <div class="parameter-selector">
   <h3>Properties</h3>
   <!-- 参数选择器 -->
   <template v-if="true">
-    <var-paper :elevation="2">
+    <var-paper :elevation="12">
       <var-cell
           v-for="(parameter, index) in parameters"
           :key="parameter.name"
@@ -77,13 +78,14 @@ const handleSwitchChange = (parameter) => {
     </var-paper>
   </template>
   </div>
+  </var-paper>
 </template>
 
 <style scoped>
 .parameter-selector {
   width: 175px;
   padding: 10px;
-  background-color: #f9f9f9;
+
   border-left: 1px solid #ccc;
 }
 .color-preview {

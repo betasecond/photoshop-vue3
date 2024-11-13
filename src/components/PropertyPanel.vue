@@ -835,7 +835,6 @@ const handleToneMappingChange = () => {
 .property-panel {
   width: 400px;
   padding: 10px;
-  background-color: #f9f9f9;
   border-left: 1px solid #ccc;
 }
 .color-preview {

@@ -60,6 +60,7 @@ const brightness = ref(0);
 const emitBrightness = () => emit('adjustBrightness', brightness.value);
 </script>
 <template>
+  <var-paper :elevation="8" :width="'100%'" :height="'100%'" ripple  >
   <div class="toolbar">
     <div class ="common-group">
     <!-- 绘图工具组 -->
@@ -108,13 +109,14 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
 
 
   </div>
+  </var-paper>
 </template>
 
 <style scoped>
 .toolbar {
   display: flex;
   padding: 10px;
-  background-color: #f0f0f0;
+
   border-bottom: 1px solid #ccc;
 }
 

@@ -92,6 +92,9 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 </script>
 
 <template>
+
+    <var-paper  :elevation="2"     :width="'100%'" :height="'100%'" ripple  >
+
   <div id="app">
     <ToolBar
         :selectedTool="propertyStore.selectedTool"
@@ -141,6 +144,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
       <PropertyPanel/>
     </div>
   </div>
+    </var-paper>
 </template>
 
 <style>
@@ -152,6 +156,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
   color: #2c3e50;
 }
 
+
 .main-container {
   display: flex;
   flex-direction: row;
@@ -162,7 +167,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 /* 确保 canvas 和图层管理同时显示 */
 canvas {
   border: 1px solid #ccc;
-  background-color: white;
+
 }
 
 button {
