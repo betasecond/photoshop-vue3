@@ -74,6 +74,7 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
       <var-button type="success" @click="applyEffect(OneClickActionToolType.Dehaze)">Dehaze</var-button>
       <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceDetection)">FaceDetect</var-button>
       <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceBeautify)">FaceBeautify</var-button>
+      <var-button type="success" @click="applyEffect(OneClickActionToolType.VarletStyle)">Style</var-button>
 
     <!-- 编辑工具组 -->
 

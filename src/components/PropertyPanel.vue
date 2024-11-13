@@ -14,6 +14,7 @@ import '@varlet/ui/es/chip/style/index'
 import '@varlet/ui/es/select/style/index'
 import '@varlet/ui/es/option/style/index'
 import {ToneMappingType} from "../types/toneMappingConfigType";
+import {getEnumKeyByValue, VarletStyle} from "../types/varletStyleType";
 
 const propertyStore = usePropertyStore();
 
@@ -792,6 +793,37 @@ const handleToneMappingChange = () => {
 
       <var-chip type="primary">Current tone mapping type: {{ propertyStore.toneMappingConfig.type }}</var-chip>
 
+    </template>
+
+    <!-- 样式类型选择 -->
+    <template v-if="propertyStore.checkSelectedParameter('Style')">
+      <h3>Style Type:</h3>
+
+      <var-select v-model="propertyStore.selectVarletStyle" placeholder="选择样式类型">
+
+        <template #default>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.Dark)" :value="VarletStyle.Dark">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.Dark) }}</span>
+          </var-option>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.md3Light)" :value="VarletStyle.md3Light">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.md3Light) }}</span>
+          </var-option>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.md3Dark)" :value="VarletStyle.md3Dark">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.md3Dark) }}</span>
+          </var-option>
+        </template>
+
+        <template #selected>
+          <var-icon class="selected-icon" :name="getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)" />
+          <span>{{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle) }}</span>
+        </template>
+
+      </var-select>
+
+      <var-chip type="primary">Current style : {{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)  }}</var-chip>
     </template>
 
 

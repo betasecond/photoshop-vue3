@@ -113,6 +113,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :brushSize="propertyStore.brushSize"
           :eraserSize="propertyStore.eraserSize"
           :brightness="propertyStore.brightness"
+          :varletStyle="propertyStore.selectVarletStyle"
           :appliedEffect="propertyStore.appliedEffect"
           :appliedAdjustment="propertyStore.appliedAdjustment"
           :appliedEditTool="propertyStore.appliedEditTool"

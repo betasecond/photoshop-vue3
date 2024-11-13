@@ -43,6 +43,7 @@ export enum OneClickActionToolType {
     AdvancedFilters = 'advancedFilters',
     FaceExpression = 'faceExpression',
     LocalBrightnessExposure = 'localBrightnessExposure',
+    VarletStyle = 'varletStyle',
 }
 // 判断工具类型是否属于绘图工具
 export function isDrawingTool(tool: ToolType): tool is DrawingToolType {

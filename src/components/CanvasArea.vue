@@ -27,10 +27,12 @@ import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/
 import {loadModels} from "../module/face/faceDetection";
 import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
 import {BeautifyParams} from "../types/beautifyType";
-import  {CanvasContext}from "../types/contextType"
+import {CanvasContext} from "../types/contextType"
 import {CurveAdjustmentState} from "../types/curveType";
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/input/style/index'
+import {VarletStyle} from "../types/varletStyleType";
+import {StyleProvider} from "@varlet/ui";
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
 
@@ -72,6 +74,7 @@ const props = defineProps<{
   brushSize: number;            // 画笔大小（仅在 Brush 工具下使用）
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
+  varletStyle:VarletStyle;      // Varlet 样式库 类型
   contrast: number;             // 新增对比度属性
   saturation:number;            // 饱和度
   exposure:number;              // 曝光
@@ -182,6 +185,9 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
       });
 
       break;
+    case OneClickActionToolType.VarletStyle:
+      const style:VarletStyle = props.varletStyle;
+      StyleProvider(style)
     default:
       console.warn(`Effect ${effect} is not implemented.`);
       break;

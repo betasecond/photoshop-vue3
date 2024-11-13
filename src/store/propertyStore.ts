@@ -11,12 +11,14 @@ import {
     ToneMappingConfig,
     ToneMappingType
 } from "../types/toneMappingConfigType";
+import {VarletStyle} from "../types/varletStyleType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
         selectedTool: DrawingToolType.Brush,
         selectedColor: '#000000',
         selectedParameter: 'Brush',
+        selectVarletStyle: VarletStyle.md3Light as VarletStyle,
         // 在 store 中初始化 selectedParameterList
         selectedParameterList: [],
         brushSize: 10,
@@ -169,8 +171,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         updateColorTemperature(colorTemperature:number){
             this.colorTemperature = colorTemperature;
         },
-
-
+        // 更新选择样式
+        updateVarletStyle(varletStyle:VarletStyle){
+            this.varletStyle = varletStyle;
+        },
         // 设置色调映射类型
         setToneMappingType(type: ToneMappingType) {
             this.toneMappingConfig.type = type;

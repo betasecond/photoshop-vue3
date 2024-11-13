@@ -28,6 +28,7 @@ const parameters = ref([
   { name: 'ToneMapping', icon: 'photo-filter', enabled: false },
   { name: 'ColorTemperature', icon: 'wb_sunny', enabled: false },
   { name: 'Dehaze', icon: 'blur_circular', enabled: false },
+  { name: 'Style', icon: 'blur_circular', enabled: false },
 ]);
 
 
