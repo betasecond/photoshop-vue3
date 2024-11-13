@@ -1,5 +1,5 @@
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 
 export function adjustContrast({ canvas, ctx }: CanvasContext, contrastValue: number) {
     const undoRedoStore = useUndoRedoStore();

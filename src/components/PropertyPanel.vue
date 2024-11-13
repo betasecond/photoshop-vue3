@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {usePropertyStore} from "../store/propertyStore";
-import {CropArea} from "../types/CropAreaType";
-import { Button as VarButton,Snackbar, } from '@varlet/ui'
+import {CropArea} from "../types/cropAreaType";
+import {Button as VarButton,} from '@varlet/ui'
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/snackbar/style/index'
 import '@varlet/ui/es/ripple/style/index'
@@ -13,8 +13,8 @@ import '@varlet/ui/es/slider/style/index'
 import '@varlet/ui/es/chip/style/index'
 import '@varlet/ui/es/select/style/index'
 import '@varlet/ui/es/option/style/index'
-import CropControls from './adjustments/crop/CropControls.vue';
-import CropIndicator from './adjustments/crop/CropIndicator.vue';
+import {ToneMappingType} from "../types/toneMappingConfigType";
+
 const propertyStore = usePropertyStore();
 
 const hslPreviewColor = computed(() => {
@@ -217,10 +217,19 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
 };
 
 // 中间方法：处理色调映射选择
-function handleToneMappingChange(event) {
-  const selectedType = event.target.value;
-  // 调用store中的更新方法来设置选择的色调映射算法
-  propertyStore.setToneMappingType(selectedType);
+const handleToneMappingChange = () => {
+  const selectedType = propertyStore.toneMappingConfig.type
+  switch (selectedType) {
+    case 'Reinhard':
+      propertyStore.setToneMappingType('Reinhard')
+      break
+    case 'ACES':
+      propertyStore.setToneMappingType('ACES')
+      break
+    case 'Filmic':
+      propertyStore.setToneMappingType('Filmic')
+      break
+  }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {usePropertyStore} from "../store/propertyStore";
-import {CropArea} from "../types/CropAreaType";
+import {CropArea} from "../types/cropAreaType";
 import { Button as VarButton,Snackbar, } from '@varlet/ui'
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/snackbar/style/index'

@@ -2,15 +2,15 @@ import {defineStore} from 'pinia';
 import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../types/toolType";
 import {WatermarkOptions} from "../types/watermarkType";
 import {HSL} from "../types/HSLType";
-import {CropArea} from "../types/CropAreaType";
-import {CurveAdjustmentState} from "../types/CurveType"
+import {CropArea} from "../types/cropAreaType";
+import {CurveAdjustmentState} from "../types/curveType"
 import {
     ACESParams,
     FilmicParams,
     ReinhardParams,
     ToneMappingConfig,
     ToneMappingType
-} from "../types/ToneMappingConfigType";
+} from "../types/toneMappingConfigType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({

@@ -1,6 +1,6 @@
 // 拉普拉斯算子
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 //
 // const sharpenKernel = [
 //     [0, -1, 0],

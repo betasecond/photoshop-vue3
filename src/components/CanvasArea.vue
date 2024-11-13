@@ -19,7 +19,7 @@ import {applySharpen} from "../module/sharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
 import {adjustCurve} from "../module/curve";
 import {smoothing} from "../module/smoothing";
-import {ToneMappingConfig} from "../types/ToneMappingConfigType";
+import {ToneMappingConfig} from "../types/toneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
 import {adjustDehaze} from "../module/dehaze";
@@ -27,9 +27,10 @@ import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/
 import {loadModels} from "../module/face/faceDetection";
 import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
 import {BeautifyParams} from "../types/beautifyType";
-import  {CanvasContext}from  "../types/ContextType"
-import {CurveAdjustmentState} from "../types/CurveType";
-
+import  {CanvasContext}from "../types/contextType"
+import {CurveAdjustmentState} from "../types/curveType";
+import '@varlet/ui/es/button/style/index'
+import '@varlet/ui/es/input/style/index'
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
 
@@ -255,6 +256,8 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Tone Mapping Adjustment on canvas");
       if(canvasRef.isValid()) {
         applyToneMapping(canvasRef,props.toneMappingConfig.type,props.toneMappingConfig.params);
+      }else{
+        console.log("Unmatched toneMap")
       }
       break;
     case AdjustmentToolType.ColorTemperature:
