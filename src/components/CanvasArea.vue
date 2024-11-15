@@ -31,6 +31,7 @@ import {CanvasContext} from "../types/contextType"
 import {CurveAdjustmentState} from "../types/curveType";
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/input/style/index'
+import '@varlet/ui/es/uploader/style/index'
 import {VarletStyle} from "../types/varletStyleType";
 import {StyleProvider} from "@varlet/ui";
 // 引入并初始化状态管理
@@ -123,6 +124,14 @@ watch(() => props.brightness, (newBrightness) => {
     adjustBrightness(canvasRef, newBrightness);
   }
 });
+
+
+const triggerUpload = () => {
+  const use_uploader = uploader
+  use_uploader.value.trigger();
+};
+
+
 
 // 图片加载处理
 const handleImageLoad = (event: Event) => {
@@ -318,7 +327,7 @@ watch(() => props.appliedEditTool,(newEditTool,oldEditTool) => {
 })
 // 保存图片
 const handleSaveImage = () => {
-  if (canvasRef.isCanvasValid()) saveImage(canvas);
+  if (canvasRef.isCanvasValid()) saveImage(canvasRef.getCanvas());
 };
 
 // 绘制相关事件
@@ -342,10 +351,21 @@ const handleMouseMove = (event: MouseEvent) => {
 </script>
 
 <template>
-  <div class="canvas-container">
+  <div class="canvas-container-front">
+  <var-paper>
+    <div class="canvas-container">
+      <div>
+      <var-uploader
+          v-model="files"
+          accept="image/*"
+          hide-upload
+          ref="uploader"
+          @change="handleImageLoad"
+      >
+        <var-button class="centered-button">选择图片</var-button>
+      </var-uploader>
 
-    <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvasRef)" />
-
+      </div>
     <canvas
         ref="canvasELementRef"
     width="1000"
@@ -355,7 +375,9 @@ const handleMouseMove = (event: MouseEvent) => {
     @mousemove="handleMouseMove"
     ></canvas>
 
-    <button @click="handleSaveImage">Save Image</button>
+    <var-button @click="handleSaveImage">Save Image</var-button>
+    </div>
+  </var-paper>
   </div>
 </template>
 
@@ -366,18 +388,23 @@ const handleMouseMove = (event: MouseEvent) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #e0e0e0;
 }
+.canvas-container-front {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
+}
 canvas {
   border: 1px solid #ccc;
   margin-top: 10px;
 }
 
-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-  width: 300px; /* 根据需要调整宽度 */
+.centered-button {
+  display: block;
+  margin: 0 auto;
 }
+
 </style>
