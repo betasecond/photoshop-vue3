@@ -1,4 +1,4 @@
-import {ACESParams} from "../../types/ToneMappingConfigType";
+import {ACESParams} from "../../types/toneMappingConfigType";
 
 export function applyACES(r: number, g: number, b: number, params: ACESParams): number[] {
     const { exposure, whitePoint } = params;

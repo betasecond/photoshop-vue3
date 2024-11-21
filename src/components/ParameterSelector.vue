@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {usePropertyStore} from "../store/propertyStore";
-import {CropArea} from "../types/CropAreaType";
+import {CropArea} from "../types/cropAreaType";
 import { Button as VarButton,Snackbar, } from '@varlet/ui'
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/snackbar/style/index'
@@ -28,6 +28,7 @@ const parameters = ref([
   { name: 'ToneMapping', icon: 'photo-filter', enabled: false },
   { name: 'ColorTemperature', icon: 'wb_sunny', enabled: false },
   { name: 'Dehaze', icon: 'blur_circular', enabled: false },
+  { name: 'Style', icon: 'blur_circular', enabled: false },
 ]);
 
 
@@ -52,11 +53,12 @@ const handleSwitchChange = (parameter) => {
 
 
 <template>
+  <var-paper :elevation="8" :width="'175px'" :height="'100%'" ripple  >
   <div class="parameter-selector">
   <h3>Properties</h3>
   <!-- 参数选择器 -->
   <template v-if="true">
-    <var-paper :elevation="2">
+    <var-paper :elevation="12">
       <var-cell
           v-for="(parameter, index) in parameters"
           :key="parameter.name"
@@ -76,13 +78,14 @@ const handleSwitchChange = (parameter) => {
     </var-paper>
   </template>
   </div>
+  </var-paper>
 </template>
 
 <style scoped>
 .parameter-selector {
   width: 175px;
   padding: 10px;
-  background-color: #f9f9f9;
+
   border-left: 1px solid #ccc;
 }
 .color-preview {

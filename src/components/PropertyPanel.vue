@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {usePropertyStore} from "../store/propertyStore";
-import {CropArea} from "../types/CropAreaType";
-import { Button as VarButton,Snackbar, } from '@varlet/ui'
+import {CropArea} from "../types/cropAreaType";
+import {Button as VarButton,} from '@varlet/ui'
 import '@varlet/ui/es/button/style/index'
 import '@varlet/ui/es/snackbar/style/index'
 import '@varlet/ui/es/ripple/style/index'
@@ -13,8 +13,9 @@ import '@varlet/ui/es/slider/style/index'
 import '@varlet/ui/es/chip/style/index'
 import '@varlet/ui/es/select/style/index'
 import '@varlet/ui/es/option/style/index'
-import CropControls from './adjustments/crop/CropControls.vue';
-import CropIndicator from './adjustments/crop/CropIndicator.vue';
+import {ToneMappingType} from "../types/toneMappingConfigType";
+import {getEnumKeyByValue, VarletStyle} from "../types/varletStyleType";
+
 const propertyStore = usePropertyStore();
 
 const hslPreviewColor = computed(() => {
@@ -217,10 +218,19 @@ const handleUpdateWatermarkOptions = (option: Partial<typeof propertyStore.water
 };
 
 // 中间方法：处理色调映射选择
-function handleToneMappingChange(event) {
-  const selectedType = event.target.value;
-  // 调用store中的更新方法来设置选择的色调映射算法
-  propertyStore.setToneMappingType(selectedType);
+const handleToneMappingChange = () => {
+  const selectedType = propertyStore.toneMappingConfig.type
+  switch (selectedType) {
+    case 'Reinhard':
+      propertyStore.setToneMappingType('Reinhard')
+      break
+    case 'ACES':
+      propertyStore.setToneMappingType('ACES')
+      break
+    case 'Filmic':
+      propertyStore.setToneMappingType('Filmic')
+      break
+  }
 }
 </script>
 
@@ -785,6 +795,37 @@ function handleToneMappingChange(event) {
 
     </template>
 
+    <!-- 样式类型选择 -->
+    <template v-if="propertyStore.checkSelectedParameter('Style')">
+      <h3>Style Type:</h3>
+
+      <var-select v-model="propertyStore.selectVarletStyle" placeholder="选择样式类型">
+
+        <template #default>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.Dark)" :value="VarletStyle.Dark">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.Dark) }}</span>
+          </var-option>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.md3Light)" :value="VarletStyle.md3Light">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.md3Light) }}</span>
+          </var-option>
+          <var-option :label="getEnumKeyByValue(VarletStyle, VarletStyle.md3Dark)" :value="VarletStyle.md3Dark">
+            <var-icon class="selected-icon" name="image-filter" />
+            <span>{{ getEnumKeyByValue(VarletStyle, VarletStyle.md3Dark) }}</span>
+          </var-option>
+        </template>
+
+        <template #selected>
+          <var-icon class="selected-icon" :name="getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)" />
+          <span>{{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle) }}</span>
+        </template>
+
+      </var-select>
+
+      <var-chip type="primary">Current style : {{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)  }}</var-chip>
+    </template>
+
 
   </var-paper>
   </div>
@@ -794,7 +835,6 @@ function handleToneMappingChange(event) {
 .property-panel {
   width: 400px;
   padding: 10px;
-  background-color: #f9f9f9;
   border-left: 1px solid #ccc;
 }
 .color-preview {

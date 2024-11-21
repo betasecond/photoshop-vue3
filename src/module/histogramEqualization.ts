@@ -1,6 +1,6 @@
 import { Ref } from 'vue';
 import { useUndoRedoStore } from "../store/undoRedoStore";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 
 export function histogramEqualization(
 { canvas, ctx }: CanvasContext
