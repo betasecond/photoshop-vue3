@@ -14,7 +14,7 @@ import '@varlet/ui/es/chip/style/index'
 import '@varlet/ui/es/select/style/index'
 import '@varlet/ui/es/option/style/index'
 import {ToneMappingType} from "../types/toneMappingConfigType";
-import {getEnumKeyByValue, VarletStyle} from "../types/varletStyleType";
+import {getEnumKeyByValue, getVarletStyleDisplay, VarletStyle} from "../types/varletStyleType";
 
 const propertyStore = usePropertyStore();
 
@@ -818,12 +818,12 @@ const handleToneMappingChange = () => {
 
         <template #selected>
           <var-icon class="selected-icon" :name="getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)" />
-          <span>{{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle) }}</span>
+          <span>{{ getVarletStyleDisplay(propertyStore.selectVarletStyle) }}</span>
         </template>
 
       </var-select>
 
-      <var-chip type="primary">Current style : {{ getEnumKeyByValue(VarletStyle, propertyStore.selectVarletStyle)  }}</var-chip>
+      <var-chip type="primary">Current style : {{ getVarletStyleDisplay(propertyStore.selectVarletStyle)  }}</var-chip>
     </template>
 
 
