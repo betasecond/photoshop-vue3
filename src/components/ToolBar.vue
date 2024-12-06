@@ -64,8 +64,8 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <div class ="common-group">
     <!-- 绘图工具组 -->
 
-      <var-button type="success" @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">Brush</var-button>
-      <var-button type="success" @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</var-button>
+<!--      <var-button type="success" @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">Brush</var-button>-->
+<!--      <var-button type="success" @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</var-button>-->
 
 
     <!-- 一键式效果组 -->
@@ -73,38 +73,57 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
       <var-button type="success" @click="applyEffect(OneClickActionToolType.Watermark)">Watermark</var-button>
       <var-button type="success" @click="applyEffect(OneClickActionToolType.Dehaze)">Dehaze</var-button>
       <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceDetection)">FaceDetect</var-button>
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceBeautify)">FaceBeautify</var-button>
+
+
+
+
+
+
+
+
+    </div>
+
+    <div class ="common-group">
+    <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceBeautify)">FaceBeautify</var-button>
 
     <!-- 编辑工具组 -->
 
-      <var-button type="success" @click="applyEditTool(EditToolType.Rotate)">Rotate</var-button>
-      <var-button type="success" @click="applyEditTool(EditToolType.Crop)">Crop</var-button>
-
-
-
-
-    <!-- 撤销和重做按钮 -->
-
-      <var-button type="success" @click="undo" :disabled="!canUndo">Undo</var-button>
-      <var-button type="success" @click="redo" :disabled="!canRedo">Redo</var-button>
-
-
+    <var-button type="success" @click="applyEditTool(EditToolType.Rotate)">Rotate</var-button>
+    <var-button type="success" @click="applyEditTool(EditToolType.Crop)">Crop</var-button>
     </div>
-    <!-- 参数调整组 -->
-    <div class="adjustment-group">
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Contrast)">Contrast</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Exposure)">Exposure</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Saturation)">Saturation</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.HSL)">HSL</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Brightness)">Bright</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Sharpen)">Sharpen</var-button>
+
+<!--    <div class ="common-group">-->
+<!--      &lt;!&ndash; 撤销和重做按钮 &ndash;&gt;-->
+<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Contrast)">Contrast</var-button>-->
+<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Exposure)">Exposure</var-button>-->
+<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Saturation)">Saturation</var-button>-->
+<!--    </div>-->
+<!--    <div class ="common-group">-->
+<!--      &lt;!&ndash; 撤销和重做按钮 &ndash;&gt;-->
+<!--
+<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Brightness)">Bright</var-button>-->
+
+<!--    </div>-->
+    <div class ="common-group">
+      <!-- 撤销和重做按钮 -->
       <var-button type="success" @click="applyAdjust(AdjustmentToolType.HistogramEqualization)">HE</var-button>
       <var-button type="success" @click="applyAdjust(AdjustmentToolType.Smoothing)">Smooth</var-button>
       <var-button type="success" @click="applyAdjust(AdjustmentToolType.CurveAdjustment)">Curve</var-button>
+    </div>
+    <!-- 参数调整组 -->
+    <div class="adjustment-group">
+
+
+      <var-button type="success" @click="applyAdjust(AdjustmentToolType.HSL)">HSL</var-button>
       <var-button type="success" @click="applyAdjust(AdjustmentToolType.ToneMapping)">TM</var-button>
       <var-button type="success" @click="applyAdjust(AdjustmentToolType.ColorTemperature)">CT</var-button>
     </div>
-
+    <div class ="common-group">
+      <!-- 撤销和重做按钮 -->
+       <var-button type="success" @click="applyAdjust(AdjustmentToolType.Sharpen)">Sharpen</var-button>
+      <var-button type="success" @click="undo" :disabled="!canUndo">Undo</var-button>
+      <var-button type="success" @click="redo" :disabled="!canRedo">Redo</var-button>
+    </div>
 
   </div>
 </template>

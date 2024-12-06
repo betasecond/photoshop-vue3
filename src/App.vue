@@ -93,20 +93,10 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 
 <template>
   <div id="app">
-    <ToolBar
-        :selectedTool="propertyStore.selectedTool"
-        :selectedColor="propertyStore.selectedColor"
-        :appliedEffect="propertyStore.appliedEffect"
-        @selectTool="handleSelectTool"
-        @updateColor="updateColor"
-        @adjustBrightness="handleAdjustBrightness"
-        @applyEffect="handleApplyEffect"
-        @applyAdjust="handleApplyAdjust"
-        @applyEditTool="handleApplyEditTool"
-    />
+
 
     <div class="main-container">
-      <parameter-selector/>
+<!--      <parameter-selector/>-->
       <CanvasArea
           :selectedTool="propertyStore.selectedTool"
           :selectedColor="propertyStore.selectedColor"
@@ -137,8 +127,19 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           @rotate="handleRotate"
           />
 
-      <PropertyPanel/>
+<!--      <PropertyPanel/>-->
     </div>
+    <ToolBar
+        :selectedTool="propertyStore.selectedTool"
+        :selectedColor="propertyStore.selectedColor"
+        :appliedEffect="propertyStore.appliedEffect"
+        @selectTool="handleSelectTool"
+        @updateColor="updateColor"
+        @adjustBrightness="handleAdjustBrightness"
+        @applyEffect="handleApplyEffect"
+        @applyAdjust="handleApplyAdjust"
+        @applyEditTool="handleApplyEditTool"
+    />
   </div>
 </template>
 
@@ -153,18 +154,71 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 
 .main-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: calc(100vh - 60px); /* 自动填满屏幕高度 */
   overflow: hidden;
 }
 
-/* 确保 canvas 和图层管理同时显示 */
 canvas {
   border: 1px solid #ccc;
   background-color: white;
+  width: 100%; /* 让画布适应可用宽度 */
+  height: 100%; /* 高度自动调整 */
 }
 
 button {
   cursor: pointer;
 }
+
+/* 响应式设计 - 针对手机屏幕进行调整 */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column; /* 在手机上垂直排列 */
+    height: auto; /* 在移动端上自动调整高度 */
+  }
+
+  /* 使工具栏、画布区域和属性面板在手机上更加紧凑 */
+  ToolBar, CanvasArea, PropertyPanel {
+    width: 100%; /* 让每个组件占满屏幕宽度 */
+    margin-bottom: 10px; /* 各组件之间添加间距 */
+  }
+
+  /* 在手机上压缩和调整 ToolBar 的大小 */
+  ToolBar {
+    padding: 10px;
+    font-size: 14px; /* 缩小字体 */
+  }
+
+  /* 在手机上压缩画布区域 */
+  CanvasArea {
+    height: 300px; /* 画布的高度可以适当缩小 */
+  }
+
+  /* PropertyPanel 调整大小 */
+  PropertyPanel {
+    padding: 10px;
+    font-size: 14px; /* 缩小字体 */
+    display: none; /* 可选：在手机上隐藏属性面板，节省空间 */
+  }
+}
+
+/* 更小屏幕（如手机竖屏）上的进一步调整 */
+@media (max-width: 480px) {
+  /* 进一步压缩工具栏 */
+  ToolBar {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* 画布区域高度适配小屏幕 */
+  CanvasArea {
+    height: 250px; /* 更小的画布区域 */
+  }
+
+  /* 小屏幕上隐藏属性面板，或者将其放到滚动区域 */
+  PropertyPanel {
+    display: none;
+  }
+}
+
 </style>

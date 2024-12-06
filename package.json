@@ -50,6 +50,9 @@
     }
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
     "@varlet/ui": "^3.6.4",
     "face-api.js": "^0.22.2",
     "vue": "^3.2.25"
