@@ -1,7 +1,7 @@
 import { useUndoRedoStore } from "../store/undoRedoStore";
 import { rgbToHsl, hslToRgb } from "../utils/colorUtils";
 import {HSL} from "../types/HSLType";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 
 export function adjustHSL({ canvas, ctx }: CanvasContext, newHSL:HSL) {
     const undoRedoStore = useUndoRedoStore();

@@ -2,7 +2,7 @@ import {useUndoRedoStore} from "../store/undoRedoStore";
 import { DrawingToolType} from '../types/toolType';
 import {drawBrush} from "./brush";
 import {drawEraser} from "./eraser";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 
 
 

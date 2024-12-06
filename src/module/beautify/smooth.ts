@@ -1,5 +1,5 @@
 // 应用平滑效果（盒式模糊）
-import {FaceDetectionResult} from "../../types/FaceDetectionType";
+import {FaceDetectionResult} from "../../types/faceDetectionType";
 
 function applySmoothEffect(data: Uint8ClampedArray, width: number, height: number, radius: number) {
     const result = new Uint8ClampedArray(data);

@@ -1,4 +1,4 @@
-import {FilmicParams} from "../../types/ToneMappingConfigType";
+import {FilmicParams} from "../../types/toneMappingConfigType";
 
 export function applyFilmic(r: number, g: number, b: number, params: FilmicParams): number[] {
     const { exposure, contrast, saturation } = params;

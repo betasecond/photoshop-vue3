@@ -1,5 +1,5 @@
 import {useUndoRedoStore} from "../store/undoRedoStore";
-import {CanvasContext} from "../types/ContextType";
+import {CanvasContext} from "../types/contextType";
 
 export function adjustBrightness({ canvas, ctx }: CanvasContext, brightnessValue: number) {
     const undoRedoStore = useUndoRedoStore();

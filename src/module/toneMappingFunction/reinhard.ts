@@ -1,4 +1,4 @@
-import {ReinhardParams} from "../../types/ToneMappingConfigType";
+import {ReinhardParams} from "../../types/toneMappingConfigType";
 
 export function applyReinhard(r: number, g: number, b: number, params: ReinhardParams): number[] {
     const { a, maxLuminance } = params;

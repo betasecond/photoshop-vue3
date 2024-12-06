@@ -60,6 +60,7 @@ const brightness = ref(0);
 const emitBrightness = () => emit('adjustBrightness', brightness.value);
 </script>
 <template>
+  <var-paper :elevation="8" :width="'100%'" :height="'100%'" ripple  >
   <div class="toolbar">
     <div class ="common-group">
     <!-- 绘图工具组 -->
@@ -92,16 +93,6 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     <var-button type="success" @click="applyEditTool(EditToolType.Crop)">Crop</var-button>
     </div>
 
-<!--    <div class ="common-group">-->
-<!--      &lt;!&ndash; 撤销和重做按钮 &ndash;&gt;-->
-<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Contrast)">Contrast</var-button>-->
-<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Exposure)">Exposure</var-button>-->
-<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Saturation)">Saturation</var-button>-->
-<!--    </div>-->
-<!--    <div class ="common-group">-->
-<!--      &lt;!&ndash; 撤销和重做按钮 &ndash;&gt;-->
-<!--
-<!--      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Brightness)">Bright</var-button>-->
 
 <!--    </div>-->
     <div class ="common-group">
@@ -126,13 +117,14 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
     </div>
 
   </div>
+  </var-paper>
 </template>
 
 <style scoped>
 .toolbar {
   display: flex;
   padding: 10px;
-  background-color: #f0f0f0;
+
   border-bottom: 1px solid #ccc;
 }
 

@@ -2,21 +2,23 @@ import {defineStore} from 'pinia';
 import {AdjustmentToolType, DrawingToolType, EditToolType, OneClickActionToolType} from "../types/toolType";
 import {WatermarkOptions} from "../types/watermarkType";
 import {HSL} from "../types/HSLType";
-import {CropArea} from "../types/CropAreaType";
-import {CurveAdjustmentState} from "../types/CurveType"
+import {CropArea} from "../types/cropAreaType";
+import {CurveAdjustmentState} from "../types/curveType"
 import {
     ACESParams,
     FilmicParams,
     ReinhardParams,
     ToneMappingConfig,
     ToneMappingType
-} from "../types/ToneMappingConfigType";
+} from "../types/toneMappingConfigType";
+import {VarletStyle} from "../types/varletStyleType";
 
 export const usePropertyStore = defineStore('propertyStore', {
     state: () => ({
         selectedTool: DrawingToolType.Brush,
         selectedColor: '#000000',
         selectedParameter: 'Brush',
+        selectVarletStyle: VarletStyle.md3Light as VarletStyle,
         // 在 store 中初始化 selectedParameterList
         selectedParameterList: [],
         brushSize: 10,
@@ -169,8 +171,10 @@ export const usePropertyStore = defineStore('propertyStore', {
         updateColorTemperature(colorTemperature:number){
             this.colorTemperature = colorTemperature;
         },
-
-
+        // 更新选择样式
+        updateVarletStyle(varletStyle:VarletStyle){
+            this.varletStyle = varletStyle;
+        },
         // 设置色调映射类型
         setToneMappingType(type: ToneMappingType) {
             this.toneMappingConfig.type = type;

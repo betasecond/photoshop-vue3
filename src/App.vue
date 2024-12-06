@@ -92,6 +92,9 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 </script>
 
 <template>
+
+    <var-paper  :elevation="2"     :width="'100%'" :height="'100%'" ripple  >
+
   <div id="app">
 
 
@@ -103,6 +106,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           :brushSize="propertyStore.brushSize"
           :eraserSize="propertyStore.eraserSize"
           :brightness="propertyStore.brightness"
+          :varletStyle="propertyStore.selectVarletStyle"
           :appliedEffect="propertyStore.appliedEffect"
           :appliedAdjustment="propertyStore.appliedAdjustment"
           :appliedEditTool="propertyStore.appliedEditTool"
@@ -127,7 +131,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
           @rotate="handleRotate"
           />
 
-<!--      <PropertyPanel/>-->
+      <PropertyPanel/>
     </div>
     <ToolBar
         :selectedTool="propertyStore.selectedTool"
@@ -141,6 +145,7 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
         @applyEditTool="handleApplyEditTool"
     />
   </div>
+    </var-paper>
 </template>
 
 <style>
@@ -154,16 +159,18 @@ const handleApplyEditTool = (editTool:EditToolType)=>{
 
 .main-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: calc(100vh - 60px); /* 自动填满屏幕高度 */
   overflow: hidden;
 }
 
+/* 确保 canvas 和图层管理同时显示 */
 canvas {
   border: 1px solid #ccc;
   background-color: white;
   width: 100%; /* 让画布适应可用宽度 */
   height: 100%; /* 高度自动调整 */
+
 }
 
 button {

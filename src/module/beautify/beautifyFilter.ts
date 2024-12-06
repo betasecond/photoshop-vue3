@@ -1,5 +1,5 @@
 import { useUndoRedoStore } from "../../store/undoRedoStore";
-import { FaceDetectionResult, FaceDetectionState, FaceDetectionHistory } from "../../types/FaceDetectionType";
+import { FaceDetectionResult, FaceDetectionState, FaceDetectionHistory } from "../../types/faceDetectionType";
 import { BeautifyParams } from "../../types/beautifyType";
 import {applyBrightnessAdjustment} from "./brightness";
 import {applyContrastAdjustment} from "./contrast";

@@ -19,7 +19,7 @@ import {applySharpen} from "../module/sharpen";
 import {histogramEqualization} from "../module/histogramEqualization";
 import {adjustCurve} from "../module/curve";
 import {smoothing} from "../module/smoothing";
-import {ToneMappingConfig} from "../types/ToneMappingConfigType";
+import {ToneMappingConfig} from "../types/toneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
 import {adjustDehaze} from "../module/dehaze";
@@ -27,9 +27,13 @@ import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/
 import {loadModels} from "../module/face/faceDetection";
 import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
 import {BeautifyParams} from "../types/beautifyType";
-import  {CanvasContext}from  "../types/ContextType"
-import {CurveAdjustmentState} from "../types/CurveType";
-
+import {CanvasContext} from "../types/contextType"
+import {CurveAdjustmentState} from "../types/curveType";
+import '@varlet/ui/es/button/style/index'
+import '@varlet/ui/es/input/style/index'
+import '@varlet/ui/es/uploader/style/index'
+import {VarletStyle} from "../types/varletStyleType";
+import {StyleProvider} from "@varlet/ui";
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
 
@@ -71,6 +75,7 @@ const props = defineProps<{
   brushSize: number;            // 画笔大小（仅在 Brush 工具下使用）
   eraserSize: number;           // 橡皮擦大小（仅在 Eraser 工具下使用）
   brightness: number;           // 亮度调整值（用于亮度调整）
+  varletStyle:VarletStyle;      // Varlet 样式库 类型
   contrast: number;             // 新增对比度属性
   saturation:number;            // 饱和度
   exposure:number;              // 曝光
@@ -119,6 +124,14 @@ watch(() => props.brightness, (newBrightness) => {
     adjustBrightness(canvasRef, newBrightness);
   }
 });
+
+
+const triggerUpload = () => {
+  const use_uploader = uploader
+  use_uploader.value.trigger();
+};
+
+
 
 // 图片加载处理
 const handleImageLoad = (event: Event) => {
@@ -181,6 +194,9 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
       });
 
       break;
+    case OneClickActionToolType.VarletStyle:
+      const style:VarletStyle = props.varletStyle;
+      StyleProvider(style)
     default:
       console.warn(`Effect ${effect} is not implemented.`);
       break;
@@ -255,6 +271,8 @@ const applyAdjustmentLogic = (adjustmentToolType: AdjustmentToolType) => {
       console.log("Applying Tone Mapping Adjustment on canvas");
       if(canvasRef.isValid()) {
         applyToneMapping(canvasRef,props.toneMappingConfig.type,props.toneMappingConfig.params);
+      }else{
+        console.log("Unmatched toneMap")
       }
       break;
     case AdjustmentToolType.ColorTemperature:
@@ -309,7 +327,7 @@ watch(() => props.appliedEditTool,(newEditTool,oldEditTool) => {
 })
 // 保存图片
 const handleSaveImage = () => {
-  if (canvasRef.isCanvasValid()) saveImage(canvas);
+  if (canvasRef.isCanvasValid()) saveImage(canvasRef.getCanvas());
 };
 
 // 绘制相关事件
@@ -333,9 +351,21 @@ const handleMouseMove = (event: MouseEvent) => {
 </script>
 
 <template>
-  <div class="canvas-container">
-    <input type="file" accept="image/*" @change="(event) => handleImageLoad(event, canvasRef)" />
+  <div class="canvas-container-front">
+  <var-paper>
+    <div class="canvas-container">
+      <div>
+      <var-uploader
+          v-model="files"
+          accept="image/*"
+          hide-upload
+          ref="uploader"
+          @change="handleImageLoad"
+      >
+        <var-button class="centered-button">选择图片</var-button>
+      </var-uploader>
 
+      </div>
     <canvas
         ref="canvasELementRef"
     width="1000"
@@ -345,7 +375,9 @@ const handleMouseMove = (event: MouseEvent) => {
     @mousemove="handleMouseMove"
     ></canvas>
 
-    <button @click="handleSaveImage">Save Image</button>
+    <var-button @click="handleSaveImage">Save Image</var-button>
+    </div>
+  </var-paper>
   </div>
 </template>
 
@@ -356,18 +388,23 @@ const handleMouseMove = (event: MouseEvent) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #e0e0e0;
 }
+.canvas-container-front {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
+}
 canvas {
   border: 1px solid #ccc;
   margin-top: 10px;
 }
 
-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-  width: 300px; /* 根据需要调整宽度 */
+.centered-button {
+  display: block;
+  margin: 0 auto;
 }
+
 </style>
