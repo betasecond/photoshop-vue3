@@ -39,6 +39,7 @@ const parameters = ref([
   { name: 'ToneMapping', icon: 'photo-filter', enabled: false },
   { name: 'ColorTemperature', icon: 'wb_sunny', enabled: false },
   { name: 'Dehaze', icon: 'blur_circular', enabled: false },
+  { name: 'LE',icon: 'arrow_left', enabled: false },
 ]);
 const parameterState = ref({})  // 用来存储每个参数的状态
 // 更新 brushSize
@@ -73,6 +74,15 @@ const resetSaturation = () => {
   // 你可以根据需要调用调整函数，像调整曝光那样
   propertyStore.adjustSaturation(saturation);
 }
+// 更新光照效果的方法
+const updateLightingEffect = () => {
+  // 你已经在 store 中定义了相关方法
+  propertyStore.setLightingEffect({
+    x: propertyStore.lightX,
+    y: propertyStore.lightY,
+    strength: propertyStore.lightStrength,
+  });
+};
 // 更新 eraserSize
 const updateEraserSize = (event: Event) => {
   const newSize = Number((event.target as HTMLInputElement).value);
@@ -182,6 +192,7 @@ const getColorPreview = (colorTemperature: number) =>{
 // 更新曲线控制点
 const handleUpdateCurve = (channel: 'red' | 'green' | 'blue', index: number, value: string) => {
   const newValue = Number(value);
+  console.log("开始调整曲线"+channel+index+value);
   propertyStore.updateCurve(channel, index, newValue);
 };
 
@@ -243,29 +254,30 @@ const handleToneMappingChange = () => {
 
     <!-- 画笔大小滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Brush')">
-      <h3>Brush Size:</h3>
+      <h3>画笔大小：</h3>
       <var-slider
           track-height="8" thumb-size="8"
           v-model="propertyStore.brushSize"
           min="1"
           max="50"
           step="1"
-      @input="updateBrushSize"
+          @input="updateBrushSize"
       />
 
-      <var-chip type="primary">Brush Size: {{ propertyStore.brushSize }}px</var-chip>
+      <var-chip type="primary">画笔大小: {{ propertyStore.brushSize }}px</var-chip>
       <!-- 颜色 -->
       <div>
-        <h4>Color:</h4>
+        <h4>颜色：</h4>
         <var-input
             v-model="propertyStore.selectedColor"
             type="color"
         />
       </div>
     </template>
+
     <!-- 橡皮擦大小滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Eraser')">
-      <h3>Eraser Size:</h3>
+      <h3>橡皮擦大小：</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
           track-height="8"
@@ -276,16 +288,17 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateEraserSize"
       />
-      <var-chip type="primary">Eraser Size: {{ propertyStore.eraserSize }}px</var-chip>
+      <var-chip type="primary">橡皮擦大小: {{ propertyStore.eraserSize }}px</var-chip>
 
       <!-- 使用 var-button 替代原生 button -->
       <var-button @click="setEraserToFullScreen" type="primary">
-        Set Eraser to Full Screen
+        设置橡皮擦为全屏
       </var-button>
     </template>
+
     <!-- 亮度滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Brightness')">
-      <h3>Brightness:</h3>
+      <h3>亮度：</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
           track-height="8"
@@ -296,16 +309,17 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateBrightness"
       />
-      <var-chip type="primary">Current brightness: {{ propertyStore.brightness }}%</var-chip>
+      <var-chip type="primary">当前亮度: {{ propertyStore.brightness }}%</var-chip>
 
       <!-- 使用 var-button 替代原生 button -->
       <var-button @click="resetBrightness" type="primary">
-        Reset Brightness
+        重置亮度
       </var-button>
     </template>
+
     <!-- 对比度滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Contrast')">
-      <h3>Contrast:</h3>
+      <h3>对比度：</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
           track-height="8"
@@ -316,16 +330,17 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateContrast"
       />
-      <var-chip type="primary">Current contrast: {{ propertyStore.contrast }}%</var-chip>
+      <var-chip type="primary">当前对比度: {{ propertyStore.contrast }}%</var-chip>
 
-      <!-- 使用 var-button 替代原生 button (可选，视需求决定是否有重置按钮)-->
+      <!-- 使用 var-button 替代原生 button (可选，视需求决定是否有重置按钮) -->
       <var-button @click="resetContrast" type="primary">
-        Reset Contrast
+        重置对比度
       </var-button>
     </template>
+
     <!-- 曝光滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Exposure')">
-      <h3>Exposure:</h3>
+      <h3>曝光：</h3>
       <!-- 使用 var-slider 替代原生 input -->
       <var-slider
           track-height="8"
@@ -336,17 +351,18 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateExposure"
       />
-      <var-chip type="primary">Current exposure: {{ propertyStore.exposure }}%</var-chip>
+      <var-chip type="primary">当前曝光: {{ propertyStore.exposure }}%</var-chip>
 
-      <!-- 使用 var-button 替代原生 button (可选，视需求决定是否有重置按钮)-->
+      <!-- 使用 var-button 替代原生 button (可选，视需求决定是否有重置按钮) -->
       <var-button @click="resetExposure" type="primary">
-        Reset Exposure
+        重置曝光
       </var-button>
     </template>
 
+
     <!-- 饱和度滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Saturation')">
-      <h3>Saturation:</h3>
+      <h3>饱和度：</h3>
 
       <!-- 使用 var-slider 组件 -->
       <var-slider
@@ -358,19 +374,19 @@ const handleToneMappingChange = () => {
           thumb-size="10"
           @input="updateSaturation"
       />
-      <var-chip type="primary">Current saturation: {{ propertyStore.saturation }}%</var-chip>
-
+      <var-chip type="primary">当前饱和度: {{ propertyStore.saturation }}%</var-chip>
 
       <!-- 重置按钮 -->
-      <var-button @click="resetSaturation" type="primary">Reset</var-button>
+      <var-button @click="resetSaturation" type="primary">重置</var-button>
     </template>
+
 
     <!-- 色温滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('ColorTemperature')">
-      <h3>Color Temperature Adjustment:</h3>
+      <h3>色温调整：</h3>
 
-      <!-- Color Temperature 调整 -->
-      <h4>Color Temperature:</h4>
+      <!-- 色温调整 -->
+      <h4>色温：</h4>
       <var-slider
           track-height="8"
           thumb-size="8"
@@ -380,7 +396,7 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateColorTemperature"
       />
-      <var-chip type="primary">Current color temperature: {{ propertyStore.colorTemperature }}</var-chip>
+      <var-chip type="primary">当前色温: {{ propertyStore.colorTemperature }}</var-chip>
 
       <!-- 色调预览条 -->
       <div class="color-preview">
@@ -390,17 +406,18 @@ const handleToneMappingChange = () => {
         </div>
       </div>
 
-      <!-- Reset Button -->
+      <!-- 重置按钮 -->
       <var-button @click="resetColorTemperature" type="primary">
-        Reset Color Temperature
+        重置色温
       </var-button>
     </template>
+
     <!-- HSL 调整 -->
     <template v-if="propertyStore.checkSelectedParameter('HSL')">
-      <h3>HSL Adjustments:</h3>
+      <h3>HSL 调整：</h3>
 
-      <!-- Hue 调整 -->
-      <h4>Hue:</h4>
+      <!-- 色相调整 -->
+      <h4>色相：</h4>
       <var-slider
           track-height="8"
           thumb-size="8"
@@ -410,10 +427,10 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateHue"
       />
-      <var-chip type="primary">Current hue: {{ propertyStore.hsl.hue }}°</var-chip>
+      <var-chip type="primary">当前色相: {{ propertyStore.hsl.hue }}°</var-chip>
 
-      <!-- Saturation 调整 -->
-      <h4>Saturation:</h4>
+      <!-- 饱和度调整 -->
+      <h4>饱和度：</h4>
       <var-slider
           track-height="8"
           thumb-size="8"
@@ -423,10 +440,10 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateSaturation"
       />
-      <var-chip type="primary">Current saturation: {{ propertyStore.hsl.saturation }}%</var-chip>
+      <var-chip type="primary">当前饱和度: {{ propertyStore.hsl.saturation }}%</var-chip>
 
-      <!-- Lightness 调整 -->
-      <h4>Lightness:</h4>
+      <!-- 亮度调整 -->
+      <h4>亮度：</h4>
       <var-slider
           track-height="8"
           thumb-size="8"
@@ -436,7 +453,7 @@ const handleToneMappingChange = () => {
           step="1"
           @input="updateLightness"
       />
-      <var-chip type="primary">Current lightness: {{ propertyStore.hsl.lightness }}%</var-chip>
+      <var-chip type="primary">当前亮度: {{ propertyStore.hsl.lightness }}%</var-chip>
 
       <!-- HSL 预览三角形 -->
       <div class="hsl-preview">
@@ -445,11 +462,12 @@ const handleToneMappingChange = () => {
         </svg>
       </div>
 
-      <!-- Reset Button -->
+      <!-- 重置按钮 -->
       <var-button @click="resetHSL" type="primary">
-        Reset HSL
+        重置 HSL
       </var-button>
     </template>
+
     <!-- 旋转角度滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Rotate')">
       <label for="rotation">Rotation:</label>
@@ -464,7 +482,7 @@ const handleToneMappingChange = () => {
       <p>Current rotation: {{ propertyStore.rotation }}</p>
     </template>
     <template v-if="propertyStore.checkSelectedParameter('Crop')">
-      <h3>Crop:</h3>
+      <h3>裁剪：</h3>
       <div class="crop-controls">
         <label>
           <var-input
@@ -479,7 +497,7 @@ const handleToneMappingChange = () => {
               v-model.number="propertyStore.cropArea.y"
               type="number"
               @input="updateCropArea"
-              placeholder="输入Y坐标"
+              placeholder="Y坐标"
           />
         </label>
         <label>
@@ -487,7 +505,7 @@ const handleToneMappingChange = () => {
               v-model.number="propertyStore.cropArea.width"
               type="number"
               @input="updateCropArea"
-              placeholder="输入宽度"
+              placeholder="宽度"
           />
         </label>
         <label>
@@ -495,7 +513,7 @@ const handleToneMappingChange = () => {
               v-model.number="propertyStore.cropArea.height"
               type="number"
               @input="updateCropArea"
-              placeholder="输入高度"
+              placeholder="高度"
           />
         </label>
       </div>
@@ -514,45 +532,47 @@ const handleToneMappingChange = () => {
       </svg>
     </template>
 
+
     <!-- 水印选项控制和预览 -->
     <template v-if="propertyStore.checkSelectedParameter('Watermark')">
       <div class="watermark-control">
-        <h3>Watermark:</h3>
+        <h3>水印：</h3>
+
         <!-- 水印文本 -->
         <div>
           <var-input
               v-model="propertyStore.watermarkOption.text"
               type="text"
-              placeholder="Enter watermark text"
+              placeholder="请输入水印文本"
               @input="handleUpdateWatermarkOptions({ text: propertyStore.watermarkOption.text })"
           />
         </div>
 
-        <!-- Position X -->
+        <!-- X 坐标 -->
         <div>
-          <label for="position-x">Position X:</label>
+          <label for="position-x">X 坐标：</label>
           <var-input
               v-model.number="propertyStore.watermarkOption.position.x"
               type="number"
               :rules="[value => value >= 0 && value <= 1000 || 'X坐标必须在 0 到 1000 之间']"
-              placeholder="输入X坐标"
+              placeholder="输入 X 坐标"
           />
         </div>
 
-        <!-- Position Y -->
+        <!-- Y 坐标 -->
         <div>
-          <label for="position-y">Position Y:</label>
+          <label for="position-y">Y 坐标：</label>
           <var-input
               v-model.number="propertyStore.watermarkOption.position.y"
               type="number"
               :rules="[value => value >= 0 && value <= 1000 || 'Y坐标必须在 0 到 1000 之间']"
-              placeholder="输入Y坐标"
+              placeholder="输入 Y 坐标"
           />
         </div>
 
-        <!-- Font Size -->
+        <!-- 字体大小 -->
         <div>
-          <label for="font-size">Font Size:</label>
+          <label for="font-size">字体大小：</label>
           <var-input
               v-model.number="propertyStore.watermarkOption.fontSize"
               type="number"
@@ -563,7 +583,7 @@ const handleToneMappingChange = () => {
 
         <!-- 颜色 -->
         <div>
-          <h4>Color:</h4>
+          <h4>颜色：</h4>
           <var-input
               v-model="propertyStore.watermarkOption.color"
               type="color"
@@ -573,7 +593,7 @@ const handleToneMappingChange = () => {
 
         <!-- 水印透明度滑动条 -->
         <div>
-          <h4>Opacity:</h4>
+          <h4>透明度：</h4>
           <var-slider
               track-height="8"
               thumb-size="8"
@@ -583,16 +603,16 @@ const handleToneMappingChange = () => {
               step="0.1"
               @input="event => handleUpdateWatermarkOptions({ opacity: Number(event) })"
           />
-          <var-chip type="primary">Current opacity: {{ propertyStore.watermarkOption.opacity }}</var-chip>
+          <var-chip type="primary">当前透明度: {{ propertyStore.watermarkOption.opacity }}</var-chip>
         </div>
 
-
-
       </div>
+
       <!-- 重置按钮 -->
       <var-button @click="resetWatermarkOptions" type="primary">
-        Reset Watermark
+        重置水印
       </var-button>
+
       <!-- 水印预览 -->
       <svg width="200" height="200" viewBox="0 0 1000 1000" class="watermark-preview">
         <rect x="0" y="0" width="1000" height="1000" fill="#f0f0f0" stroke="#ccc" />
@@ -607,12 +627,11 @@ const handleToneMappingChange = () => {
           {{ propertyStore.watermarkOption.text }}
         </text>
       </svg>
-
-
     </template>
+
     <!-- 锐化滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Sharpen')">
-      <h3>Sharpen Intensity:</h3>
+      <h3>锐化强度：</h3>
 
       <var-slider
           track-height="8"
@@ -624,17 +643,19 @@ const handleToneMappingChange = () => {
           @input="updateSharpen"
       />
 
-      <var-chip type="primary">Current sharpen intensity: {{ propertyStore.intensity }}</var-chip>
-      <!-- Reset Button -->
+      <var-chip type="primary">当前锐化强度: {{ propertyStore.intensity }}</var-chip>
+
+      <!-- 重置按钮 -->
       <var-button @click="resetSharpen" type="primary">
-        Reset sharpen intensity
+        重置锐化强度
       </var-button>
     </template>
 
 
+
     <!-- 平滑半径滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Smooth')">
-      <h3>Smoothing Radius:</h3>
+      <h3>平滑半径：</h3>
 
       <var-slider
           track-height="8"
@@ -646,12 +667,13 @@ const handleToneMappingChange = () => {
           @input="updateSmoothingRadius"
       />
 
-      <var-chip type="primary">Current smoothing radius: {{ propertyStore.smoothingRadius }}</var-chip>
+      <var-chip type="primary">当前平滑半径: {{ propertyStore.smoothingRadius }}</var-chip>
     </template>
+
 
     <!-- 去雾强度滑动条 -->
     <template v-if="propertyStore.checkSelectedParameter('Dehaze')">
-      <h3>Dehaze Strength:</h3>
+      <h3>去雾强度：</h3>
 
       <var-slider
           track-height="8"
@@ -663,20 +685,20 @@ const handleToneMappingChange = () => {
           @input="updateDehazeStrength"
       />
 
-      <var-chip type="primary">Current dehaze strength: {{ propertyStore.dehazeStrength }}</var-chip>
+      <var-chip type="primary">当前去雾强度: {{ propertyStore.dehazeStrength }}</var-chip>
     </template>
+
 
     <!-- 曲线调整控制面板 -->
     <template v-if="propertyStore.checkSelectedParameter('Curve')">
       <div class="curve-adjustment-control">
         <!-- 红色通道曲线 -->
         <div>
-          <h3>Red Curve:</h3>
-          <var-slider
+          <h3>红色通道曲线：</h3>
+          <input
+              type="range"
               v-for="(point, index) in propertyStore.curveAdjustment.redCurve"
               :key="'red-' + index"
-              track-height="8"
-              thumb-size="8"
               v-model="point.output"
               min="0"
               max="255"
@@ -687,12 +709,11 @@ const handleToneMappingChange = () => {
 
         <!-- 绿色通道曲线 -->
         <div>
-          <h3>Green Curve:</h3>
-          <var-slider
+          <h3>绿色通道曲线：</h3>
+          <input
+              type="range"
               v-for="(point, index) in propertyStore.curveAdjustment.greenCurve"
               :key="'green-' + index"
-              track-height="8"
-              thumb-size="8"
               v-model="point.output"
               min="0"
               max="255"
@@ -703,12 +724,11 @@ const handleToneMappingChange = () => {
 
         <!-- 蓝色通道曲线 -->
         <div>
-          <h3>Blue Curve:</h3>
-          <var-slider
+          <h3>蓝色通道曲线：</h3>
+          <input
+              type="range"
               v-for="(point, index) in propertyStore.curveAdjustment.blueCurve"
               :key="'blue-' + index"
-              track-height="8"
-              thumb-size="8"
               v-model="point.output"
               min="0"
               max="255"
@@ -723,11 +743,11 @@ const handleToneMappingChange = () => {
         <g transform="translate(10, 10)">
           <!-- X 轴 (输入色阶) -->
           <line x1="0" y1="250" x2="280" y2="250" stroke="black" />
-          <text x="140" y="270" text-anchor="middle">Input Levels</text>
+          <text x="140" y="270" text-anchor="middle">输入色阶</text>
 
           <!-- Y 轴 (输出色阶) -->
           <line x1="0" y1="0" x2="0" y2="250" stroke="black" />
-          <text x="-10" y="125" text-anchor="middle" transform="rotate(-90)">Output Levels</text>
+          <text x="-10" y="125" text-anchor="middle" transform="rotate(-90)">输出色阶</text>
 
           <!-- 曲线 -->
           <path
@@ -753,16 +773,15 @@ const handleToneMappingChange = () => {
 
       <!-- 展示当前选择的曲线通道 -->
       <template v-if="propertyStore.selectedChannel !== undefined">
-
-        <var-chip type="primary">Selected Curve: {{ propertyStore.selectedChannel }} Channel</var-chip>
-
+        <var-chip type="primary">当前选择的曲线：{{ propertyStore.selectedChannel }} 通道</var-chip>
       </template>
     </template>
 
 
+
     <!-- 色调映射类型选择 -->
     <template v-if="propertyStore.checkSelectedParameter('ToneMapping')">
-      <h3>Tone Mapping Type:</h3>
+      <h3>色调映射类型：</h3>
 
       <!-- 使用 var-select 来替换原有的 <select> -->
       <var-select v-model="propertyStore.toneMappingConfig.type" placeholder="选择色调映射类型" @change="handleToneMappingChange">
@@ -790,14 +809,13 @@ const handleToneMappingChange = () => {
 
       </var-select>
 
-
-      <var-chip type="primary">Current tone mapping type: {{ propertyStore.toneMappingConfig.type }}</var-chip>
-
+      <var-chip type="primary">当前色调映射类型：{{ propertyStore.toneMappingConfig.type }}</var-chip>
     </template>
+
 
     <!-- 样式类型选择 -->
     <template v-if="propertyStore.checkSelectedParameter('Style')">
-      <h3>Style Type:</h3>
+      <h3>样式类型：</h3>
 
       <var-select v-model="propertyStore.selectVarletStyle" placeholder="选择样式类型">
 
@@ -823,7 +841,71 @@ const handleToneMappingChange = () => {
 
       </var-select>
 
-      <var-chip type="primary">Current style : {{ getVarletStyleDisplay(propertyStore.selectVarletStyle)  }}</var-chip>
+      <var-chip type="primary">当前样式：{{ getVarletStyleDisplay(propertyStore.selectVarletStyle) }}</var-chip>
+    </template>
+
+    <template v-if="propertyStore.checkSelectedParameter('LE')">
+      <h3>光照效果：</h3>
+
+      <!-- 光源 X 坐标输入框 -->
+      <div>
+        <label for="light-x">光源 X 坐标：</label>
+        <var-input
+            v-model.number="propertyStore.lightX"
+            type="number"
+            :rules="[value => value >= 0 && value <= 1000 || 'X坐标必须在 0 到 1000 之间']"
+            placeholder="输入X坐标"
+            id="light-x"
+        />
+      </div>
+      <var-chip type="primary">当前光源 X 坐标：{{ propertyStore.lightX }}</var-chip>
+
+      <!-- 光源 Y 坐标输入框 -->
+      <div>
+        <label for="light-y">光源 Y 坐标：</label>
+        <var-input
+            v-model.number="propertyStore.lightY"
+            type="number"
+            :rules="[value => value >= 0 && value <= 1000 || 'Y坐标必须在 0 到 1000 之间']"
+            placeholder="输入Y坐标"
+            id="light-y"
+        />
+      </div>
+      <var-chip type="primary">当前光源 Y 坐标：{{ propertyStore.lightY }}</var-chip>
+
+      <!-- 光照强度滑动条 -->
+      <h4>光照强度：</h4>
+      <var-slider
+          track-height="8"
+          thumb-size="8"
+          v-model="propertyStore.lightStrength"
+          min="0"
+          max="200"
+          step="1"
+          @input="updateLightingEffect"
+      />
+      <var-chip type="primary">当前光照强度：{{ propertyStore.lightStrength }}</var-chip>
+
+      <!-- SVG指示光源位置 -->
+      <h4>光源预览：</h4>
+      <svg width="200" height="200" viewBox="0 0 200 200" class="lighting-preview">
+        <!-- 背景 -->
+        <rect x="0" y="0" width="200" height="200" fill="#f0f0f0" stroke="#ccc" />
+        <!-- 光源位置 -->
+        <circle
+            :cx="propertyStore.lightX/5"
+            :cy="propertyStore.lightY/5"
+            r="5"
+            fill="red"
+        />
+        <!-- 光照强度对应的圆圈 -->
+        <circle
+            :cx="propertyStore.lightX/5"
+            :cy="propertyStore.lightY/5"
+            :r="propertyStore.lightStrength / 10"
+            fill="rgba(255, 0, 0, 0.2)"
+        />
+      </svg>
     </template>
 
 

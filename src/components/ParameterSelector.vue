@@ -13,22 +13,23 @@ import '@varlet/ui/es/input/style/index'
 const propertyStore = usePropertyStore();
 
 const parameters = ref([
-  { name: 'Brush', icon: 'brush', enabled: false },
-  { name: 'Eraser', icon: 'eraser', enabled: false },
-  { name: 'Brightness', icon: 'brightness-6', enabled: false },
-  { name: 'Contrast', icon: 'contrast', enabled: false },
-  { name: 'Exposure', icon: 'exposure', enabled: false },
-  { name: 'Saturation', icon: 'invert_colors', enabled: false },
-  { name: 'HSL', icon: 'color-lens', enabled: false },
-  { name: 'Crop', icon: 'crop', enabled: false },
-  { name: 'Watermark', icon: 'watermark', enabled: false },
-  { name: 'Smooth', icon: 'smooth', enabled: false },
-  { name: 'Curve', icon: 'curve', enabled: false },
-  { name: 'Sharpen', icon: 'sharpen', enabled: false },
-  { name: 'ToneMapping', icon: 'photo-filter', enabled: false },
-  { name: 'ColorTemperature', icon: 'wb_sunny', enabled: false },
-  { name: 'Dehaze', icon: 'blur_circular', enabled: false },
-  { name: 'Style', icon: 'blur_circular', enabled: false },
+  { name: 'Brush', localName: '画笔', icon: 'brush', enabled: false },
+  { name: 'Eraser', localName: '橡皮擦', icon: 'eraser', enabled: false },
+  { name: 'Brightness', localName: '亮度', icon: 'brightness-6', enabled: false },
+  { name: 'Contrast', localName: '对比度', icon: 'contrast', enabled: false },
+  { name: 'Exposure', localName: '曝光', icon: 'exposure', enabled: false },
+  { name: 'Saturation', localName: '饱和度', icon: 'invert_colors', enabled: false },
+  { name: 'HSL', localName: 'HSL', icon: 'color-lens', enabled: false },
+  { name: 'Crop', localName: '裁剪', icon: 'crop', enabled: false },
+  { name: 'Watermark', localName: '水印', icon: 'watermark', enabled: false },
+  { name: 'Smooth', localName: '平滑', icon: 'smooth', enabled: false },
+  { name: 'Curve', localName: '曲线调整', icon: 'curve', enabled: false },
+  { name: 'Sharpen', localName: '锐化', icon: 'sharpen', enabled: false },
+  { name: 'ToneMapping', localName: '色调映射', icon: 'photo-filter', enabled: false },
+  { name: 'ColorTemperature', localName: '色温', icon: 'wb_sunny', enabled: false },
+  { name: 'Dehaze', localName: '去雾', icon: 'blur_circular', enabled: false },
+  { name: 'Style', localName: '风格', icon: 'blur_circular', enabled: false },
+  { name: 'LE', localName: '局部亮度曝光', icon: 'arrow_left', enabled: false },
 ]);
 
 
@@ -55,7 +56,6 @@ const handleSwitchChange = (parameter) => {
 <template>
   <var-paper :elevation="8" :width="'175px'" :height="'100%'" ripple  >
   <div class="parameter-selector">
-  <h3>Properties</h3>
   <!-- 参数选择器 -->
   <template v-if="true">
     <var-paper :elevation="12">
@@ -68,7 +68,7 @@ const handleSwitchChange = (parameter) => {
           :border-offset=0
 
       >
-        {{ parameter.name }}
+        {{ parameter.localName }}
 
         <template #extra>
           <!-- 右边的开关，控制每个参数是否启用 -->

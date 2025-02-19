@@ -1,9 +1,15 @@
 import { useUndoRedoStore } from '../../store/undoRedoStore';
+import { CanvasContext } from "../../types/contextType";
 
-
-export function loadImage(event: Event, { canvas, ctx }: CanvasContext) {// 参数校验
+/**
+ * 加载图像并绘制到画布上
+ * @param {Event} event - 文件选择事件
+ * @param {CanvasContext} context - 画布上下文，包含 canvas 和 ctx 的引用
+ */
+export function loadImage(event: Event, { canvas, ctx }: CanvasContext) {
     const undoRedoStore = useUndoRedoStore();
 
+    // 参数校验
     if (!event || !canvas || !ctx) {
         console.log('Event, canvas, or context is missing');
         return;
@@ -50,7 +56,6 @@ export function loadImage(event: Event, { canvas, ctx }: CanvasContext) {// 参�
             ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
             ctx.value.drawImage(img, 0, 0, canvas.value.width, canvas.value.height);
             console.log('Image drawn on canvas');
-
         };
 
         // 确认 img.src 被正确设置

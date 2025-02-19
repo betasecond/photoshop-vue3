@@ -1,6 +1,15 @@
 // 应用平滑效果（盒式模糊）
-import {FaceDetectionResult} from "../../types/faceDetectionType";
+import { FaceDetectionResult } from "../../types/faceDetectionType";
+import {CanvasContext} from "../../types/contextType";
 
+/**
+ * 对图像数据应用平滑效果
+ * @param {Uint8ClampedArray} data - 图像数据数组
+ * @param {number} width - 图像宽度
+ * @param {number} height - 图像高度
+ * @param {number} radius - 模糊半径
+ * @returns {Uint8ClampedArray} 平滑处理后的图像数据
+ */
 function applySmoothEffect(data: Uint8ClampedArray, width: number, height: number, radius: number) {
     const result = new Uint8ClampedArray(data);
 
@@ -39,27 +48,28 @@ function applySmoothEffect(data: Uint8ClampedArray, width: number, height: numbe
     return result;
 }
 
-// 对特定区域（人脸框）应用平滑效果
+/**
+ * 对特定区域（人脸框）应用平滑效果
+ * @param {ImageData} faceImageData - 人脸区域的图像数据
+ * @param {FaceDetectionResult} face - 人脸检测结果
+ * @param {number} radius - 模糊半径
+ */
 function applySmoothToFaceRegion(
     faceImageData: ImageData,
     face: FaceDetectionResult,
     radius: number
 ) {
-    // 获取人脸区域的像素数据
     const data = faceImageData.data;
     const width = face.width;
     const height = face.height;
 
-    // 提取出人脸框区域的图像数据
     const faceData = applySmoothEffect(data, width, height, radius);
 
-    // 更新图像数据
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4;
             const resultIdx = ((y + face.y) * faceImageData.width + (x + face.x)) * 4;
 
-            // 将平滑后的数据放回原图像数据
             faceImageData.data[resultIdx] = faceData[idx];       // 红色
             faceImageData.data[resultIdx + 1] = faceData[idx + 1]; // 绿色
             faceImageData.data[resultIdx + 2] = faceData[idx + 2]; // 蓝色
@@ -68,9 +78,14 @@ function applySmoothToFaceRegion(
     }
 }
 
-// 应用到指定的人脸框区域
+/**
+ * 对检测到的人脸区域应用平滑效果
+ * @param {CanvasContext} context - 画布上下文
+ * @param {FaceDetectionResult[]} faceDetections - 人脸检测结果数组
+ * @param {number} radius - 模糊半径
+ */
 export function applySmoothingToFace(
-{ canvas, ctx }: CanvasContext,
+    { canvas, ctx }: CanvasContext,
     faceDetections: FaceDetectionResult[],
     radius: number
 ) {
@@ -79,16 +94,9 @@ export function applySmoothingToFace(
         return;
     }
 
-
-    // 遍历所有检测到的人脸并应用平滑
     faceDetections.forEach(face => {
-        // 获取每个人脸区域的数据
         const faceImageData = ctx.value.getImageData(face.x, face.y, face.width, face.height);
-
-        // 对当前人脸区域应用平滑效果
         applySmoothToFaceRegion(faceImageData, face, radius);
-
-        // 将处理后的图像数据放回canvas
         ctx.value.putImageData(faceImageData, face.x, face.y);
     });
 }

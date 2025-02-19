@@ -1,4 +1,6 @@
-// 绘图工具 (Drawing Tools)
+/**
+ * 表示不同绘图工具的枚举
+ */
 export enum DrawingToolType {
     Brush = 'brush',
     Eraser = 'eraser',
@@ -7,11 +9,16 @@ export enum DrawingToolType {
     Circle = 'circle',
 }
 
-// 选择工具 (Shape Selection)
+/**
+ * 表示不同选择工具的枚举
+ */
 export enum SelectionToolType {
-    pass= "pass"
+    pass = "pass"
 }
 
+/**
+ * 表示不同编辑工具的枚举
+ */
 export enum EditToolType {
     Crop = 'crop',
     Rotate = 'rotate',
@@ -19,7 +26,9 @@ export enum EditToolType {
     FlipVertical = 'flipVertical',
 }
 
-// 参数调整工具 (Parameter Adjustment)
+/**
+ * 表示不同调整工具的枚举
+ */
 export enum AdjustmentToolType {
     Brightness = 'brightness',
     Contrast = 'contrast',
@@ -34,7 +43,9 @@ export enum AdjustmentToolType {
     ColorTemperature = 'colorTemperature',
 }
 
-// 一键式功能 (One-click Actions)
+/**
+ * 表示不同一键操作工具的枚举
+ */
 export enum OneClickActionToolType {
     Watermark = 'watermark',
     Dehaze = 'dehaze',
@@ -45,52 +56,81 @@ export enum OneClickActionToolType {
     LocalBrightnessExposure = 'localBrightnessExposure',
     VarletStyle = 'varletStyle',
 }
-// 判断工具类型是否属于绘图工具
+
+/**
+ * 检查工具类型是否为绘图工具
+ * @param tool - 要检查的工具类型
+ * @returns {boolean} 如果工具是绘图工具则返回 true，否则返回 false
+ */
 export function isDrawingTool(tool: ToolType): tool is DrawingToolType {
     return Object.values(DrawingToolType).includes(tool as DrawingToolType);
 }
 
-// 判断工具类型是否属于选择工具
+/**
+ * 检查工具类型是否为选择工具
+ * @param tool - 要检查的工具类型
+ * @returns {boolean} 如果工具是选择工具则返回 true，否则返回 false
+ */
 export function isSelectionTool(tool: ToolType): tool is SelectionToolType {
     return Object.values(SelectionToolType).includes(tool as SelectionToolType);
 }
 
-// 判断工具类型是否属于参数调整工具
+/**
+ * 检查工具类型是否为调整工具
+ * @param tool - 要检查的工具类型
+ * @returns {boolean} 如果工具是调整工具则返回 true，否则返回 false
+ */
 export function isAdjustmentTool(tool: ToolType): tool is AdjustmentToolType {
     return Object.values(AdjustmentToolType).includes(tool as AdjustmentToolType);
 }
 
-// 判断工具类型是否属于一键式功能
+/**
+ * 检查工具类型是否为一键操作工具
+ * @param tool - 要检查的工具类型
+ * @returns {boolean} 如果工具是一键操作工具则返回 true，否则返回 false
+ */
 export function isOneClickActionTool(tool: ToolType): tool is OneClickActionToolType {
     return Object.values(OneClickActionToolType).includes(tool as OneClickActionToolType);
 }
-// 判断工具类型是否属于编辑功能
+
+/**
+ * 检查工具类型是否为编辑工具
+ * @param tool - 要检查的工具类型
+ * @returns {boolean} 如果工具是编辑工具则返回 true，否则返回 false
+ */
 export function isEditTool(tool: ToolType): tool is EditToolType {
     return Object.values(EditToolType).includes(tool as EditToolType);
 }
 
-// 所有工具类型集合
-export type ToolType = DrawingToolType | SelectionToolType | AdjustmentToolType | OneClickActionToolType  | EditToolType;
-// 工具映射函数
+/**
+ * 表示所有可能的工具类型
+ */
+export type ToolType = DrawingToolType | SelectionToolType | AdjustmentToolType | OneClickActionToolType | EditToolType;
+
+/**
+ * 将字符串映射到工具类型
+ * @param tool - 表示工具类型的字符串
+ * @returns {ToolType} 对应的工具类型
+ * @throws {Error} 如果工具类型无效则抛出错误
+ */
 export function mapToolType(tool: string): ToolType {
-    // 检查是否在绘图工具中
+    // 检查是否为绘图工具
     if (tool in DrawingToolType) {
         return DrawingToolType[tool as keyof typeof DrawingToolType];
     }
-    // 检查是否在选择工具中
+    // 检查是否为选择工具
     if (tool in SelectionToolType) {
         return SelectionToolType[tool as keyof typeof SelectionToolType];
     }
-    // 检查是否在参数调整工具中
+    // 检查是否为调整工具
     if (tool in AdjustmentToolType) {
         return AdjustmentToolType[tool as keyof typeof AdjustmentToolType];
     }
-    // 检查是否在一键式功能中
+    // 检查是否为一键操作工具
     if (tool in OneClickActionToolType) {
         return OneClickActionToolType[tool as keyof typeof OneClickActionToolType];
     }
 
-
-    // 若不属于任何工具分类，抛出错误
+    // 如果工具类型无效，抛出错误
     throw new Error(`Invalid tool type: ${tool}`);
 }

@@ -1,8 +1,14 @@
-import {useUndoRedoStore} from "../store/undoRedoStore";
-import {CanvasContext} from "../types/contextType";
+import { useUndoRedoStore } from "../store/undoRedoStore";
+import { CanvasContext } from "../types/contextType";
 
+/**
+ * 调整图像的曲线
+ * @param {CanvasContext} context - 画布上下文，包含 canvas 和 ctx 的引用
+ * @param {Curve} curve - 曲线数据，用于调整图像的色调
+ * @param {'red' | 'green' | 'blue'} channel - 要调整的颜色通道
+ */
 export function adjustCurve(
-{ canvas, ctx }: CanvasContext,
+    { canvas, ctx }: CanvasContext,
     curve: Curve,
     channel: 'red' | 'green' | 'blue'
 ) {
@@ -10,7 +16,7 @@ export function adjustCurve(
         console.error('Canvas or context is missing.');
         return;
     }
-    if(!curve){
+    if (!curve) {
         console.error('curve is missing.');
         return;
     }
@@ -18,6 +24,7 @@ export function adjustCurve(
     const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
     const data = imageData.data;
     undoRedoStore.saveCanvasState();
+
     // 对每个像素进行曲线调整
     for (let i = 0; i < data.length; i += 4) {
         let channelValue: number;
@@ -42,10 +49,16 @@ export function adjustCurve(
         }
     }
 
+    // 将调整后的图像数据放回画布
     ctx.value.putImageData(imageData, 0, 0);
 }
 
-// 根据曲线调整某个值
+/**
+ * 根据曲线调整某个值
+ * @param {number} inputValue - 输入值
+ * @param {Curve} curve - 曲线数据
+ * @returns {number} 调整后的输出值
+ */
 function applyCurve(inputValue: number, curve: Curve): number {
     // 在曲线中查找与输入值对应的输出值
     for (let i = 0; i < curve.length - 1; i++) {

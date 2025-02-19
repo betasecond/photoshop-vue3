@@ -61,54 +61,49 @@ const emitBrightness = () => emit('adjustBrightness', brightness.value);
 </script>
 <template>
   <var-paper :elevation="8" :width="'100%'" :height="'100%'" ripple  >
-  <div class="toolbar">
-    <div class ="common-group">
-    <!-- 绘图工具组 -->
+    <div class="toolbar">
+      <div class ="common-group">
+        <!-- 绘图工具组 -->
 
-      <var-button type="success" @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">Brush</var-button>
-      <var-button type="success" @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">Eraser</var-button>
+        <var-button type="success" @click="selectTool(DrawingToolType.Brush)" :class="{ active: selectedTool === DrawingToolType.Brush }">画笔</var-button>
+        <var-button type="success" @click="selectTool(DrawingToolType.Eraser)" :class="{ active: selectedTool === DrawingToolType.Eraser }">橡皮擦</var-button>
 
+        <!-- 一键式效果组 -->
 
-    <!-- 一键式效果组 -->
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.Watermark)">水印</var-button>
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.Dehaze)">去雾</var-button>
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceDetection)">人脸检测</var-button>
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceBeautify)">人脸美化</var-button>
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.VarletStyle)">风格</var-button>
+        <var-button type="success" @click="applyEffect(OneClickActionToolType.LocalBrightnessExposure)">局部亮度曝光</var-button>
 
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.Watermark)">Watermark</var-button>
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.Dehaze)">Dehaze</var-button>
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceDetection)">FaceDetect</var-button>
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.FaceBeautify)">FaceBeautify</var-button>
-      <var-button type="success" @click="applyEffect(OneClickActionToolType.VarletStyle)">Style</var-button>
+        <!-- 编辑工具组 -->
 
-    <!-- 编辑工具组 -->
+        <var-button type="success" @click="applyEditTool(EditToolType.Rotate)">旋转</var-button>
+        <var-button type="success" @click="applyEditTool(EditToolType.Crop)">裁剪</var-button>
 
-      <var-button type="success" @click="applyEditTool(EditToolType.Rotate)">Rotate</var-button>
-      <var-button type="success" @click="applyEditTool(EditToolType.Crop)">Crop</var-button>
+        <!-- 撤销和重做按钮 -->
 
+        <var-button type="success" @click="undo" :disabled="!canUndo">撤销</var-button>
+        <var-button type="success" @click="redo" :disabled="!canRedo">重做</var-button>
 
-
-
-    <!-- 撤销和重做按钮 -->
-
-      <var-button type="success" @click="undo" :disabled="!canUndo">Undo</var-button>
-      <var-button type="success" @click="redo" :disabled="!canRedo">Redo</var-button>
-
+      </div>
+      <!-- 参数调整组 -->
+      <div class="adjustment-group">
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Contrast)">对比度</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Exposure)">曝光</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Saturation)">饱和度</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.HSL)">HSL</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Brightness)">亮度</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Sharpen)">锐化</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.HistogramEqualization)">直方图均衡化</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.Smoothing)">平滑</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.CurveAdjustment)">曲线调整</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.ToneMapping)">色调映射</var-button>
+        <var-button type="success" @click="applyAdjust(AdjustmentToolType.ColorTemperature)">色温</var-button>
+      </div>
 
     </div>
-    <!-- 参数调整组 -->
-    <div class="adjustment-group">
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Contrast)">Contrast</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Exposure)">Exposure</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Saturation)">Saturation</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.HSL)">HSL</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Brightness)">Bright</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Sharpen)">Sharpen</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.HistogramEqualization)">HE</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.Smoothing)">Smooth</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.CurveAdjustment)">Curve</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.ToneMapping)">TM</var-button>
-      <var-button type="success" @click="applyAdjust(AdjustmentToolType.ColorTemperature)">CT</var-button>
-    </div>
-
-
-  </div>
   </var-paper>
 </template>
 

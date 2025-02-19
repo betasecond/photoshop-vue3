@@ -22,7 +22,7 @@ import {smoothing} from "../module/smoothing";
 import {ToneMappingConfig} from "../types/toneMappingConfigType";
 import {applyToneMapping} from "../module/toneMapping";
 import {adjustColorTemperature} from "../module/colorTemperature"
-import {adjustDehaze} from "../module/dehaze";
+import {adjustDehaze, newDehazeImage,adjustDehazeByBackend} from "../module/dehaze";
 import {detectFaceInCanvas, detectFaceInCanvasForBeautify} from "../module/face/detectFaceInCanvas";
 import {loadModels} from "../module/face/faceDetection";
 import {applyBeautifyFilter} from "../module/beautify/beautifyFilter";
@@ -34,6 +34,7 @@ import '@varlet/ui/es/input/style/index'
 import '@varlet/ui/es/uploader/style/index'
 import {VarletStyle} from "../types/varletStyleType";
 import {StyleProvider} from "@varlet/ui";
+import {adjustLightingEffect} from "../module/lightingEffect";
 // 引入并初始化状态管理
 const undoRedoStore = useUndoRedoStore();
 
@@ -84,11 +85,15 @@ const props = defineProps<{
   colorTemperature:number;
   selectionBounds?: {           // 裁剪选区（用于 Crop 工具）
     x: number;
+    x: number;
     y: number;
     width: number;
     height: number;
   };
   channel: 'red' | 'green' | 'blue',
+  lightX:number,
+  lightY:number,
+  lightStrength:number,
   smoothRadius:number,
   hsl:HSL,
   dehazeStrength:number,
@@ -164,9 +169,15 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
             });
       }
       break;
+    case OneClickActionToolType.LocalBrightnessExposure:
+      console.log("Applying Lightning effect on canvas");
+      adjustLightingEffect(canvasRef,props.lightX,props.lightY,props.lightStrength);
+      break;
     case OneClickActionToolType.Dehaze:
       console.log("Applying Dehaze effect on canvas");
-      adjustDehaze(canvasRef,props.dehazeStrength);
+      // newDehazeImage(canvasRef);
+      // adjustDehaze(canvasRef,props.dehazeStrength);
+      adjustDehazeByBackend(canvasRef,props.dehazeStrength);
       break;
     case OneClickActionToolType.FaceBeautify:
       const beautifyParams:BeautifyParams = {
@@ -178,7 +189,7 @@ const applyEffectLogic = (effect: OneClickActionToolType) => {
       console.log("Applying Face Beautify effect on canvas");
 
       // 调用人脸检测获取所有人脸框
-      detectFaceInCanvasForBeautify(canvasRef.getCanvas()).then(faceDetections => {
+      detectFaceInCanvasForBeautify(canvasRef.getCanvas(),false).then(faceDetections => {
         if (faceDetections.length > 0) {
           // 调用美颜滤镜应用函数，传入检测到的人脸框和美颜参数
           applyBeautifyFilter(

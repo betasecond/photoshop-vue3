@@ -1,7 +1,7 @@
 {
   "name": "photoshop-jimei",
   "private": true,
-  "version": "2.1.0",
+  "version": "3.1.0",
   "author": "Xia xinhang",
   "main": "dist/electron/main/main.js",
   "scripts": {
@@ -18,13 +18,14 @@
   "build": {
     "appId": "photoshop-vue",
     "asar": true,
+    "files": [
+      "dist",
+      "public"
+    ],
     "directories": {
       "buildResources": "assets",
       "output": "release/${version}"
     },
-    "files": [
-      "dist"
-    ],
     "mac": {
       "artifactName": "${productName}_${version}.${ext}",
       "target": [
@@ -51,8 +52,10 @@
   },
   "dependencies": {
     "@varlet/ui": "^3.6.4",
+    "axios": "^1.7.9",
     "face-api.js": "^0.22.2",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
